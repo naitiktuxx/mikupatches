@@ -565,7 +565,7 @@ def get_single_keypress():
         return None
     return None
 
-def show_navigatable_menu(title, items, default_idx=0):
+def show_navigatable_menu(title, items, default_idx=0, status_lines=None):
     if not sys.stdin.isatty():
         return 0
 
@@ -602,6 +602,11 @@ def show_navigatable_menu(title, items, default_idx=0):
                 print(line_str)
 
             print("=" * 76)
+
+            if status_lines:
+                for sline in status_lines:
+                    print(sline)
+
             sys.stdout.flush()
 
             key = get_single_keypress()
@@ -635,7 +640,7 @@ def show_navigatable_menu(title, items, default_idx=0):
         sys.stdout.write("\033[?25h")
         sys.stdout.flush()
 
-def show_main_menu():
+def show_main_menu(default_idx=0, status_lines=None):
     items = [
         ("1", "(Recommended) Build App with All Patches", ""),
         ("2", "Choose Patches & Build", "Custom Selection"),
@@ -644,8 +649,8 @@ def show_main_menu():
         ("5", "Check System Requirements", "Verify Python, Java, Apktool"),
         ("0", "Exit", "")
     ]
-    idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=0)
-    return items[idx][0]
+    idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=default_idx, status_lines=status_lines)
+    return idx, items[idx][0]
 
 def prompt_back_to_menu():
     print("-" * 76)
@@ -845,8 +850,14 @@ def main():
         run_build_pipeline(args)
         sys.exit(0)
 
+    current_idx = 0
+    status_lines = None
+
     while True:
-        choice = show_main_menu()
+        choice_idx, choice = show_main_menu(default_idx=current_idx, status_lines=status_lines)
+        status_lines = None
+        current_idx = choice_idx
+
         if choice in ('0', 'q', 'exit', 'quit'):
             log_step("Exiting.")
             sys.exit(0)
@@ -862,8 +873,10 @@ def main():
                 prompt_back_to_menu()
         elif choice == '3':
             clean_redundant()
-            log_success("Cleaned build artifacts.")
-            prompt_back_to_menu()
+            status_lines = [
+                f" {Colors.YELLOW}[Step] Cleaning up temporary and old build files...{Colors.RESET}",
+                f" {Colors.GREEN}[Success] Cleaned build artifacts.{Colors.RESET}"
+            ]
         elif choice == '4':
             install_via_adb()
             prompt_back_to_menu()
