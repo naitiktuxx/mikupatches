@@ -173,16 +173,20 @@ def prompt_download():
             log_step("Exiting build process.")
             sys.exit(0)
 
-    print(f"\nOpening APKMirror download page in your browser:")
-    print(f" {Colors.CYAN}{APKMIRROR_URL}{Colors.RESET}\n")
+    print("\n" + "-" * 76)
+    print(f"{Colors.GREEN}{Colors.BOLD}✔ Opening APKMirror download page in your browser...{Colors.RESET}")
+    print(f"  Link: {Colors.CYAN}{APKMIRROR_URL}{Colors.RESET}")
+    print("-" * 76)
+    print(f"\n{Colors.BOLD}📌 Next Steps:{Colors.RESET}")
+    print(f"  1. Download the {Colors.CYAN}v6.22.0 Universal APKM{Colors.RESET} file in your browser.")
+    print(f"  2. Move or copy the downloaded file into the {Colors.CYAN}'input/'{Colors.RESET} folder of this project.")
+    print(f"\n{Colors.YELLOW}⏳ Waiting for you to place the file in the 'input/' folder... (Auto-detecting){Colors.RESET}\n")
 
     try:
         webbrowser.open(APKMIRROR_URL)
     except Exception as e:
         log_warn(f"Failed to open browser automatically: {e}")
 
-    print(f"Please save the downloaded {Colors.CYAN}v6.22.0 Universal APKM{Colors.RESET} into the 'input/' folder.")
-    print("Waiting for file to be placed in 'input/' directory...")
     while True:
         infile = find_input_file()
         if infile:
