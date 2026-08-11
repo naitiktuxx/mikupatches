@@ -1,16 +1,16 @@
 # MikuPatches
 
-MikuPatches is a build tool that applies custom patches to **Bluetooth Keyboard & Mouse** (v6.22.0) for Android.
+MikuPatches is a build tool that applies custom patches to Bluetooth Keyboard & Mouse (v6.22.0) for Android.
 
 ## Features
 
 Running MikuPatches applies five core patch modules:
 
-- **Play Store Redirection & PairIP Bypass (`pairip`)**: Removes the "Install from original source" popup and neutralizes PairIP installer checks.
-- **Pro & Premium Unlock (`pro_unlock`)**: Unlocks all paid remote keyboard and mouse features and billing checks.
-- **Password Mode (`password_mode`)**: Enables password input mode and the eye visibility toggle in the keyboard.
-- **Clean Interface (`clean_menu`)**: Removes upgrade buttons, subscription management items, and feedback actions.
-- **Improved Default Theme (`theme_default`)**: Sets default theme preferences to BlueGrey and System Default dark mode.
+- Play Store Redirection & PairIP Bypass (`pairip`): Removes the "Install from original source" popup and neutralizes PairIP installer checks.
+- Pro & Premium Unlock (`pro_unlock`): Unlocks all paid remote keyboard and mouse features and billing checks.
+- Password Mode (`password_mode`): Enables password input mode and the eye visibility toggle in the keyboard.
+- Clean Interface (`clean_menu`): Removes upgrade buttons, subscription management items, and feedback actions.
+- Improved Default Theme (`theme_default`): Sets default theme preferences to BlueGrey and System Default dark mode.
 
 ## Operating System Compatibility
 
@@ -18,19 +18,19 @@ MikuPatches is cross-platform and compatible with major desktop operating system
 
 | Operating System | Compatibility Status | Notes |
 |---|---|---|
-| **macOS** (Apple Silicon & Intel) | 100% Native | Fully supported via Homebrew |
-| **Linux** (Ubuntu, Debian, Fedora, Arch, etc.) | 100% Native | Fully supported via system package managers |
-| **Windows via WSL / WSL2** | 100% Native (Recommended) | Fully supported in Ubuntu/Debian on Windows |
-| **Windows Native** (Git Bash / PowerShell / CMD) | Supported | Fallback prompt mode if ANSI/TTY features are limited |
+| macOS (Apple Silicon & Intel) | 100% Native | Fully supported via Homebrew |
+| Linux (Ubuntu, Debian, Fedora, Arch, etc.) | 100% Native | Fully supported via system package managers |
+| Windows via WSL / WSL2 | 100% Native (Recommended) | Fully supported in Ubuntu/Debian on Windows |
+| Windows Native (Git Bash / PowerShell / CMD) | Supported | Fallback prompt mode if ANSI/TTY features are limited |
 
 ## Requirements & Dependency Installation Guide
 
 ### Prerequisites
-- **Python** (3.8 or newer)
-- **Java JDK** (17 or newer, required by Apktool and apksigner)
-- **Apktool** (2.9.0 or newer)
-- **Android SDK Build-Tools** (`zipalign` and `apksigner`)
-- Optional: **ADB** (for auto-installing built APKs onto a connected Android device)
+- Python (3.8 or newer)
+- Java JDK (17 or newer, required by Apktool and apksigner)
+- Apktool (2.9.0 or newer)
+- Android SDK Build-Tools (`zipalign` and `apksigner`)
+- Optional: ADB (for auto-installing built APKs onto a connected Android device)
 
 ---
 
@@ -99,24 +99,24 @@ The script decompiles `base.apk`, verifies the target version, injects selected 
 ## Input and Output Formats
 
 ### Supported Input Formats
-- **`.apkm` / `.apks` / `.zip`**: Complete split APK bundles (recommended).
-- **`.apk`**: Single APK file (fallback metadata and icons from `patches/bundle_fallback/` will be used if `info.json` or `icon.png` are missing).
+- `.apkm` / `.apks` / `.zip`: Complete split APK bundles (recommended).
+- `.apk`: Single APK file (fallback metadata and icons from `patches/bundle_fallback/` will be used if `info.json` or `icon.png` are missing).
 
 Target app version must be `6.22.0` (versionCode `255`). To force a build on a different version, pass `-f` or `--force`.
 
 ### Build Outputs (`dist/`)
 Once complete, all generated files are saved to `dist/`:
 
-- **`dist/universal.apkm`**: Universal multi-split bundle for installation via bundle installers.
-- **`dist/universal.apks`**: Alternative APKS bundle.
-- **`dist/base.apk`**: Standalone patched primary APK.
-- **`dist/<arch>/`**: Architecture-specific bundles (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`).
+- `dist/universal.apkm`: Universal multi-split bundle for installation via bundle installers.
+- `dist/universal.apks`: Alternative APKS bundle.
+- `dist/base.apk`: Standalone patched primary APK.
+- `dist/<arch>/`: Architecture-specific bundles (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`).
 
 ## Installation
 
 ### Method 1: Installing Bundles on Your Device
 1. Transfer `dist/universal.apkm` (or an architecture bundle from `dist/<arch>/`) to your device.
-2. Install using **[Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai)** or **[APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod)**.
+2. Install using [Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai) or [APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod).
 
 ### Method 2: Installing Base APK via ADB
 Connect your phone with USB debugging enabled, then either:

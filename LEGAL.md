@@ -2,7 +2,7 @@
 
 ## 1. Non-Affiliation Disclaimer
 
-MikuPatches is an independent open-source patch utility. This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with **AppGround I/O**, Google LLC, or any of their subsidiaries or affiliates.
+MikuPatches is an independent open-source patch utility. This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with AppGround I/O, Google LLC, or any of their subsidiaries or affiliates.
 
 The official website for Bluetooth Keyboard & Mouse is available at [appground.io](https://appground.io/).
 
