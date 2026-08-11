@@ -292,6 +292,18 @@ PATCH_GROUPS = [
             "smali/m2.smali": "Pro & Subscription Menu Action Elimination",
             "smali/ug5.smali": "Subscription & Feedback Action Elimination"
         }
+    },
+    {
+        "id": "theme_default",
+        "name": "Default Theme: BlueGrey & System Default",
+        "desc": "Sets default theme color to BlueGrey and design option to System Default",
+        "default": True,
+        "files": {
+            "smali/b64.smali": "Settings Screen Default Theme Color & Option",
+            "smali/c64.smali": "Theme Option Preference Default",
+            "smali/wv3.smali": "SharedPreferences Initializer BlueGrey & System Theme",
+            "smali/io/appground/blek/MainActivity.smali": "MainActivity Default BlueGrey & System Theme"
+        }
     }
 ]
 
@@ -452,7 +464,7 @@ def main():
     parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
     parser.add_argument("-f", "--force", action="store_true", help="Force build despite version mismatch")
     parser.add_argument("-p", "--select-patches", action="store_true", help="Open interactive patch selection menu")
-    parser.add_argument("--skip-patches", help="Comma-separated list of patch module IDs to skip (pairip,pro_unlock,password_mode,clean_menu)")
+    parser.add_argument("--skip-patches", help="Comma-separated list of patch module IDs to skip (pairip,pro_unlock,password_mode,clean_menu,theme_default)")
     parser.add_argument("--only-patches", help="Comma-separated list of patch module IDs to apply")
     args = parser.parse_args()
 
