@@ -174,13 +174,13 @@ def prompt_download():
             sys.exit(0)
 
     print("\n" + "-" * 76)
-    print(f"{Colors.GREEN}{Colors.BOLD}✔ Opening APKMirror download page in your browser...{Colors.RESET}")
+    print(f"{Colors.GREEN}{Colors.BOLD}[+] Opening APKMirror download page in your browser...{Colors.RESET}")
     print(f"  Link: {Colors.CYAN}{APKMIRROR_URL}{Colors.RESET}")
     print("-" * 76)
-    print(f"\n{Colors.BOLD}📌 Next Steps:{Colors.RESET}")
+    print(f"\n{Colors.BOLD}[*] Instructions:{Colors.RESET}")
     print(f"  1. Download the {Colors.CYAN}v6.22.0 Universal APKM{Colors.RESET} file in your browser.")
     print(f"  2. Move or copy the downloaded file into the {Colors.CYAN}'input/'{Colors.RESET} folder of this project.")
-    print(f"\n{Colors.YELLOW}⏳ Waiting for you to place the file in the 'input/' folder... (Auto-detecting){Colors.RESET}\n")
+    print(f"\n{Colors.YELLOW}[*] Waiting for input file in 'input/' directory... (Auto-detecting){Colors.RESET}\n")
 
     try:
         webbrowser.open(APKMIRROR_URL)
@@ -313,22 +313,22 @@ def select_patches_interactively(force_interactive=False, skip_list=None, only_l
     if force_interactive or sys.stdin.isatty():
         while True:
             print("\n" + "=" * 76)
-            print(f"{Colors.CYAN}{Colors.BOLD} 🎛️ PATCH SELECTION MENU (All Patches Enabled by Default){Colors.RESET}")
+            print(f"{Colors.CYAN}{Colors.BOLD} [#] PATCH SELECTION MENU (All Patches Enabled by Default){Colors.RESET}")
             print("------------------------------------------------------------------------")
             print(" Below are the patches that will be applied to your app:\n")
             
             for idx, group in enumerate(PATCH_GROUPS, 1):
                 gid = group["id"]
-                status_badge = f"{Colors.GREEN}[✔ ENABLED ]{Colors.RESET}" if active_status[gid] else f"{Colors.RED}[  DISABLED]{Colors.RESET}"
+                status_badge = f"{Colors.GREEN}[+] ENABLED {Colors.RESET}" if active_status[gid] else f"{Colors.RED}[-] DISABLED{Colors.RESET}"
                 print(f"  {idx}. {status_badge} {Colors.BOLD}{group['name']}{Colors.RESET}")
-                print(f"     └─ {group['desc']}")
+                print(f"     -> {group['desc']}")
 
             print("\n" + "-" * 76)
-            print(f"{Colors.BOLD}💡 Simple Controls:{Colors.RESET}")
-            print(f"  • Press {Colors.GREEN}Enter{Colors.RESET} to build with all enabled patches")
-            print(f"  • Type a number to turn a patch ON or OFF (e.g. type {Colors.CYAN}2{Colors.RESET} or {Colors.CYAN}3,4{Colors.RESET})")
-            print(f"  • Type {Colors.CYAN}'all'{Colors.RESET} to turn everything ON, or {Colors.CYAN}'none'{Colors.RESET} to turn everything OFF")
-            print(f"  • Type {Colors.RED}'q'{Colors.RESET} to cancel and exit")
+            print(f"{Colors.BOLD}[*] Controls:{Colors.RESET}")
+            print(f"  - Press {Colors.GREEN}Enter{Colors.RESET} to build with all enabled patches")
+            print(f"  - Type a number to turn a patch ON or OFF (e.g. type {Colors.CYAN}2{Colors.RESET} or {Colors.CYAN}3,4{Colors.RESET})")
+            print(f"  - Type {Colors.CYAN}'all'{Colors.RESET} to turn everything ON, or {Colors.CYAN}'none'{Colors.RESET} to turn everything OFF")
+            print(f"  - Type {Colors.RED}'q'{Colors.RESET} to cancel and exit")
             print("=" * 76)
 
             try:
@@ -583,24 +583,24 @@ def main():
         install_via_adb()
 
     print("\n" + "=" * 76)
-    print(f"{Colors.GREEN}{Colors.BOLD} 🎉 BUILD COMPLETE & SUCCESSFUL!{Colors.RESET}")
+    print(f"{Colors.GREEN}{Colors.BOLD} [+] BUILD COMPLETE & SUCCESSFUL{Colors.RESET}")
     print("------------------------------------------------------------------------")
-    print(f"{Colors.BOLD} 📦 Applied Patches Status:{Colors.RESET}")
+    print(f"{Colors.BOLD} [*] Applied Patches Status:{Colors.RESET}")
     for rel_path, desc, status in applied_patches:
-        status_str = f"{Colors.GREEN}[✔ APPLIED]{Colors.RESET}" if status else f"{Colors.RED}[✘ FAILED]{Colors.RESET}"
+        status_str = f"{Colors.GREEN}[+] APPLIED{Colors.RESET}" if status else f"{Colors.RED}[-] FAILED{Colors.RESET}"
         print(f"   {status_str} {desc} ({Colors.CYAN}{rel_path}{Colors.RESET})")
 
     abs_dist = os.path.abspath(DIST_DIR)
-    print(f"\n{Colors.BOLD} 📂 Output Save Location (Save Directory):{Colors.RESET}")
+    print(f"\n{Colors.BOLD} [*] Output Save Location (Save Directory):{Colors.RESET}")
     print(f"    Absolute Path: {Colors.CYAN}{abs_dist}{Colors.RESET}\n")
 
-    print(f"{Colors.BOLD} 📁 Generated Packages:{Colors.RESET}")
+    print(f"{Colors.BOLD} [*] Generated Packages:{Colors.RESET}")
     for root, dirs, files in os.walk(DIST_DIR):
         for f in sorted(files):
             full_path = os.path.join(root, f)
             rel_path = os.path.relpath(full_path, DIST_DIR)
             sz_mb = os.path.getsize(full_path) / (1024 * 1024)
-            print(f"   • {Colors.CYAN}dist/{rel_path}{Colors.RESET} ({sz_mb:.2f} MB)")
+            print(f"   - {Colors.CYAN}dist/{rel_path}{Colors.RESET} ({sz_mb:.2f} MB)")
     print("=" * 76 + "\n")
 
 if __name__ == "__main__":

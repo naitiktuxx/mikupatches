@@ -4,7 +4,7 @@ An automated patch pipeline for **Bluetooth Keyboard & Mouse** (v6.22.0).
 
 ---
 
-## 📋 Prerequisites / Dependencies
+## Prerequisites / Dependencies
 
 To build the patched APK/APKM on your system, you need the following dependencies installed:
 
@@ -29,7 +29,7 @@ To build the patched APK/APKM on your system, you need the following dependencie
 
 ---
 
-## 🚀 How to Build
+## How to Build
 
 1. Run the build script:
    ```bash
@@ -50,7 +50,7 @@ To build the patched APK/APKM on your system, you need the following dependencie
 
 ---
 
-## 🛡️ Applied Patches Summary
+## Applied Patches Summary
 
 - **Play Store Redirection & License Bypass**: Neutralizes PairIP Play Store License & Installer verification.
 - **Pro & Premium Features Unlocked**: Unlocks Pro status across all UI components.
