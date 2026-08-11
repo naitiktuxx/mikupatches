@@ -92,6 +92,8 @@ def preflight_check():
         print(f"  {Colors.CYAN}brew install apktool openjdk android-commandlinetools{Colors.RESET}")
         print("\n" + f"{Colors.BOLD}[*] How to Install on Linux (Ubuntu/Debian):{Colors.RESET}")
         print(f"  {Colors.CYAN}sudo apt update && sudo apt install apktool default-jdk zipalign apksigner{Colors.RESET}")
+        print("\n" + f"{Colors.BOLD}[*] How to Install on Linux (Fedora):{Colors.RESET}")
+        print(f"  {Colors.CYAN}sudo dnf install python3 apktool java-17-openjdk zipalign android-tools{Colors.RESET}")
         print("=" * 76 + "\n")
         sys.exit(1)
 
