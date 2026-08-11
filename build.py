@@ -672,14 +672,24 @@ def show_main_menu():
 
 def prompt_back_to_menu():
     print("-" * 76)
-    try:
-        ans = input(f"{Colors.CYAN}Press Enter or 'b' to return to Main Menu (or 'q' to exit)... {Colors.RESET}").strip().lower()
-        if ans in ('q', 'quit', 'exit'):
-            log_step("Exiting.")
+    print(f"{Colors.CYAN}Press Enter or 'b' to return to Main Menu (or 'q' to exit)...{Colors.RESET}", end="", flush=True)
+
+    if not sys.stdin.isatty():
+        try:
+            input()
+        except Exception:
+            pass
+        print()
+        return
+
+    while True:
+        key = get_single_keypress()
+        if key in ('ENTER', 'BACK'):
+            print()
+            return
+        elif key == 'QUIT':
+            print(f"\n{Colors.RED}[!] Script terminated by user.{Colors.RESET}")
             sys.exit(0)
-    except (KeyboardInterrupt, EOFError):
-        print(f"\n{Colors.RED}[!] Exiting.{Colors.RESET}")
-        sys.exit(0)
 
 def run_build_pipeline(args):
     print(f"\n{Colors.BOLD}=== MIKUPATCHES BUILD PIPELINE ==={Colors.RESET}\n")
