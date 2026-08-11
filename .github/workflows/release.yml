@@ -46,7 +46,7 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             TAG_NAME="${{ github.ref_name }}"
           else
-            TAG_NAME="release-${{ env.ARCHIVE_NAME }}"
+            TAG_NAME="v6.22.0"
           fi
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
 
@@ -54,9 +54,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG_NAME }}
-          name: "MikuPatches Automated Release (${{ env.TAG_NAME }})"
+          name: "MikuPatches"
           body: |
-            Automated release build for MikuPatches (Target App Version v6.22.0).
+            Release build for MikuPatches (Target App Version v6.22.0).
 
             ### Release Assets Included:
             - `${{ env.ARCHIVE_NAME }}.tar.gz` (Standard Linux/Unix gzipped tarball)
