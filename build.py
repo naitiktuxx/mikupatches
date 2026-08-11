@@ -584,7 +584,7 @@ def show_navigatable_menu(title, items, default_idx=0, status_lines=None):
             print("=" * 76)
             print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
             print("------------------------------------------------------------------------")
-            print(" Use Up/Down arrows to move, press Enter or number to select:")
+            print(" Use Up/Down arrows to move, Enter/number to select, or 'q' to exit:")
             print()
 
             for idx, (num_key, label, desc) in enumerate(items):
