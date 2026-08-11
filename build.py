@@ -98,6 +98,22 @@ def clean_redundant():
         elif os.path.isdir(path):
             shutil.rmtree(path)
 
+def check_clean_prompt(noconfirm=False):
+    if os.path.exists(DIST_DIR) and any(os.scandir(DIST_DIR)):
+        if noconfirm or not sys.stdin.isatty():
+            clean_redundant()
+        else:
+            try:
+                ans = input(f"{Colors.YELLOW}[Clean] Previous build outputs found in 'dist/'. Clear old outputs before starting? [Y/n]: {Colors.RESET}").strip().lower()
+                if ans in ('', 'y', 'yes'):
+                    clean_redundant()
+                else:
+                    log_step("Keeping existing 'dist/' directory.")
+            except (KeyboardInterrupt, EOFError):
+                clean_redundant()
+    else:
+        clean_redundant()
+
 def ensure_keystore():
     if not os.path.exists(KEYSTORE):
         log_step("Generating debug keystore...")
@@ -246,6 +262,7 @@ def main():
     parser.add_argument("input_file", nargs="?", help="Path to input .apkm / .apks / .apk file")
     parser.add_argument("-i", "--install", action="store_true", help="Auto-install built APK onto connected ADB device")
     parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
+    parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
     args = parser.parse_args()
 
     if args.clean:
@@ -255,7 +272,7 @@ def main():
 
     print(f"\n{Colors.BOLD}=== MIKUPATCHES BUILD PIPELINE ==={Colors.RESET}\n")
     preflight_check()
-    clean_redundant()
+    check_clean_prompt(args.yes)
     ensure_keystore()
 
     input_file = find_input_file(args.input_file)
