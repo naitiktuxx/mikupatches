@@ -625,7 +625,7 @@ def show_navigatable_menu(title, items, default_idx=0):
 
 def show_main_menu():
     items = [
-        ("1", "Start Patching & Build Pipeline", "Default All Patches"),
+        ("1", "(Recommended) Start Patching & Build Pipeline", "Default All Patches"),
         ("2", "Select Patches & Build", "Interactive Patch Selection"),
         ("3", "Clean Build Artifacts", "Reset dist/ and build_staging/"),
         ("4", "Install Patched App onto Android Device", "via ADB"),
