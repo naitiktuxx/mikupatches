@@ -665,45 +665,15 @@ def show_main_menu():
     idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=0)
     return items[idx][0]
 
-def main():
-    parser = argparse.ArgumentParser(description="MikuPatches - Bluetooth Keyboard & Mouse Patch Pipeline")
-    parser.add_argument("input_file", nargs="?", help="Path to input .apkm / .apks / .apk file")
-    parser.add_argument("-m", "--menu", action="store_true", help="Open interactive main menu")
-    parser.add_argument("-i", "--install", action="store_true", help="Auto-install built APK onto connected ADB device")
-    parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
-    parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
-    parser.add_argument("-f", "--force", action="store_true", help="Force build despite version mismatch")
-    parser.add_argument("-p", "--select-patches", action="store_true", help="Open interactive patch selection menu")
-    parser.add_argument("--skip-patches", help="Comma-separated list of patch module IDs to skip (pairip,pro_unlock,password_mode,clean_menu,theme_default)")
-    parser.add_argument("--only-patches", help="Comma-separated list of patch module IDs to apply")
-    args = parser.parse_args()
-
-    if args.menu or (not args.input_file and not args.clean and not args.install and not args.select_patches and not args.skip_patches and not args.only_patches and sys.stdin.isatty()):
-        choice = show_main_menu()
-        if choice in ('0', 'q', 'exit', 'quit'):
-            log_step("Exiting.")
-            sys.exit(0)
-        elif choice == '2':
-            args.select_patches = True
-        elif choice == '3':
-            clean_redundant()
-            log_success("Cleaned build artifacts.")
-            sys.exit(0)
-        elif choice == '4':
-            install_via_adb()
-            sys.exit(0)
-        elif choice == '5':
-            github_maintenance()
-            sys.exit(0)
-        elif choice == '6':
-            show_toolchain_info()
-            sys.exit(0)
-
-    if args.clean:
-        clean_redundant()
-        log_success("Cleaned build artifacts.")
+def prompt_back_to_menu():
+    print("-" * 76)
+    try:
+        input(f"{Colors.CYAN}Press Enter to return to Main Menu (or Ctrl+C to exit)... {Colors.RESET}")
+    except (KeyboardInterrupt, EOFError):
+        print(f"\n{Colors.RED}[!] Exiting.{Colors.RESET}")
         sys.exit(0)
 
+def run_build_pipeline(args):
     print(f"\n{Colors.BOLD}=== MIKUPATCHES BUILD PIPELINE ==={Colors.RESET}\n")
     preflight_check()
     check_clean_prompt(args.yes)
@@ -852,6 +822,56 @@ def main():
             sz_mb = os.path.getsize(full_path) / (1024 * 1024)
             print(f"   - {Colors.CYAN}dist/{rel_path}{Colors.RESET} ({sz_mb:.2f} MB)")
     print("=" * 76 + "\n")
+
+def main():
+    parser = argparse.ArgumentParser(description="MikuPatches - Bluetooth Keyboard & Mouse Patch Pipeline")
+    parser.add_argument("input_file", nargs="?", help="Path to input .apkm / .apks / .apk file")
+    parser.add_argument("-m", "--menu", action="store_true", help="Open interactive main menu")
+    parser.add_argument("-i", "--install", action="store_true", help="Auto-install built APK onto connected ADB device")
+    parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
+    parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
+    parser.add_argument("-f", "--force", action="store_true", help="Force build despite version mismatch")
+    parser.add_argument("-p", "--select-patches", action="store_true", help="Open interactive patch selection menu")
+    parser.add_argument("--skip-patches", help="Comma-separated list of patch module IDs to skip (pairip,pro_unlock,password_mode,clean_menu,theme_default)")
+    parser.add_argument("--only-patches", help="Comma-separated list of patch module IDs to apply")
+    args = parser.parse_args()
+
+    is_interactive_menu = args.menu or (not args.input_file and not args.clean and not args.install and not args.select_patches and not args.skip_patches and not args.only_patches and sys.stdin.isatty())
+
+    if not is_interactive_menu:
+        if args.clean:
+            clean_redundant()
+            log_success("Cleaned build artifacts.")
+            sys.exit(0)
+        run_build_pipeline(args)
+        sys.exit(0)
+
+    while True:
+        choice = show_main_menu()
+        if choice in ('0', 'q', 'exit', 'quit'):
+            log_step("Exiting.")
+            sys.exit(0)
+        elif choice == '1':
+            args.select_patches = False
+            run_build_pipeline(args)
+            prompt_back_to_menu()
+        elif choice == '2':
+            args.select_patches = True
+            run_build_pipeline(args)
+            prompt_back_to_menu()
+        elif choice == '3':
+            clean_redundant()
+            log_success("Cleaned build artifacts.")
+            prompt_back_to_menu()
+        elif choice == '4':
+            install_via_adb()
+            prompt_back_to_menu()
+        elif choice == '5':
+            github_maintenance()
+            prompt_back_to_menu()
+        elif choice == '6':
+            show_toolchain_info()
+            prompt_back_to_menu()
 
 if __name__ == "__main__":
     try:
