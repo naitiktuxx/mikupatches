@@ -132,9 +132,11 @@ Once complete, all generated files are saved to `dist/`:
 
 ## Installation
 
-### Method 1: Installing Bundles on Your Device
-1. Transfer `dist/universal.apkm` (or an architecture bundle from `dist/<arch>/`) to your device.
-2. Install using [Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai) or [APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod).
+### Method 1: Installing `.apkm` Bundles on Your Phone
+1. Transfer `dist/universal.apkm` (or an architecture bundle from `dist/<arch>/`) to your Android device.
+2. Download and install [APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod&hl=en_IN) from the Google Play Store (or use [Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai)).
+3. Open APKMirror Installer, tap "Browse files", and select the `universal.apkm` file.
+4. Tap "Install app" and grant installation permission when prompted.
 
 ### Method 2: Installing Base APK via ADB
 Connect your phone with USB debugging enabled, then either:
