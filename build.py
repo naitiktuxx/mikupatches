@@ -584,7 +584,7 @@ def show_navigatable_menu(title, items, default_idx=0):
             print("=" * 76)
             print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
             print("------------------------------------------------------------------------")
-            print(" Use Up/Down Arrow keys to navigate, Enter to select, or press number:")
+            print(" Use Up/Down arrows to move, press Enter or number to select:")
             print()
 
             for idx, (num_key, label, desc) in enumerate(items):
@@ -637,11 +637,11 @@ def show_navigatable_menu(title, items, default_idx=0):
 
 def show_main_menu():
     items = [
-        ("1", "(Recommended) Start Patching & Build Pipeline", "Default All Patches"),
-        ("2", "Select Patches & Build", "Interactive Patch Selection"),
-        ("3", "Clean Build Artifacts", "Reset dist/ and build_staging/"),
-        ("4", "Install Patched App onto Android Device", "via ADB"),
-        ("5", "Check Prerequisites & Toolchain Dependencies", ""),
+        ("1", "(Recommended) Build App with All Patches", ""),
+        ("2", "Choose Patches & Build", "Custom Selection"),
+        ("3", "Clean Build Files", "Reset dist/ outputs"),
+        ("4", "Install App on Phone", "via ADB"),
+        ("5", "Check System Requirements", "Verify Python, Java, Apktool"),
         ("0", "Exit", "")
     ]
     idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=0)
