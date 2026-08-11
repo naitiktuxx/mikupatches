@@ -332,7 +332,7 @@ def select_patches_interactively(force_interactive=False, skip_list=None, only_l
             print("=" * 76)
 
             try:
-                cmd = input(f"\n{Colors.CYAN}Enter choice or press Enter to build: {Colors.RESET}").strip().lower()
+                cmd = input(f"\n{Colors.CYAN}Waiting for input... {Colors.RESET}").strip().lower()
             except (KeyboardInterrupt, EOFError):
                 print()
                 log_step("Exiting build process.")
