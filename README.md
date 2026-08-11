@@ -48,10 +48,10 @@ Install dependencies using `apt`:
 sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner
 ```
 
-#### 3. Linux (Fedora / RHEL)
+#### 3. Linux (Fedora / RHEL / CentOS)
 Install dependencies using `dnf`:
 ```bash
-sudo dnf install python3 apktool java-17-openjdk zipalign android-tools
+sudo dnf install python3 apktool java-17-openjdk-devel zipalign android-tools
 ```
 
 #### 4. Linux (Arch Linux / Manjaro)
@@ -60,14 +60,26 @@ Install dependencies using `pacman`:
 sudo pacman -S python android-tools java-environment-openjdk apktool
 ```
 
-#### 5. Windows via WSL2 (Recommended for Windows Users)
+#### 5. Linux (openSUSE Leap / Tumbleweed)
+Install dependencies using `zypper`:
+```bash
+sudo zypper install python3 apktool java-17-openjdk-devel android-tools
+```
+
+#### 6. Linux (Alpine Linux)
+Install dependencies using `apk` (with `community` repository enabled):
+```bash
+sudo apk add python3 apktool openjdk17 android-tools
+```
+
+#### 7. Windows via WSL2 (Recommended for Windows Users)
 1. Open PowerShell and install WSL: `wsl --install`
 2. Open the Ubuntu terminal in WSL and run:
    ```bash
    sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner
    ```
 
-#### 6. Windows Native (Git Bash / PowerShell / Command Prompt)
+#### 8. Windows Native (Git Bash / PowerShell / Command Prompt)
 1. Install [Python 3](https://www.python.org/downloads/) (make sure to check "Add Python to PATH").
 2. Install [Java JDK 17+](https://adoptium.net/).
 3. Install [Android Studio / Command Line Tools](https://developer.android.com/studio) to acquire `zipalign` and `apksigner`.

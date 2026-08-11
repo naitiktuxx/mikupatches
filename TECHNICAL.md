@@ -68,8 +68,10 @@ The build script auto-detects required binaries using `PATH`, `$ANDROID_HOME`, `
 |---|---|---|
 | macOS (Apple Silicon & Intel) | 100% Native | `brew install apktool openjdk android-commandlinetools` |
 | Linux (Ubuntu, Debian, Mint) | 100% Native | `sudo apt install python3 apktool default-jdk zipalign apksigner` |
-| Linux (Fedora, RHEL) | 100% Native | `sudo dnf install python3 apktool java-17-openjdk zipalign android-tools` |
+| Linux (Fedora, RHEL, CentOS) | 100% Native | `sudo dnf install python3 apktool java-17-openjdk-devel zipalign android-tools` |
 | Linux (Arch, Manjaro) | 100% Native | `sudo pacman -S python android-tools java-environment-openjdk apktool` |
+| Linux (openSUSE Leap / Tumbleweed) | 100% Native | `sudo zypper install python3 apktool java-17-openjdk-devel android-tools` |
+| Linux (Alpine Linux) | 100% Native | `sudo apk add python3 apktool openjdk17 android-tools` |
 | Windows via WSL / WSL2 | 100% Native | Install Ubuntu WSL (`wsl --install`) and use `apt` setup |
 | Windows Native (Git Bash / CMD) | Supported | Install Python 3, JDK 17+, Android SDK build-tools, and Apktool |
 
