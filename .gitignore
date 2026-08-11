@@ -1,0 +1,24 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Decompiled source code, original bundle, & input files (downloaded / staged dynamically)
+/base/
+/bundle/
+input/*
+!input/.gitkeep
+
+# Build outputs & staging
+dist/
+build_staging/
+*.apk
+*.apkm
+*.apks
+*.idsig
+
+# Keys & Keystores
+*.keystore
+*.jks
