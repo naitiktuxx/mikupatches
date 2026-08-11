@@ -8,6 +8,7 @@ import zipfile
 import webbrowser
 import time
 import argparse
+import re
 
 WORKSPACE = os.path.dirname(os.path.abspath(__file__))
 DIST_DIR = os.path.join(WORKSPACE, "dist")
@@ -16,6 +17,9 @@ INPUT_DIR = os.path.join(WORKSPACE, "input")
 PATCHES_DIR = os.path.join(WORKSPACE, "patches")
 FRAMEWORK_DIR = os.path.join(WORKSPACE, "framework")
 KEYSTORE = os.path.join(WORKSPACE, "debug.keystore")
+
+TARGET_VERSION_NAME = "6.22.0"
+TARGET_VERSION_CODE = "255"
 
 APKMIRROR_URL = "https://www.apkmirror.com/apk/appground-io/bluetooth-keyboard-mouse-2/bluetooth-keyboard-mouse-6-22-0-release/bluetooth-keyboard-mouse-6-22-0-2-android-apk-download/download/?key=1c64014febe7a4b159644f6439cf66cb1e9f2897"
 
@@ -192,6 +196,36 @@ def prepare_bundle(input_file, bundle_staging):
     if not os.path.exists(icon_png) and os.path.exists(os.path.join(fallback_dir, "icon.png")):
         shutil.copyfile(os.path.join(fallback_dir, "icon.png"), icon_png)
 
+def verify_app_version(base_dir, force=False):
+    apktool_yml = os.path.join(base_dir, "apktool.yml")
+    ver_name = None
+    ver_code = None
+
+    if os.path.exists(apktool_yml):
+        with open(apktool_yml, "r", encoding="utf-8") as f:
+            content = f.read()
+            match_name = re.search(r"versionName:\s*['\"]?([^'\"\n]+)['\"]?", content)
+            match_code = re.search(r"versionCode:\s*['\"]?([^'\"\n]+)['\"]?", content)
+            if match_name:
+                ver_name = match_name.group(1).strip()
+            if match_code:
+                ver_code = match_code.group(1).strip()
+
+    log_step(f"Verifying input app version (Detected: v{ver_name or 'Unknown'} / code {ver_code or 'Unknown'})...")
+
+    if ver_name and ver_name != TARGET_VERSION_NAME:
+        log_error("VERSION MISMATCH DETECTED!")
+        log_error(f"  - Expected Version : v{TARGET_VERSION_NAME} (code {TARGET_VERSION_CODE})")
+        log_error(f"  - Input App Version : v{ver_name} (code {ver_code})")
+        log_error("These patches are strictly crafted for Bluetooth Keyboard & Mouse v6.22.0.")
+        if not force:
+            log_error("Aborting build. To force build anyway, re-run with '-f' or '--force'.")
+            sys.exit(1)
+        else:
+            log_warn("Forcing build despite version mismatch (--force enabled)...")
+    else:
+        log_success(f"App version verified: v{ver_name or TARGET_VERSION_NAME} (code {ver_code or TARGET_VERSION_CODE})")
+
 def apply_patches(base_dir):
     patches_base = os.path.join(PATCHES_DIR, "base")
     if not os.path.exists(patches_base):
@@ -263,6 +297,7 @@ def main():
     parser.add_argument("-i", "--install", action="store_true", help="Auto-install built APK onto connected ADB device")
     parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
     parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
+    parser.add_argument("-f", "--force", action="store_true", help="Force build despite version mismatch")
     args = parser.parse_args()
 
     if args.clean:
@@ -290,6 +325,8 @@ def main():
 
     log_step("Decompiling base.apk with apktool...")
     run_cmd(f"apktool d -p {FRAMEWORK_DIR} {base_apk_path} -o {decompiled_base_dir} -f")
+
+    verify_app_version(decompiled_base_dir, force=args.force)
 
     apply_patches(decompiled_base_dir)
 
