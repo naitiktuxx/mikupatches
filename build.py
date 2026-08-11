@@ -313,24 +313,26 @@ def select_patches_interactively(force_interactive=False, skip_list=None, only_l
     if force_interactive or sys.stdin.isatty():
         while True:
             print("\n" + "=" * 76)
-            print(f"{Colors.CYAN}{Colors.BOLD} 🎛️ PATCH SELECTION MENU{Colors.RESET}")
+            print(f"{Colors.CYAN}{Colors.BOLD} 🎛️ PATCH SELECTION MENU (All Patches Enabled by Default){Colors.RESET}")
             print("------------------------------------------------------------------------")
-            print(" Select which patches to apply to the APK: \n")
+            print(" Below are the patches that will be applied to your app:\n")
             
             for idx, group in enumerate(PATCH_GROUPS, 1):
                 gid = group["id"]
-                mark = f"{Colors.GREEN}[✔]{Colors.RESET}" if active_status[gid] else f"{Colors.RED}[ ]{Colors.RESET}"
-                print(f"  [{idx}] {mark} {Colors.BOLD}{group['name']}{Colors.RESET}")
-                print(f"      └─ {group['desc']} ({len(group['files'])} file(s))")
+                status_badge = f"{Colors.GREEN}[✔ ENABLED ]{Colors.RESET}" if active_status[gid] else f"{Colors.RED}[  DISABLED]{Colors.RESET}"
+                print(f"  {idx}. {status_badge} {Colors.BOLD}{group['name']}{Colors.RESET}")
+                print(f"     └─ {group['desc']}")
 
             print("\n" + "-" * 76)
-            print(f"  • Type item number(s) to toggle (e.g. '1', '2,4', 'all', 'none')")
-            print(f"  • Press {Colors.GREEN}Enter{Colors.RESET} to proceed with selected patches")
-            print(f"  • Type {Colors.RED}'q'{Colors.RESET} to quit")
+            print(f"{Colors.BOLD}💡 Simple Controls:{Colors.RESET}")
+            print(f"  • Press {Colors.GREEN}Enter{Colors.RESET} to build with all enabled patches")
+            print(f"  • Type a number to turn a patch ON or OFF (e.g. type {Colors.CYAN}2{Colors.RESET} or {Colors.CYAN}3,4{Colors.RESET})")
+            print(f"  • Type {Colors.CYAN}'all'{Colors.RESET} to turn everything ON, or {Colors.CYAN}'none'{Colors.RESET} to turn everything OFF")
+            print(f"  • Type {Colors.RED}'q'{Colors.RESET} to cancel and exit")
             print("=" * 76)
 
             try:
-                cmd = input(f"{Colors.CYAN}Select option(s): {Colors.RESET}").strip().lower()
+                cmd = input(f"\n{Colors.CYAN}Enter choice or press Enter to build: {Colors.RESET}").strip().lower()
             except (KeyboardInterrupt, EOFError):
                 print()
                 log_step("Exiting build process.")
