@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import os
+import sys
 import shutil
 import subprocess
 import json
 import zipfile
 import webbrowser
 import time
+import argparse
 
 WORKSPACE = os.path.dirname(os.path.abspath(__file__))
 DIST_DIR = os.path.join(WORKSPACE, "dist")
@@ -15,10 +17,27 @@ PATCHES_DIR = os.path.join(WORKSPACE, "patches")
 FRAMEWORK_DIR = os.path.join(WORKSPACE, "framework")
 KEYSTORE = os.path.join(WORKSPACE, "debug.keystore")
 
-ZIPALIGN = "/opt/homebrew/share/android-commandlinetools/build-tools/34.0.0/zipalign"
-APKSIGNER = "/opt/homebrew/share/android-commandlinetools/build-tools/34.0.0/apksigner"
-
 APKMIRROR_URL = "https://www.apkmirror.com/apk/appground-io/bluetooth-keyboard-mouse-2/bluetooth-keyboard-mouse-6-22-0-release/bluetooth-keyboard-mouse-6-22-0-2-android-apk-download/download/?key=1c64014febe7a4b159644f6439cf66cb1e9f2897"
+
+class Colors:
+    CYAN = "\033[96m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    RESET = "\033[0m"
+
+def log_step(msg):
+    print(f"{Colors.CYAN}{Colors.BOLD}[Step] {msg}{Colors.RESET}")
+
+def log_success(msg):
+    print(f"{Colors.GREEN}{Colors.BOLD}[Success] {msg}{Colors.RESET}")
+
+def log_warn(msg):
+    print(f"{Colors.YELLOW}[Warning] {msg}{Colors.RESET}")
+
+def log_error(msg):
+    print(f"{Colors.RED}{Colors.BOLD}[Error] {msg}{Colors.RESET}")
 
 def run_cmd(cmd):
     res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -26,8 +45,46 @@ def run_cmd(cmd):
         raise RuntimeError(f"Command failed: {cmd}\nStdout: {res.stdout}\nStderr: {res.stderr}")
     return res.stdout
 
+def find_tool(tool_name, default_homebrew_path=""):
+    path = shutil.which(tool_name)
+    if path:
+        return path
+    if default_homebrew_path and os.path.exists(default_homebrew_path):
+        return default_homebrew_path
+    
+    sdk_root = os.environ.get("ANDROID_HOME") or os.environ.get("ANDROID_SDK_ROOT")
+    if sdk_root and os.path.exists(os.path.join(sdk_root, "build-tools")):
+        bt_dir = os.path.join(sdk_root, "build-tools")
+        if os.path.exists(bt_dir):
+            versions = sorted(os.listdir(bt_dir), reverse=True)
+            for ver in versions:
+                tool_path = os.path.join(bt_dir, ver, tool_name)
+                if os.path.exists(tool_path):
+                    return tool_path
+    return None
+
+ZIPALIGN = find_tool("zipalign", "/opt/homebrew/share/android-commandlinetools/build-tools/34.0.0/zipalign")
+APKSIGNER = find_tool("apksigner", "/opt/homebrew/share/android-commandlinetools/build-tools/34.0.0/apksigner")
+
+def preflight_check():
+    missing = []
+    if not shutil.which("apktool"):
+        missing.append("apktool (install with: brew install apktool)")
+    if not shutil.which("java"):
+        missing.append("java / JDK (install with: brew install openjdk)")
+    if not ZIPALIGN:
+        missing.append("zipalign (Android SDK build-tools)")
+    if not APKSIGNER:
+        missing.append("apksigner (Android SDK build-tools)")
+    
+    if missing:
+        log_error("Missing required system tools:")
+        for tool in missing:
+            print(f"  - {tool}")
+        sys.exit(1)
+
 def clean_redundant():
-    print("[Clean] Cleaning up temporary and old build files...")
+    log_step("Cleaning up temporary and old build files...")
     redundants = [
         os.path.join(WORKSPACE, "patched_base.apk"),
         os.path.join(WORKSPACE, "aligned_base.apk"),
@@ -43,7 +100,7 @@ def clean_redundant():
 
 def ensure_keystore():
     if not os.path.exists(KEYSTORE):
-        print("[Keystore] Generating debug keystore...")
+        log_step("Generating debug keystore...")
         cmd = (
             f"keytool -genkey -v -keystore {KEYSTORE} -storepass android "
             f"-alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 "
@@ -51,7 +108,14 @@ def ensure_keystore():
         )
         run_cmd(cmd)
 
-def find_input_file():
+def find_input_file(custom_path=None):
+    if custom_path:
+        if os.path.exists(custom_path):
+            return custom_path
+        else:
+            log_error(f"Specified input file '{custom_path}' does not exist.")
+            sys.exit(1)
+
     if not os.path.exists(INPUT_DIR):
         os.makedirs(INPUT_DIR, exist_ok=True)
     
@@ -67,10 +131,10 @@ def find_input_file():
 
 def prompt_download():
     print("\n" + "=" * 76)
-    print(" [Input Required] Original APK / APKM file not found in 'input/' directory!")
+    print(f"{Colors.YELLOW}{Colors.BOLD} [Input Required] Original APK / APKM file not found in 'input/' directory!{Colors.RESET}")
     print("------------------------------------------------------------------------")
     print(" Opening APKMirror download page in your browser:")
-    print(f" {APKMIRROR_URL}")
+    print(f" {Colors.CYAN}{APKMIRROR_URL}{Colors.RESET}")
     print("\n Please download the Bluetooth Keyboard & Mouse v6.22.0 APKM file")
     print(" and save/move it into the 'input/' folder of this project.")
     print("=" * 76 + "\n")
@@ -78,13 +142,13 @@ def prompt_download():
     try:
         webbrowser.open(APKMIRROR_URL)
     except Exception as e:
-        print(f"[Warning] Failed to open browser automatically: {e}")
+        log_warn(f"Failed to open browser automatically: {e}")
 
     print("Waiting for file to be placed in 'input/' directory...")
     while True:
         infile = find_input_file()
         if infile:
-            print(f"[Input] Found input file: {os.path.basename(infile)}")
+            log_success(f"Found input file: {os.path.basename(infile)}")
             return infile
         time.sleep(2)
 
@@ -93,11 +157,11 @@ def prepare_bundle(input_file, bundle_staging):
     ext = os.path.splitext(input_file)[1].lower()
 
     if ext in (".apkm", ".apks", ".zip"):
-        print(f"[Extract] Extracting '{os.path.basename(input_file)}' into bundle staging...")
+        log_step(f"Extracting '{os.path.basename(input_file)}' into bundle staging...")
         with zipfile.ZipFile(input_file, 'r') as zf:
             zf.extractall(bundle_staging)
     elif ext == ".apk":
-        print(f"[Prepare] Copying single APK '{os.path.basename(input_file)}' to bundle staging...")
+        log_step(f"Copying single APK '{os.path.basename(input_file)}' to bundle staging...")
         shutil.copyfile(input_file, os.path.join(bundle_staging, "base.apk"))
 
     base_apk = os.path.join(bundle_staging, "base.apk")
@@ -117,7 +181,7 @@ def apply_patches(base_dir):
     if not os.path.exists(patches_base):
         raise FileNotFoundError(f"Patches directory not found at '{patches_base}'")
 
-    print("[Patch] Applying smali & manifest patches...")
+    log_step("Applying smali & manifest patches...")
     patched_count = 0
     for root, dirs, files in os.walk(patches_base):
         rel_root = os.path.relpath(root, patches_base)
@@ -131,22 +195,22 @@ def apply_patches(base_dir):
             patched_count += 1
             print(f"  -> Applied patch: {os.path.relpath(dst_file, base_dir)}")
 
-    print(f"[Patch] Applied {patched_count} patch file(s) successfully.")
+    log_success(f"Applied {patched_count} patch file(s) successfully.")
 
 def align_and_sign(input_apk, output_apk):
     unaligned_tmp = output_apk + ".unaligned"
     shutil.copyfile(input_apk, unaligned_tmp)
     run_cmd(f"zip -d {unaligned_tmp} 'META-INF/*' || true")
-    run_cmd(f"{ZIPALIGN} -p -f -v 4 {unaligned_tmp} {output_apk}")
+    run_cmd(f'"{ZIPALIGN}" -p -f -v 4 {unaligned_tmp} {output_apk}')
     if os.path.exists(unaligned_tmp):
         os.remove(unaligned_tmp)
     run_cmd(
-        f"{APKSIGNER} sign --v1-signing-enabled true --v2-signing-enabled true "
-        f"--v3-signing-enabled true --ks {KEYSTORE} --ks-pass pass:android "
-        f"--key-pass pass:android --ks-key-alias androiddebugkey {output_apk}"
+        f'"{APKSIGNER}" sign --v1-signing-enabled true --v2-signing-enabled true '
+        f'--v3-signing-enabled true --ks {KEYSTORE} --ks-pass pass:android '
+        f'--key-pass pass:android --ks-key-alias androiddebugkey {output_apk}'
     )
-    run_cmd(f"{ZIPALIGN} -c -v 4 {output_apk}")
-    run_cmd(f"{APKSIGNER} verify --verbose {output_apk}")
+    run_cmd(f'"{ZIPALIGN}" -c -v 4 {output_apk}')
+    run_cmd(f'"{APKSIGNER}" verify --verbose {output_apk}')
 
 def create_zip(source_files, target_zip_path):
     os.makedirs(os.path.dirname(target_zip_path), exist_ok=True)
@@ -154,12 +218,47 @@ def create_zip(source_files, target_zip_path):
         for file_path, arcname in source_files:
             zf.write(file_path, arcname)
 
+def install_via_adb():
+    adb_path = shutil.which("adb")
+    if not adb_path:
+        log_warn("ADB tool not found in PATH. Cannot auto-install.")
+        return
+
+    log_step("Checking connected ADB devices...")
+    res = run_cmd("adb devices").strip().splitlines()
+    devices = [line for line in res[1:] if line.strip() and "device" in line and not "offline" in line]
+
+    if not devices:
+        log_warn("No active ADB device/emulator connected. Skipping auto-install.")
+        return
+
+    staged_base = os.path.join(DIST_DIR, "base.apk")
+    if os.path.exists(staged_base):
+        log_step("Installing patched base.apk onto connected Android device...")
+        try:
+            run_cmd(f"adb install -r {staged_base}")
+            log_success("App installed successfully on device!")
+        except Exception as e:
+            log_warn(f"ADB installation failed: {e}")
+
 def main():
-    print("=== STARTING CLEAN PATCHED BUILD ===")
+    parser = argparse.ArgumentParser(description="MikuPatches - Bluetooth Keyboard & Mouse Patch Pipeline")
+    parser.add_argument("input_file", nargs="?", help="Path to input .apkm / .apks / .apk file")
+    parser.add_argument("-i", "--install", action="store_true", help="Auto-install built APK onto connected ADB device")
+    parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
+    args = parser.parse_args()
+
+    if args.clean:
+        clean_redundant()
+        log_success("Cleaned build artifacts.")
+        sys.exit(0)
+
+    print(f"\n{Colors.BOLD}=== MIKUPATCHES BUILD PIPELINE ==={Colors.RESET}\n")
+    preflight_check()
     clean_redundant()
     ensure_keystore()
 
-    input_file = find_input_file()
+    input_file = find_input_file(args.input_file)
     if not input_file:
         input_file = prompt_download()
 
@@ -172,22 +271,22 @@ def main():
     base_apk_path = os.path.join(bundle_staging, "base.apk")
     decompiled_base_dir = os.path.join(BUILD_STAGING, "base")
 
-    print("[Decompile] Decompiling base.apk with apktool...")
+    log_step("Decompiling base.apk with apktool...")
     run_cmd(f"apktool d -p {FRAMEWORK_DIR} {base_apk_path} -o {decompiled_base_dir} -f")
 
     apply_patches(decompiled_base_dir)
 
-    print("[Build] Recompiling patched base.apk with apktool...")
+    log_step("Recompiling patched base.apk with apktool...")
     raw_base = os.path.join(BUILD_STAGING, "raw_base.apk")
     run_cmd(f"apktool b -p {FRAMEWORK_DIR} {decompiled_base_dir} -o {raw_base}")
 
     staged_base = os.path.join(BUILD_STAGING, "staged_base.apk")
-    print("[Sign] Aligning & signing base.apk...")
+    log_step("Aligning & signing base.apk...")
     align_and_sign(raw_base, staged_base)
 
     shutil.copyfile(staged_base, os.path.join(DIST_DIR, "base.apk"))
 
-    print("[Splits] Processing split APKs...")
+    log_step("Processing split APKs...")
     arch_splits = {
         "arm64-v8a": "split_config.arm64_v8a.apk",
         "armeabi-v7a": "split_config.armeabi_v7a.apk",
@@ -212,7 +311,7 @@ def main():
 
     icon_path = os.path.join(bundle_staging, "icon.png")
 
-    print("[Pack] Creating Universal APKM & APKS in dist/...")
+    log_step("Creating Universal APKM & APKS in dist/...")
     univ_apkm_files = [(staged_base, "base.apk")]
     if os.path.exists(info_json_path):
         univ_apkm_files.append((info_json_path, "info.json"))
@@ -231,7 +330,7 @@ def main():
     }
 
     for arch, arch_split_fname in arch_splits.items():
-        print(f"[Pack] Creating arch bundle for {arch}...")
+        log_step(f"Creating arch bundle for {arch}...")
         arch_dir = os.path.join(DIST_DIR, arch)
 
         arch_info = dict(base_info)
@@ -261,8 +360,11 @@ def main():
 
     shutil.rmtree(BUILD_STAGING)
 
-    print("\n=== BUILD COMPLETE ===")
-    print("Clean dist/ structure:")
+    if args.install:
+        install_via_adb()
+
+    log_success("BUILD COMPLETE!")
+    print("\nClean dist/ structure:")
     for root, dirs, files in os.walk(DIST_DIR):
         for f in sorted(files):
             full_path = os.path.join(root, f)
