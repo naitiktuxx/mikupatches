@@ -248,13 +248,29 @@ def verify_app_version(base_dir, force=False):
     else:
         log_success(f"App version verified: v{ver_name or TARGET_VERSION_NAME} (code {ver_code or TARGET_VERSION_CODE})")
 
+PATCH_DESCRIPTIONS = {
+    "AndroidManifest.xml": "Play Store Redirection & PairIP Application Bypass",
+    "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License & Installer Verification Bypass",
+    "smali/com/pairip/licensecheck/LicenseContentProvider.smali": "PairIP License ContentProvider Neutralization",
+    "smali/com/pairip/application/Application.smali": "PairIP Application Entry Point Bypass",
+    "smali/fj3.smali": "Premium & Subscription Status Unlock (isPremium=true, isSubscribed=true)",
+    "smali/ez.smali": "Global Premium Access Verification Unlock",
+    "smali/uy.smali": "In-App Billing SKU Verification Bypass",
+    "smali/uv.smali": "Password Mode & EndIcon Toggle Unlock",
+    "smali/eu5.smali": "MainActivity Internal Installer & Store Verification Bypass",
+    "smali/jh0.smali": "Compose Menu Removal & Slot Table Crash Fix",
+    "smali/m2.smali": "Pro & Subscription Menu Action Elimination",
+    "smali/ug5.smali": "Subscription & Feedback Action Elimination"
+}
+
 def apply_patches(base_dir):
     patches_base = os.path.join(PATCHES_DIR, "base")
     if not os.path.exists(patches_base):
         raise FileNotFoundError(f"Patches directory not found at '{patches_base}'")
 
     log_step("Applying smali & manifest patches...")
-    patched_count = 0
+    applied_patches = []
+    
     for root, dirs, files in os.walk(patches_base):
         rel_root = os.path.relpath(root, patches_base)
         target_root = base_dir if rel_root == "." else os.path.join(base_dir, rel_root)
@@ -264,10 +280,19 @@ def apply_patches(base_dir):
             dst_file = os.path.join(target_root, f)
             os.makedirs(os.path.dirname(dst_file), exist_ok=True)
             shutil.copyfile(src_file, dst_file)
-            patched_count += 1
-            print(f"  -> Applied patch: {os.path.relpath(dst_file, base_dir)}")
+            
+            rel_path = os.path.relpath(src_file, patches_base)
+            desc = PATCH_DESCRIPTIONS.get(rel_path, "Custom Patch")
+            
+            if os.path.exists(dst_file):
+                applied_patches.append((rel_path, desc, True))
+                print(f"  -> Applied: {Colors.CYAN}{rel_path}{Colors.RESET} ({desc})")
+            else:
+                applied_patches.append((rel_path, desc, False))
+                log_error(f"Failed to apply: {rel_path}")
 
-    log_success(f"Applied {patched_count} patch file(s) successfully.")
+    log_success(f"Successfully applied {len([p for p in applied_patches if p[2]])} / {len(applied_patches)} patch file(s).")
+    return applied_patches
 
 def align_and_sign(input_apk, output_apk):
     unaligned_tmp = output_apk + ".unaligned"
@@ -350,7 +375,7 @@ def main():
 
     verify_app_version(decompiled_base_dir, force=args.force)
 
-    apply_patches(decompiled_base_dir)
+    applied_patches = apply_patches(decompiled_base_dir)
 
     log_step("Recompiling patched base.apk with apktool...")
     raw_base = os.path.join(BUILD_STAGING, "raw_base.apk")
@@ -439,14 +464,26 @@ def main():
     if args.install:
         install_via_adb()
 
-    log_success("BUILD COMPLETE!")
-    print("\nClean dist/ structure:")
+    print("\n" + "=" * 76)
+    print(f"{Colors.GREEN}{Colors.BOLD} 🎉 BUILD COMPLETE & SUCCESSFUL!{Colors.RESET}")
+    print("------------------------------------------------------------------------")
+    print(f"{Colors.BOLD} 📦 Applied Patches Status:{Colors.RESET}")
+    for rel_path, desc, status in applied_patches:
+        status_str = f"{Colors.GREEN}[✔ APPLIED]{Colors.RESET}" if status else f"{Colors.RED}[✘ FAILED]{Colors.RESET}"
+        print(f"   {status_str} {desc} ({Colors.CYAN}{rel_path}{Colors.RESET})")
+
+    abs_dist = os.path.abspath(DIST_DIR)
+    print(f"\n{Colors.BOLD} 📂 Output Save Location (Save Directory):{Colors.RESET}")
+    print(f"    Absolute Path: {Colors.CYAN}{abs_dist}{Colors.RESET}\n")
+
+    print(f"{Colors.BOLD} 📁 Generated Packages:{Colors.RESET}")
     for root, dirs, files in os.walk(DIST_DIR):
         for f in sorted(files):
             full_path = os.path.join(root, f)
             rel_path = os.path.relpath(full_path, DIST_DIR)
             sz_mb = os.path.getsize(full_path) / (1024 * 1024)
-            print(f"  dist/{rel_path} ({sz_mb:.2f} MB)")
+            print(f"   • {Colors.CYAN}dist/{rel_path}{Colors.RESET} ({sz_mb:.2f} MB)")
+    print("=" * 76 + "\n")
 
 if __name__ == "__main__":
     main()
