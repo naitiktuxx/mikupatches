@@ -654,20 +654,24 @@ def show_main_menu(default_idx=0, status_lines=None):
 
 def prompt_back_to_menu():
     print("-" * 76)
-    print(f"{Colors.CYAN}Press Enter or 'b' to return to Main Menu (or 'q' to exit)...{Colors.RESET}", end="", flush=True)
+    print(f"{Colors.BOLD}[*] Options:{Colors.RESET}")
+    print(f"  - Press {Colors.CYAN}'b'{Colors.RESET} (or Enter) to return to Main Menu")
+    print(f"  - Press {Colors.CYAN}'q'{Colors.RESET} to Exit script")
+    print("-" * 76)
+    sys.stdout.flush()
 
     if not sys.stdin.isatty():
         try:
-            input()
+            ans = input().strip().lower()
+            if ans in ('q', 'quit', 'exit'):
+                sys.exit(0)
         except Exception:
             pass
-        print()
         return
 
     while True:
         key = get_single_keypress()
         if key in ('ENTER', 'BACK'):
-            print()
             return
         elif key == 'QUIT':
             print(f"\n{Colors.RED}[!] Script terminated by user.{Colors.RESET}")
