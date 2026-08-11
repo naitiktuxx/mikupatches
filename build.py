@@ -401,39 +401,50 @@ def apply_patches(base_dir, active_status):
         raise FileNotFoundError(f"Patches directory not found at '{patches_base}'")
 
     log_step("Applying smali & manifest patches...")
-    applied_patches = []
+    group_results = []
     
-    allowed_files = {}
     for group in PATCH_GROUPS:
         gid = group["id"]
-        if active_status.get(gid, False):
-            allowed_files.update(group["files"])
-
-    for root, dirs, files in os.walk(patches_base):
-        rel_root = os.path.relpath(root, patches_base)
-        target_root = base_dir if rel_root == "." else os.path.join(base_dir, rel_root)
+        gname = group["name"]
+        is_active = active_status.get(gid, False)
         
-        for f in files:
-            src_file = os.path.join(root, f)
-            dst_file = os.path.join(target_root, f)
-            rel_path = os.path.relpath(src_file, patches_base)
+        if not is_active:
+            group_results.append({
+                "id": gid,
+                "name": gname,
+                "applied": False,
+                "files": []
+            })
+            continue
+
+        group_files = []
+        for rel_path, desc in group["files"].items():
+            src_file = os.path.join(patches_base, rel_path)
+            dst_file = os.path.join(base_dir, rel_path)
             
-            if rel_path in allowed_files:
-                desc = allowed_files[rel_path]
+            if os.path.exists(src_file):
                 os.makedirs(os.path.dirname(dst_file), exist_ok=True)
                 shutil.copyfile(src_file, dst_file)
-                
                 if os.path.exists(dst_file):
-                    applied_patches.append((rel_path, desc, True))
+                    group_files.append((rel_path, desc, True))
                     print(f"  -> Applied: {Colors.CYAN}{rel_path}{Colors.RESET} ({desc})")
                 else:
-                    applied_patches.append((rel_path, desc, False))
+                    group_files.append((rel_path, desc, False))
                     log_error(f"Failed to apply: {rel_path}")
             else:
-                print(f"  -> {Colors.YELLOW}Skipped (Disabled by user){Colors.RESET}: {rel_path}")
+                log_error(f"Patch file missing in repository: {rel_path}")
+                group_files.append((rel_path, desc, False))
 
-    log_success(f"Successfully applied {len([p for p in applied_patches if p[2]])} patch file(s).")
-    return applied_patches
+        group_results.append({
+            "id": gid,
+            "name": gname,
+            "applied": True,
+            "files": group_files
+        })
+
+    applied_count = sum(1 for g in group_results if g["applied"])
+    log_success(f"Successfully applied {applied_count}/{len(PATCH_GROUPS)} patch module(s).")
+    return group_results
 
 def align_and_sign(input_apk, output_apk):
     unaligned_tmp = output_apk + ".unaligned"
@@ -817,10 +828,17 @@ def main():
     print("\n" + "=" * 76)
     print(f"{Colors.GREEN}{Colors.BOLD} [+] BUILD COMPLETE & SUCCESSFUL{Colors.RESET}")
     print("------------------------------------------------------------------------")
-    print(f"{Colors.BOLD} [*] Applied Patches Status:{Colors.RESET}")
-    for rel_path, desc, status in applied_patches:
-        status_str = f"{Colors.GREEN}[+] APPLIED{Colors.RESET}" if status else f"{Colors.RED}[-] FAILED{Colors.RESET}"
-        print(f"   {status_str} {desc} ({Colors.CYAN}{rel_path}{Colors.RESET})")
+    print(f"{Colors.BOLD} [*] Applied Patches Status:{Colors.RESET}\n")
+    for idx, g in enumerate(applied_patches, 1):
+        if g["applied"]:
+            status_badge = f"{Colors.GREEN}[+] APPLIED {Colors.RESET}"
+            print(f"  {idx}. {status_badge} {Colors.BOLD}{g['name']}{Colors.RESET}")
+            for rel_path, desc, ok in g["files"]:
+                f_status = f"{Colors.GREEN}✓{Colors.RESET}" if ok else f"{Colors.RED}✗{Colors.RESET}"
+                print(f"     {f_status} {Colors.CYAN}{rel_path}{Colors.RESET} ({desc})")
+        else:
+            status_badge = f"{Colors.YELLOW}[-] SKIPPED {Colors.RESET}"
+            print(f"  {idx}. {status_badge} {g['name']} (Disabled by user)")
 
     abs_dist = os.path.abspath(DIST_DIR)
     print(f"\n{Colors.BOLD} [*] Output Save Location (Save Directory):{Colors.RESET}")
