@@ -73,18 +73,26 @@ APKSIGNER = find_tool("apksigner", "/opt/homebrew/share/android-commandlinetools
 def preflight_check():
     missing = []
     if not shutil.which("apktool"):
-        missing.append("apktool (install with: brew install apktool)")
+        missing.append("Apktool (CLI tool for decompiling/rebuilding APKs)")
     if not shutil.which("java"):
-        missing.append("java / JDK (install with: brew install openjdk)")
+        missing.append("Java JDK 17+ (Required by Apktool and apksigner)")
     if not ZIPALIGN:
-        missing.append("zipalign (Android SDK build-tools)")
+        missing.append("zipalign (Android SDK build-tools for APK alignment)")
     if not APKSIGNER:
-        missing.append("apksigner (Android SDK build-tools)")
+        missing.append("apksigner (Android SDK build-tools for APK signing)")
     
     if missing:
-        log_error("Missing required system tools:")
+        print("\n" + "=" * 76)
+        log_error("MISSING REQUIRED SYSTEM TOOLS!")
+        print("------------------------------------------------------------------------")
+        print(" The build pipeline cannot run because the following tools were not found:\n")
         for tool in missing:
-            print(f"  - {tool}")
+            print(f"  - {Colors.RED}✗ {tool}{Colors.RESET}")
+        print("\n" + f"{Colors.BOLD}[*] How to Install on macOS (Homebrew):{Colors.RESET}")
+        print(f"  {Colors.CYAN}brew install apktool openjdk android-commandlinetools{Colors.RESET}")
+        print("\n" + f"{Colors.BOLD}[*] How to Install on Linux (Ubuntu/Debian):{Colors.RESET}")
+        print(f"  {Colors.CYAN}sudo apt update && sudo apt install apktool default-jdk zipalign apksigner{Colors.RESET}")
+        print("=" * 76 + "\n")
         sys.exit(1)
 
 def clean_redundant():
@@ -108,13 +116,13 @@ def check_clean_prompt(noconfirm=False):
             clean_redundant()
         else:
             try:
-                ans = input(f"{Colors.YELLOW}[Clean] Previous build outputs found in 'dist/'. Clear old outputs before starting? [Y/n]: {Colors.RESET}").strip().lower()
-                if ans in ('', 'y', 'yes'):
+                ans = input(f"{Colors.YELLOW}[Clean] Previous build outputs found in 'dist/'. Clear old outputs before starting? [y/N]: {Colors.RESET}").strip().lower()
+                if ans in ('y', 'yes'):
                     clean_redundant()
                 else:
                     log_step("Keeping existing 'dist/' directory.")
             except EOFError:
-                clean_redundant()
+                log_step("Keeping existing 'dist/' directory.")
             except KeyboardInterrupt:
                 print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
                 sys.exit(130)
@@ -125,8 +133,8 @@ def ensure_keystore():
     if not os.path.exists(KEYSTORE):
         log_step("Generating debug keystore...")
         cmd = (
-            f"keytool -genkey -v -keystore {KEYSTORE} -storepass android "
-            f"-alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 "
+            f'keytool -genkey -v -keystore "{KEYSTORE}" -storepass android '
+            f'-alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 '
             f'-validity 10000 -dname "CN=Android Debug,O=Android,C=US"'
         )
         run_cmd(cmd)
@@ -203,17 +211,24 @@ def prepare_bundle(input_file, bundle_staging):
     os.makedirs(bundle_staging, exist_ok=True)
     ext = os.path.splitext(input_file)[1].lower()
 
-    if ext in (".apkm", ".apks", ".zip"):
-        log_step(f"Extracting '{os.path.basename(input_file)}' into bundle staging...")
-        with zipfile.ZipFile(input_file, 'r') as zf:
-            zf.extractall(bundle_staging)
-    elif ext == ".apk":
-        log_step(f"Copying single APK '{os.path.basename(input_file)}' to bundle staging...")
-        shutil.copyfile(input_file, os.path.join(bundle_staging, "base.apk"))
+    try:
+        if ext in (".apkm", ".apks", ".zip"):
+            log_step(f"Extracting '{os.path.basename(input_file)}' into bundle staging...")
+            with zipfile.ZipFile(input_file, 'r') as zf:
+                zf.extractall(bundle_staging)
+        elif ext == ".apk":
+            log_step(f"Copying single APK '{os.path.basename(input_file)}' to bundle staging...")
+            shutil.copyfile(input_file, os.path.join(bundle_staging, "base.apk"))
+    except zipfile.BadZipFile:
+        log_error(f"CORRUPTED INPUT FILE: '{os.path.basename(input_file)}' is not a valid archive.")
+        log_error("Fix: Delete the corrupted file from 'input/' and download a fresh copy from APKMirror.")
+        sys.exit(1)
 
     base_apk = os.path.join(bundle_staging, "base.apk")
     if not os.path.exists(base_apk):
-        raise FileNotFoundError(f"'base.apk' not found in extracted bundle at {bundle_staging}")
+        log_error(f"INVALID BUNDLE STRUCTURE: 'base.apk' was not found inside '{os.path.basename(input_file)}'.")
+        log_error("Fix: Ensure you downloaded the complete Universal APKM bundle from APKMirror (not a standalone split).")
+        sys.exit(1)
 
     fallback_dir = os.path.join(PATCHES_DIR, "bundle_fallback")
     info_json = os.path.join(bundle_staging, "info.json")
@@ -240,16 +255,25 @@ def verify_app_version(base_dir, force=False):
 
     log_step(f"Verifying input app version (Detected: v{ver_name or 'Unknown'} / code {ver_code or 'Unknown'})...")
 
-    if ver_name and ver_name != TARGET_VERSION_NAME:
-        log_error("VERSION MISMATCH DETECTED!")
-        log_error(f"  - Expected Version : v{TARGET_VERSION_NAME} (code {TARGET_VERSION_CODE})")
-        log_error(f"  - Input App Version : v{ver_name} (code {ver_code})")
-        log_error("These patches are strictly crafted for Bluetooth Keyboard & Mouse v6.22.0.")
+    is_mismatch = (ver_name and ver_name != TARGET_VERSION_NAME) or (ver_code and ver_code != TARGET_VERSION_CODE)
+    if is_mismatch:
+        print("\n" + "=" * 76)
+        log_error("APPLICATION VERSION MISMATCH DETECTED!")
+        print("------------------------------------------------------------------------")
+        print(f"  - Target Version Required : {Colors.GREEN}v{TARGET_VERSION_NAME}{Colors.RESET} (versionCode: {TARGET_VERSION_CODE})")
+        print(f"  - Detected Input Version  : {Colors.RED}v{ver_name or 'Unknown'}{Colors.RESET} (versionCode: {ver_code or 'Unknown'})")
+        print("\n  [!] Why this matters:")
+        print("      These patches are crafted for Smali bytecode structures in v6.22.0.")
+        print("      Applying them to another version may fail or cause app crashes.")
         if not force:
-            log_error("Aborting build. To force build anyway, re-run with '-f' or '--force'.")
+            print(f"\n  {Colors.BOLD}Fix Options:{Colors.RESET}")
+            print(f"   1. Download {Colors.CYAN}v6.22.0 Universal APKM{Colors.RESET} from APKMirror and place in 'input/'.")
+            print(f"   2. Force build anyway by passing {Colors.YELLOW}'-f'{Colors.RESET} or {Colors.YELLOW}'--force'{Colors.RESET} flag.")
+            print("=" * 76 + "\n")
             sys.exit(1)
         else:
             log_warn("Forcing build despite version mismatch (--force enabled)...")
+            print("=" * 76 + "\n")
     else:
         log_success(f"App version verified: v{ver_name or TARGET_VERSION_NAME} (code {ver_code or TARGET_VERSION_CODE})")
 
@@ -452,17 +476,17 @@ def apply_patches(base_dir, active_status):
 def align_and_sign(input_apk, output_apk):
     unaligned_tmp = output_apk + ".unaligned"
     shutil.copyfile(input_apk, unaligned_tmp)
-    run_cmd(f"zip -d {unaligned_tmp} 'META-INF/*' || true")
-    run_cmd(f'"{ZIPALIGN}" -p -f -v 4 {unaligned_tmp} {output_apk}')
+    run_cmd(f'zip -d "{unaligned_tmp}" "META-INF/*" || true')
+    run_cmd(f'"{ZIPALIGN}" -p -f -v 4 "{unaligned_tmp}" "{output_apk}"')
     if os.path.exists(unaligned_tmp):
         os.remove(unaligned_tmp)
     run_cmd(
         f'"{APKSIGNER}" sign --v1-signing-enabled true --v2-signing-enabled true '
-        f'--v3-signing-enabled true --ks {KEYSTORE} --ks-pass pass:android '
-        f'--key-pass pass:android --ks-key-alias androiddebugkey {output_apk}'
+        f'--v3-signing-enabled true --ks "{KEYSTORE}" --ks-pass pass:android '
+        f'--key-pass pass:android --ks-key-alias androiddebugkey "{output_apk}"'
     )
-    run_cmd(f'"{ZIPALIGN}" -c -v 4 {output_apk}')
-    run_cmd(f'"{APKSIGNER}" verify --verbose {output_apk}')
+    run_cmd(f'"{ZIPALIGN}" -c -v 4 "{output_apk}"')
+    run_cmd(f'"{APKSIGNER}" verify --verbose "{output_apk}"')
 
 def create_zip(source_files, target_zip_path):
     os.makedirs(os.path.dirname(target_zip_path), exist_ok=True)
@@ -488,7 +512,7 @@ def install_via_adb():
     if os.path.exists(staged_base):
         log_step("Installing patched base.apk onto connected Android device...")
         try:
-            run_cmd(f"adb install -r {staged_base}")
+            run_cmd(f'adb install -r "{staged_base}"')
             log_success("App installed successfully on device!")
         except Exception as e:
             log_warn(f"ADB installation failed: {e}")
@@ -625,7 +649,7 @@ def show_navigatable_menu(title, items, default_idx=0, status_lines=None):
                         return idx
             elif key is None:
                 try:
-                    ans = input(f"\n{Colors.CYAN}Waiting for input (0-5): {Colors.RESET}").strip().lower()
+                    ans = input(f"\n{Colors.CYAN}Waiting for input (0-6): {Colors.RESET}").strip().lower()
                     if ans.isdigit():
                         for idx, (num_key, label, desc) in enumerate(items):
                             if str(num_key) == ans:
@@ -647,10 +671,50 @@ def show_main_menu(default_idx=0, status_lines=None):
         ("3", "Clean Build Files", "Reset dist/ outputs"),
         ("4", "Install App on Phone", "via ADB"),
         ("5", "Check System Requirements", "Verify Python, Java, Apktool"),
+        ("6", "Help & Usage Guide", "View CLI options & troubleshooting"),
         ("0", "Exit", "")
     ]
     idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=default_idx, status_lines=status_lines)
     return idx, items[idx][0]
+
+def show_help_guide():
+    log_step("Displaying Help & Usage Guide...")
+    print("\n" + "=" * 76)
+    print(f"{Colors.CYAN}{Colors.BOLD} MIKUPATCHES - HELP & USAGE GUIDE{Colors.RESET}")
+    print("=" * 76)
+    print(f"""
+{Colors.BOLD}1. Overview & Purpose{Colors.RESET}
+   MikuPatches patches 'Bluetooth Keyboard & Mouse' (v6.22.0 / code 255).
+   Unlocks Pro features, password mode, removes Store redirection & clean UI.
+
+{Colors.BOLD}2. How to Build (Step-by-Step){Colors.RESET}
+   - Download the target v6.22.0 APKM bundle from APKMirror.
+   - Place the downloaded file inside the 'input/' folder.
+   - Run 'python3 build.py' and choose option [1] to start building.
+   - Patched APKs and bundles will be saved under 'dist/'.
+
+{Colors.BOLD}3. Input & Output Formats{Colors.RESET}
+   - Input : .apkm, .apks, .apk, or .zip placed in 'input/' (or CLI path).
+   - Output: 'dist/universal.apkm' (for SAI/APKMirror Installer) and 'dist/base.apk'.
+
+{Colors.BOLD}4. Command Line Reference (CLI Flags){Colors.RESET}
+   python3 build.py [input_file] [options]
+
+   -m, --menu            Open interactive main menu
+   -i, --install         Auto-install base.apk via ADB after building
+   -c, --clean           Clean 'dist/' and build staging files
+   -y, --yes             Auto-confirm prompts (non-interactive mode)
+   -f, --force           Bypass app version verification check
+   -p, --select-patches  Open interactive patch selection menu
+   --skip-patches <ids>  Skip patches (pairip,pro_unlock,password_mode,clean_menu,theme_default)
+   --only-patches <ids>  Apply specified patches only
+
+{Colors.BOLD}5. Common Troubleshooting Steps{Colors.RESET}
+   - Version Mismatch: Download v6.22.0 APKM or use '-f' to force build.
+   - Missing Tools: Install Java 17+ and Apktool ('brew install apktool openjdk').
+   - ADB Install Failed: Enable USB Debugging & uninstall original app first.
+""")
+    print("=" * 76 + "\n")
 
 def prompt_back_to_menu():
     print("-" * 76)
@@ -710,7 +774,13 @@ def run_build_pipeline(args):
     decompiled_base_dir = os.path.join(BUILD_STAGING, "base")
 
     log_step("Decompiling base.apk with apktool...")
-    run_cmd(f"apktool d -p {FRAMEWORK_DIR} {base_apk_path} -o {decompiled_base_dir} -f")
+    try:
+        run_cmd(f'apktool d -p "{FRAMEWORK_DIR}" "{base_apk_path}" -o "{decompiled_base_dir}" -f')
+    except RuntimeError as e:
+        log_error("APKTOOL DECOMPILATION FAILED!")
+        print(f"Details: {e}")
+        log_warn("Troubleshooting: Ensure Java 17+ and Apktool 2.9+ are installed and input APK is valid.")
+        return False
 
     verify_app_version(decompiled_base_dir, force=args.force)
 
@@ -718,7 +788,13 @@ def run_build_pipeline(args):
 
     log_step("Recompiling patched base.apk with apktool...")
     raw_base = os.path.join(BUILD_STAGING, "raw_base.apk")
-    run_cmd(f"apktool b -p {FRAMEWORK_DIR} {decompiled_base_dir} -o {raw_base}")
+    try:
+        run_cmd(f'apktool b -p "{FRAMEWORK_DIR}" "{decompiled_base_dir}" -o "{raw_base}"')
+    except RuntimeError as e:
+        log_error("APKTOOL RECOMPILATION FAILED!")
+        print(f"Details: {e}")
+        log_warn("Troubleshooting: A Smali patch syntax error or resource conflict occurred during rebuild.")
+        return False
 
     staged_base = os.path.join(BUILD_STAGING, "staged_base.apk")
     log_step("Aligning & signing base.apk...")
@@ -830,6 +906,7 @@ def run_build_pipeline(args):
             sz_mb = os.path.getsize(full_path) / (1024 * 1024)
             print(f"   - {Colors.CYAN}dist/{rel_path}{Colors.RESET} ({sz_mb:.2f} MB)")
     print("=" * 76 + "\n")
+    return True
 
 def main():
     parser = argparse.ArgumentParser(description="MikuPatches - Bluetooth Keyboard & Mouse Patch Pipeline")
@@ -886,6 +963,9 @@ def main():
             prompt_back_to_menu()
         elif choice == '5':
             show_toolchain_info()
+            prompt_back_to_menu()
+        elif choice == '6':
+            show_help_guide()
             prompt_back_to_menu()
 
 if __name__ == "__main__":

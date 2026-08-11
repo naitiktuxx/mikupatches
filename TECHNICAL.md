@@ -1,122 +1,201 @@
-# MikuPatches - Technical Documentation
+# MikuPatches Technical Documentation
 
-This document covers the technical architecture, patch pipeline mechanics, command line interface reference, and instructions for contributing custom patches.
+This document describes the technical architecture, toolchain dependencies, build pipeline mechanics, command line interface (CLI), patch module file mappings, and steps for adding custom patches.
 
 ---
 
 ## 1. System Architecture & Workflow
 
-The MikuPatches build engine operates on a dynamic patch injection model. Instead of tracking decompiled application source code in version control, patches are stored as standalone Bytecode (`.smali`) and Manifest (`AndroidManifest.xml`) diffs in `patches/base/`.
+MikuPatches uses a dynamic injection model. Rather than maintaining a full decompiled codebase in version control, patches are stored as isolated Smali bytecode and `AndroidManifest.xml` diffs in `patches/base/`. During execution, the build engine decompiles the original `base.apk`, overlays modified files, recompiles, aligns, and signs the resulting APKs.
 
 ```
-                  ┌─────────────────────────────────────┐
-                  │ Original v6.22.0 APKM (input/)      │
-                  └──────────────────┬──────────────────┘
-                                     │
-                                     ▼
-                   [Decompile base.apk via apktool]
-                                     │
-                                     ▼
-                     [Apply patches/base/ smali]
-                                     │
-                                     ▼
-                    [Recompile, zipalign & apksigner]
-                                     │
-                                     ▼
-                  ┌─────────────────────────────────────┐
-                  │ Output Bundles & APKs (dist/)       │
-                  └─────────────────────────────────────┘
+                          ┌───────────────────────────────────────┐
+                          │ Input File (.apkm / .apks / .apk)     │
+                          └───────────────────┬───────────────────┘
+                                              │
+                                              ▼
+                             [1. Extract Bundle to Staging]
+                                              │
+                                              ▼
+                             [2. Decompile base.apk via Apktool]
+                                              │
+                                              ▼
+                             [3. Verify Version (6.22.0 / 255)]
+                                              │
+                                              ▼
+                             [4. Inject patches/base/ Files]
+                                              │
+                                              ▼
+                             [5. Recompile base.apk via Apktool]
+                                              │
+                                              ▼
+                             [6. Zipalign & Sign with apksigner]
+                                              │
+                                              ▼
+                             [7. Package Bundles into dist/]
 ```
 
-### Pipeline Execution Steps:
+### Build Pipeline Execution Order:
 
-1. **Extraction**: Unpacks the input `.apkm` / `.apks` bundle into `build_staging/bundle/`.
-2. **Decompilation**: Uses `apktool d` to decompile `base.apk` into Smali bytecode and resources in `build_staging/base/`.
-3. **Version Check**: Inspects `versionName` and `versionCode` in `apktool.yml` to verify compatibility with target version `6.22.0` (code `255`).
-4. **Patch Injection**: Copies selected patch files from `patches/base/` over the decompiled directory structure.
-5. **Recompilation**: Runs `apktool b` to produce an unaligned APK (`raw_base.apk`).
-6. **Alignment & Signing**: Aligns resources with `zipalign -p -f -v 4` and signs using `apksigner` with `debug.keystore`.
-7. **Bundle Packaging**: Re-assembles architecture split APKs and generates Universal `.apkm` and `.apks` bundles in `dist/`.
+1. **Preflight Checks**: Verifies that `apktool`, `java`, `zipalign`, and `apksigner` are available on the system.
+2. **Input Resolution**: Searches `input/` for `.apkm`, `.apks`, `.zip`, or `.apk` files (or uses a path provided via CLI). If no input exists, prompts to open APKMirror in a web browser and waits for file placement.
+3. **Bundle Extraction**: Extracts split bundles into `build_staging/bundle/`. If missing `info.json` or `icon.png` (e.g., when passing a standalone `.apk`), copies fallback files from `patches/bundle_fallback/`.
+4. **Decompilation**: Invokes `apktool d -p framework` to decompile `base.apk` into `build_staging/base/` using framework files from `framework/`.
+5. **Version Verification**: Parses `versionName` and `versionCode` in `build_staging/base/apktool.yml`. Errors out if the version is not `6.22.0` (code `255`), unless `-f` / `--force` is specified.
+6. **Patch Application**: Copies enabled patch files from `patches/base/` into `build_staging/base/`.
+7. **Recompilation**: Invokes `apktool b -p framework` to build an unaligned APK (`build_staging/raw_base.apk`).
+8. **Alignment & Signing**:
+   - Removes old signature metadata (`META-INF/*`) using `zip -d`.
+   - Aligns uncompressed data on 4-byte boundaries with `zipalign -p -f -v 4`.
+   - Signs using `apksigner` (v1, v2, and v3 schemes) with `debug.keystore` (generated automatically if missing via `keytool`).
+   - Verifies final APK integrity with `zipalign -c` and `apksigner verify`.
+9. **Bundle Generation**:
+   - Aligns and signs all architecture split APKs (`split_config.*.apk`).
+   - Creates `dist/base.apk`.
+   - Creates universal bundles `dist/universal.apkm` and `dist/universal.apks`.
+   - Generates architecture-specific bundles under `dist/arm64-v8a/`, `dist/armeabi-v7a/`, `dist/x86/`, and `dist/x86_64/`.
+10. **Cleanup & Installation**: Cleans `build_staging/`. If requested (`-i` / `--install`), attempts installation via `adb install -r dist/base.apk`.
 
 ---
 
-## 2. Toolchain & Prerequisites
+## 2. Toolchain & Dependencies
 
-The build script auto-detects required binaries from system `PATH`, `$ANDROID_HOME`, `$ANDROID_SDK_ROOT`, or Homebrew installation paths.
+The build script auto-detects required binaries using `PATH`, `$ANDROID_HOME`, `$ANDROID_SDK_ROOT`, or default Homebrew installation paths.
 
-| Tool | Min Version | Function |
+### OS Compatibility Matrix
+
+| Operating System | Support Level | Recommended Setup |
 |---|---|---|
-| **Python** | 3.8+ | Executes `build.py` orchestration script |
-| **Java JDK** | 17+ | Required by `apktool` and `apksigner` |
-| **Apktool** | 2.9.0+ | Handles APK decompilation and rebuilding |
-| **zipalign** | 34.0.0+ | Aligns uncompressed APK data on 4-byte boundaries |
-| **apksigner** | 34.0.0+ | Signs APKs with v1, v2, and v3 signature schemes |
+| **macOS** (Apple Silicon & Intel) | 100% Native | `brew install apktool openjdk android-commandlinetools` |
+| **Linux** (Ubuntu, Debian, Mint) | 100% Native | `sudo apt install python3 apktool default-jdk zipalign apksigner` |
+| **Linux** (Arch, Manjaro) | 100% Native | `sudo pacman -S python android-tools java-environment-openjdk apktool` |
+| **Windows via WSL / WSL2** | 100% Native | Install Ubuntu WSL (`wsl --install`) and use `apt` setup |
+| **Windows Native** (Git Bash / CMD) | Supported | Install Python 3, JDK 17+, Android SDK build-tools, and Apktool |
+
+### System Prerequisites
+
+| Tool | Min Version | Function | Detection Logic |
+|---|---|---|---|
+| **Python** | 3.8+ | Orchestrates build pipeline (`build.py`) | `python3` / `python` binary in `PATH` |
+| **Java JDK** | 17+ | Runtime for Apktool and apksigner | `java` binary in `PATH` |
+| **Apktool** | 2.9.0+ | Decompiles and recompiles Android APKs | `apktool` binary in `PATH` |
+| **zipalign** | 34.0.0+ | Aligns APK data on 4-byte boundaries | `PATH`, `$ANDROID_HOME/build-tools`, or Homebrew path |
+| **apksigner** | 34.0.0+ | Signs APKs with v1, v2, and v3 signature schemes | `PATH`, `$ANDROID_HOME/build-tools`, or Homebrew path |
+| **ADB** | (Optional) | Installs built APKs to connected devices | `adb` binary in `PATH` |
 
 ---
 
-## 3. CLI Options Reference
+## 3. Command Line Interface (CLI) Reference
 
-```
-usage: build.py [-h] [-i] [-c] [-y] [-f] [-p]
+```text
+usage: build.py [-h] [-m] [-i] [-c] [-y] [-f] [-p]
                 [--skip-patches SKIP_PATCHES]
                 [--only-patches ONLY_PATCHES]
                 [input_file]
 ```
 
-| Flag | Argument | Description |
-|---|---|---|
-| `input_file` | `[path]` | Direct file path to input `.apkm`, `.apks`, or `.apk` |
-| `-i` | `--install` | Auto-install generated `base.apk` onto connected ADB device |
-| `-c` | `--clean` | Delete `dist/` and `build_staging/` build directories |
-| `-y` | `--yes` | Non-interactive mode (auto-confirm prompts) |
-| `-f` | `--force` | Bypass version verification check |
-| `-p` | `--select-patches` | Open interactive patch selection menu |
-| `--skip-patches` | `<ids>` | Comma-separated patch module IDs to skip |
-| `--only-patches` | `<ids>` | Comma-separated patch module IDs to apply |
+### Positional Arguments
+- `input_file`: Optional direct path to an input `.apkm`, `.apks`, `.apk`, or `.zip` file. If omitted, the script checks `input/`.
+
+### Flags & Options
+- `-h`, `--help`: Show command-line help message and exit.
+- `-m`, `--menu`: Open the interactive terminal main menu.
+- `-i`, `--install`: Automatically install the built `base.apk` onto a connected Android device via ADB upon successful build.
+- `-c`, `--clean`: Remove `dist/` and `build_staging/` build directories and exit.
+- `-y`, `--yes`: Non-interactive mode (automatically confirm prompts, such as clearing previous outputs in `dist/`).
+- `-f`, `--force`: Bypass application version verification and proceed with patching even if `versionName` or `versionCode` do not match `6.22.0` / `255`.
+- `-p`, `--select-patches`: Open interactive patch selection menu before building.
+- `--skip-patches <IDs>`: Comma-separated list of patch module IDs to skip (e.g. `--skip-patches clean_menu,theme_default`).
+- `--only-patches <IDs>`: Comma-separated list of patch module IDs to apply, disabling all others (e.g. `--only-patches pairip,pro_unlock`).
+
+### Examples
+
+#### Non-interactive default build with custom input file
+```bash
+python3 build.py input/app.apkm -y
+```
+
+#### Apply specific patches only and auto-install via ADB
+```bash
+python3 build.py -i --only-patches pairip,pro_unlock
+```
+
+#### Skip UI cleanup and force build on an unverified APK version
+```bash
+python3 build.py -f --skip-patches clean_menu
+```
+
+#### Clean build outputs
+```bash
+python3 build.py -c
+```
 
 ---
 
-## 4. Patch Module Groupings
+## 4. Patch Module Reference
 
-Patches are organized into 5 logical modules in `build.py`:
+Patches are grouped into five logical modules defined in `PATCH_GROUPS` inside `build.py`. All five are enabled by default.
 
-### `pairip` (Play Store Redirection & PairIP License Bypass)
-- `AndroidManifest.xml`: Changes application entry class to `io.appground.blek.MainApp`.
-- `smali/com/pairip/licensecheck/LicenseClient.smali`: Bypasses local installer package checks.
-- `smali/com/pairip/licensecheck/LicenseContentProvider.smali`: Neutralizes license initialization.
-- `smali/com/pairip/application/Application.smali`: NOPs PairIP runtime checks.
-- `smali/eu5.smali`: Bypasses `MainActivity` store redirection dialog.
+### 1. `pairip`
+- **Name**: Play Store Redirection & PairIP License Bypass
+- **Description**: Removes the Play Store installer check and PairIP license verification dialogs.
+- **Files Mapped**:
+  - `AndroidManifest.xml`: Sets application entry point to `io.appground.blek.MainApp`.
+  - `smali/com/pairip/licensecheck/LicenseClient.smali`: Neutralizes package installer checks.
+  - `smali/com/pairip/licensecheck/LicenseContentProvider.smali`: Neutralizes license content provider initialization.
+  - `smali/com/pairip/application/Application.smali`: Neutralizes PairIP runtime checks.
+  - `smali/eu5.smali`: Neutralizes installer store redirection dialog in `MainActivity`.
 
-### `pro_unlock` (Pro & Premium Features Unlock)
-- `smali/fj3.smali`: Forces `PremiumStatus` constructor (`isPremium=true`, `isSubscribed=true`).
-- `smali/ez.smali`: Forces `e()Z` premium check to return `true`.
-- `smali/uy.smali`: Forces `h(String)Z` billing SKU check to return `true`.
+### 2. `pro_unlock`
+- **Name**: Pro & Premium Features Unlock
+- **Description**: Grants full access to Pro features, subscription status, and billing SKU checks.
+- **Files Mapped**:
+  - `smali/fj3.smali`: Sets `PremiumStatus` constructor defaults (`isPremium=true`, `isSubscribed=true`).
+  - `smali/ez.smali`: Forces global premium access check (`e()Z`) to return `true`.
+  - `smali/uy.smali`: Forces in-app billing SKU check (`h(String)Z`) to return `true`.
 
-### `password_mode` (Password Mode & Eye Toggle Unlock)
-- `smali/uv.smali`: Unlocks password mode and eye icon toggle in keyboard view.
+### 3. `password_mode`
+- **Name**: Password Mode & EndIcon Toggle Unlock
+- **Description**: Unlocks password input mode and the end icon eye visibility toggle in keyboard views.
+- **Files Mapped**:
+  - `smali/uv.smali`: Unlocks password mode and eye toggle logic.
 
-### `clean_menu` (Clean UI & Menu Items Removal)
-- `smali/jh0.smali`: Removes Compose menu items and fixes slot table layout crash.
-- `smali/m2.smali`: Removes Pro upgrade and subscription menu actions.
-- `smali/ug5.smali`: Removes subscription management and feedback menu actions.
+### 4. `clean_menu`
+- **Name**: Clean UI & Menu Items Removal
+- **Description**: Removes upgrade promotion prompts, subscription management options, and feedback menu actions.
+- **Files Mapped**:
+  - `smali/jh0.smali`: Removes Compose upgrade menu items and prevents slot table layout crashes.
+  - `smali/m2.smali`: Eliminates Pro upgrade and subscription menu actions.
+  - `smali/ug5.smali`: Eliminates subscription management and feedback menu actions.
 
-### `theme_default` (Default Theme: BlueGrey & System Default)
-- `smali/b64.smali`: Configures default theme preference options in Settings screen.
-- `smali/c64.smali`: Sets default preference values for theme selections.
-- `smali/wv3.smali`: Sets SharedPreferences defaults to `blue_grey` and `system`.
-- `smali/io/appground/blek/MainActivity.smali`: Configures `onCreate()` theme initialization defaults.
+### 5. `theme_default`
+- **Name**: Default Theme: BlueGrey & System Default
+- **Description**: Configures initial preferences to use the BlueGrey accent color and System Default theme mode.
+- **Files Mapped**:
+  - `smali/b64.smali`: Configures Settings screen default theme options.
+  - `smali/c64.smali`: Sets theme option preference defaults.
+  - `smali/wv3.smali`: Sets SharedPreferences defaults to `blue_grey` and `system`.
+  - `smali/io/appground/blek/MainActivity.smali`: Configures `onCreate()` theme initialization defaults.
 
 ---
 
 ## 5. Adding Custom Patches
 
-To add a new patch to the pipeline:
+To contribute or test new patches:
 
-1. Decompile `base.apk` into a scratch folder:
+1. **Decompile the Base APK**:
    ```bash
-   apktool d base.apk -o scratch/base
+   apktool d -p framework base.apk -o scratch/base
    ```
-2. Make your edits in `scratch/base/smali/...` or `AndroidManifest.xml`.
-3. Copy only the modified files into `patches/base/`, maintaining their relative folder structure.
-4. Register the new file mappings in `PATCH_GROUPS` inside `build.py`.
-5. Test the build using `python3 build.py`.
+
+2. **Modify Files**:
+   Edit the necessary Smali files in `scratch/base/smali/` or `AndroidManifest.xml`.
+
+3. **Stage Patch Files**:
+   Copy only the modified files into `patches/base/`, preserving the directory hierarchy (e.g. `patches/base/smali/com/example/Target.smali`).
+
+4. **Register Module in `build.py`**:
+   Add a new entry to `PATCH_GROUPS` in `build.py` with a unique `id`, `name`, `desc`, default boolean state, and file mapping dictionary.
+
+5. **Test Build**:
+   Run `python3 build.py` to verify decompilation, patch injection, recompilation, alignment, signing, and execution.
