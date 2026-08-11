@@ -113,8 +113,11 @@ def check_clean_prompt(noconfirm=False):
                     clean_redundant()
                 else:
                     log_step("Keeping existing 'dist/' directory.")
-            except (KeyboardInterrupt, EOFError):
+            except EOFError:
                 clean_redundant()
+            except KeyboardInterrupt:
+                print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
+                sys.exit(130)
     else:
         clean_redundant()
 
@@ -168,10 +171,12 @@ def prompt_download():
             if choice == "2":
                 log_step("Exiting build process.")
                 sys.exit(0)
-        except (KeyboardInterrupt, EOFError):
-            print()
+        except EOFError:
             log_step("Exiting build process.")
             sys.exit(0)
+        except KeyboardInterrupt:
+            print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
+            sys.exit(130)
 
     print("\n" + "-" * 76)
     print(f"{Colors.GREEN}{Colors.BOLD}[+] Opening APKMirror download page in your browser...{Colors.RESET}")
@@ -345,10 +350,12 @@ def select_patches_interactively(force_interactive=False, skip_list=None, only_l
 
             try:
                 cmd = input(f"\n{Colors.CYAN}Waiting for input... {Colors.RESET}").strip().lower()
-            except (KeyboardInterrupt, EOFError):
-                print()
+            except EOFError:
                 log_step("Exiting build process.")
                 sys.exit(0)
+            except KeyboardInterrupt:
+                print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
+                sys.exit(130)
 
             if cmd in ('', 'a', 'apply', 'start', 'b', 'build'):
                 break
@@ -524,10 +531,12 @@ def show_main_menu():
 
     try:
         choice = input(f"\n{Colors.CYAN}Waiting for input... {Colors.RESET}").strip().lower()
-    except (KeyboardInterrupt, EOFError):
-        print()
+    except EOFError:
         log_step("Exiting.")
         sys.exit(0)
+    except KeyboardInterrupt:
+        print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
+        sys.exit(130)
 
     return choice
 
@@ -713,4 +722,8 @@ def main():
     print("=" * 76 + "\n")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
+        sys.exit(130)
