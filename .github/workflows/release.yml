@@ -1,0 +1,77 @@
+name: Automated Release Build
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Prepare Release Archives
+        run: |
+          VERSION="6.22.0"
+          COMMIT_SHORT=$(git rev-parse --short HEAD)
+          ARCHIVE_NAME="mikupatches-v${VERSION}-${COMMIT_SHORT}"
+          
+          echo "ARCHIVE_NAME=${ARCHIVE_NAME}" >> $GITHUB_ENV
+          
+          # Create clean staging directory
+          mkdir -p "staging/${ARCHIVE_NAME}"
+          
+          # Copy project files excluding git metadata and temp build outputs
+          rsync -av --exclude='.git*' --exclude='dist' --exclude='build_staging' ./ "staging/${ARCHIVE_NAME}/"
+          
+          # Create ZIP archive
+          cd staging
+          zip -r "../${ARCHIVE_NAME}.zip" "${ARCHIVE_NAME}"
+          
+          # Create Linux tar.gz archive preserving file permissions
+          tar -czvf "../${ARCHIVE_NAME}.tar.gz" "${ARCHIVE_NAME}"
+          cd ..
+
+      - name: Determine Tag and Release Name
+        id: release_info
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG_NAME="${{ github.ref_name }}"
+          else
+            TAG_NAME="release-${{ env.ARCHIVE_NAME }}"
+          fi
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: "MikuPatches Automated Release (${{ env.TAG_NAME }})"
+          body: |
+            Automated release build for MikuPatches (Target App Version v6.22.0).
+
+            ### Release Assets Included:
+            - `${{ env.ARCHIVE_NAME }}.tar.gz` (Standard Linux/Unix gzipped tarball)
+            - `${{ env.ARCHIVE_NAME }}.zip` (Cross-platform ZIP archive)
+
+            ### Quick Start (Linux / macOS):
+            ```bash
+            tar -xzvf ${{ env.ARCHIVE_NAME }}.tar.gz
+            cd ${{ env.ARCHIVE_NAME }}
+            python3 build.py
+            ```
+          draft: false
+          prerelease: false
+          files: |
+            ${{ env.ARCHIVE_NAME }}.zip
+            ${{ env.ARCHIVE_NAME }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

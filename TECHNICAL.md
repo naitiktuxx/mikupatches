@@ -210,3 +210,14 @@ To contribute or test new patches:
 
 5. Test Build:
    Run `python3 build.py` to verify decompilation, patch injection, recompilation, alignment, signing, and execution.
+
+---
+
+## 6. Automated GitHub Releases & CI/CD
+
+MikuPatches includes an automated GitHub Actions workflow in `.github/workflows/release.yml`. On every push to the `main` branch or tag creation (`v*`), the workflow automatically creates a GitHub Release containing ready-to-use source archives:
+
+- `.tar.gz` archive: Standard Linux/Unix gzipped tarball preserving POSIX file permissions.
+- `.zip` archive: Cross-platform ZIP archive for Windows/macOS.
+
+Both archives contain the complete source code, patches, framework files, and build scripts.
