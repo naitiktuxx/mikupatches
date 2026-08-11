@@ -559,61 +559,73 @@ def show_navigatable_menu(title, items, default_idx=0):
 
     selected_idx = default_idx
     num_items = len(items)
+    total_lines = 7 + num_items
     first_render = True
 
-    while True:
-        if not first_render:
-            sys.stdout.write(f"\033[{num_items + 7}A\r")
-        first_render = False
-
-        print("=" * 76)
-        print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
-        print("------------------------------------------------------------------------")
-        print(" Use Up/Down Arrow keys to navigate, Enter to select, or press number:\n")
-
-        for idx, (num_key, label, desc) in enumerate(items):
-            if idx == selected_idx:
-                pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
-                prefix = f"{Colors.CYAN}{Colors.BOLD}[{num_key}]{Colors.RESET}"
-                line_str = f" {pointer} {prefix} {Colors.BOLD}{label}{Colors.RESET}"
-            else:
-                pointer = "  "
-                prefix = f"[{num_key}]"
-                line_str = f" {pointer} {prefix} {label}"
-            
-            if desc:
-                line_str += f" ({desc})"
-            print(line_str)
-
-        print("=" * 76)
+    try:
+        # Hide cursor during menu navigation
+        sys.stdout.write("\033[?25l")
         sys.stdout.flush()
 
-        key = get_single_keypress()
-        if key == 'UP':
-            selected_idx = (selected_idx - 1) % num_items
-        elif key == 'DOWN':
-            selected_idx = (selected_idx + 1) % num_items
-        elif key == 'ENTER':
-            return selected_idx
-        elif key == 'QUIT':
-            print(f"\n{Colors.RED}[!] Script terminated by user.{Colors.RESET}")
-            sys.exit(0)
-        elif key and key.isdigit():
+        while True:
+            if not first_render:
+                # Move cursor up and erase to end of screen to prevent text overlapping
+                sys.stdout.write(f"\033[{total_lines}A\033[J")
+            first_render = False
+
+            print("=" * 76)
+            print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
+            print("------------------------------------------------------------------------")
+            print(" Use Up/Down Arrow keys to navigate, Enter to select, or press number:")
+            print()
+
             for idx, (num_key, label, desc) in enumerate(items):
-                if str(num_key) == key:
-                    return idx
-        elif key is None:
-            try:
-                ans = input(f"\n{Colors.CYAN}Waiting for input (0-6): {Colors.RESET}").strip().lower()
-                if ans.isdigit():
-                    for idx, (num_key, label, desc) in enumerate(items):
-                        if str(num_key) == ans:
-                            return idx
-                elif ans in ('q', 'quit', 'exit'):
-                    sys.exit(0)
+                if idx == selected_idx:
+                    pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
+                    prefix = f"{Colors.CYAN}{Colors.BOLD}[{num_key}]{Colors.RESET}"
+                    line_str = f" {pointer} {prefix} {Colors.BOLD}{label}{Colors.RESET}"
+                else:
+                    pointer = "  "
+                    prefix = f"[{num_key}]"
+                    line_str = f" {pointer} {prefix} {label}"
+                
+                if desc:
+                    line_str += f" ({desc})"
+                print(line_str)
+
+            print("=" * 76)
+            sys.stdout.flush()
+
+            key = get_single_keypress()
+            if key == 'UP':
+                selected_idx = (selected_idx - 1) % num_items
+            elif key == 'DOWN':
+                selected_idx = (selected_idx + 1) % num_items
+            elif key == 'ENTER':
                 return selected_idx
-            except KeyboardInterrupt:
-                raise KeyboardInterrupt
+            elif key == 'QUIT':
+                print(f"\n{Colors.RED}[!] Script terminated by user.{Colors.RESET}")
+                sys.exit(0)
+            elif key and key.isdigit():
+                for idx, (num_key, label, desc) in enumerate(items):
+                    if str(num_key) == key:
+                        return idx
+            elif key is None:
+                try:
+                    ans = input(f"\n{Colors.CYAN}Waiting for input (0-6): {Colors.RESET}").strip().lower()
+                    if ans.isdigit():
+                        for idx, (num_key, label, desc) in enumerate(items):
+                            if str(num_key) == ans:
+                                return idx
+                    elif ans in ('q', 'quit', 'exit'):
+                        sys.exit(0)
+                    return selected_idx
+                except KeyboardInterrupt:
+                    raise KeyboardInterrupt
+    finally:
+        # Always restore cursor visibility
+        sys.stdout.write("\033[?25h")
+        sys.stdout.flush()
 
 def show_main_menu():
     items = [
