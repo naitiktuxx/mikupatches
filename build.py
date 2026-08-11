@@ -493,28 +493,6 @@ def install_via_adb():
         except Exception as e:
             log_warn(f"ADB installation failed: {e}")
 
-def github_maintenance():
-    log_step("Performing GitHub & Repository Maintenance...")
-    clean_redundant()
-    
-    if shutil.which("git"):
-        print(f"\n{Colors.BOLD}[*] Git Repository Status:{Colors.RESET}")
-        try:
-            status = run_cmd("git status --short").strip()
-            if not status:
-                log_success("Git working tree is completely clean.")
-            else:
-                print(f"Untracked / Modified files:\n{status}")
-            
-            remotes = run_cmd("git remote -v").strip()
-            if remotes:
-                print(f"\n{Colors.BOLD}[*] Configured Git Remotes:{Colors.RESET}\n{remotes}")
-        except Exception as e:
-            log_warn(f"Failed to query git status: {e}")
-    else:
-        log_warn("Git binary not found in PATH.")
-    log_success("Maintenance check complete.")
-
 def show_toolchain_info():
     log_step("Checking Prerequisites & Toolchain Dependencies...")
     tools = [
@@ -642,7 +620,7 @@ def show_navigatable_menu(title, items, default_idx=0):
                         return idx
             elif key is None:
                 try:
-                    ans = input(f"\n{Colors.CYAN}Waiting for input (0-6): {Colors.RESET}").strip().lower()
+                    ans = input(f"\n{Colors.CYAN}Waiting for input (0-5): {Colors.RESET}").strip().lower()
                     if ans.isdigit():
                         for idx, (num_key, label, desc) in enumerate(items):
                             if str(num_key) == ans:
@@ -663,8 +641,7 @@ def show_main_menu():
         ("2", "Select Patches & Build", "Interactive Patch Selection"),
         ("3", "Clean Build Artifacts", "Reset dist/ and build_staging/"),
         ("4", "Install Patched App onto Android Device", "via ADB"),
-        ("5", "GitHub & Repository Maintenance", "Clean & Check Git Status"),
-        ("6", "Check Prerequisites & Toolchain Dependencies", ""),
+        ("5", "Check Prerequisites & Toolchain Dependencies", ""),
         ("0", "Exit", "")
     ]
     idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=0)
@@ -891,9 +868,6 @@ def main():
             install_via_adb()
             prompt_back_to_menu()
         elif choice == '5':
-            github_maintenance()
-            prompt_back_to_menu()
-        elif choice == '6':
             show_toolchain_info()
             prompt_back_to_menu()
 
