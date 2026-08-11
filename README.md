@@ -8,7 +8,40 @@ An automated decompilation, patching, and build pipeline for the **Bluetooth Key
 
 MikuPatches provides a reproducible framework for modifying the Bluetooth Keyboard & Mouse Android app without storing or redistributing proprietary APK binaries or raw decompiled source code in version control.
 
-The build engine accepts the original unmodified APKM bundle, decompiles `base.apk` using `apktool`, applies targeted bytecode (Smali) and `AndroidManifest.xml` patches, rebuilds the application, aligns resources via `zipalign`, and signs the output using Android debug keys.
+```
+                  ┌─────────────────────────────────────┐
+                  │ Original v6.22.0 APKM (input/)      │
+                  └──────────────────┬──────────────────┘
+                                     │
+                                     ▼
+                   [Decompile base.apk via apktool]
+                                     │
+                                     ▼
+                     [Apply patches/base/ smali]
+                                     │
+                                     ▼
+                    [Recompile, zipalign & apksigner]
+                                     │
+                                     ▼
+                  ┌─────────────────────────────────────┐
+                  │ Output Bundles & APKs (dist/)       │
+                  └─────────────────────────────────────┘
+```
+
+---
+
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/naitiktuxx/mikupatches.git
+cd mikupatches
+
+# Run the build pipeline
+python3 build.py
+```
+
+If the original `v6.22.0` `.apkm` file is missing from `input/`, the script prompts to open APKMirror, displays package details, and waits for you to place the file into `input/`.
 
 ---
 
@@ -48,29 +81,7 @@ The script automatically detects `zipalign` and `apksigner` from system `PATH`, 
 
 ---
 
-## Usage
-
-### Standard Build
-
-Run the main build script:
-
-```bash
-python3 build.py
-```
-
-If the original v6.22.0 `.apkm` file is not present in the `input/` folder, the script prompts to open the download page on APKMirror, displays required package details, and waits for the file to be placed into `input/`.
-
-### Interactive Patch Selection
-
-To open the interactive menu and choose specific patches:
-
-```bash
-python3 build.py -p
-```
-
----
-
-## Command Line Interface
+## Usage & CLI Reference
 
 ```
 usage: build.py [-h] [-i] [-c] [-y] [-f] [-p]
@@ -94,28 +105,38 @@ usage: build.py [-h] [-i] [-c] [-y] [-f] [-p]
 
 ---
 
-## Output Directory
+## Output Directory & Installation
 
 Upon successful completion, generated packages are stored in `dist/`:
 
 ```
 dist/
 ├── base.apk                         # Main patched standalone APK
-├── universal.apkm                   # Universal APKM bundle (Split APKs Installer)
+├── universal.apkm                   # Universal APKM bundle (Install via SAI / APKMirror Installer)
 ├── universal.apks                   # Universal APKS bundle
 ├── arm64-v8a/
 │   ├── arm64-v8a.apkm
 │   └── arm64-v8a.apks
 ├── armeabi-v7a/
-│   ├── armeabi-v7a.apkm
-│   └── armeabi-v7a.apks
 ├── x86/
-│   ├── x86.apkm
-│   └── x86.apks
 └── x86_64/
-    ├── x86_64.apkm
-    └── x86_64.apks
 ```
+
+### How to Install on Android
+
+- **APKM Bundles (`universal.apkm`)**: Install using [Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai) or [APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod).
+- **Direct ADB Install**: Connect your phone via USB and run `python3 build.py -i`.
+
+---
+
+## Adding Custom Patches
+
+To add new patches to the repository:
+
+1. Decompile `base.apk` into a working directory using `apktool d base.apk`.
+2. Modify the desired `.smali` or `AndroidManifest.xml` files.
+3. Copy the modified files maintaining their exact directory structure into `patches/base/`.
+4. Register the new patch mapping inside `PATCH_GROUPS` in `build.py`.
 
 ---
 
