@@ -364,7 +364,8 @@ def select_patches_interactively(force_interactive=False, skip_list=None, only_l
                 print(f"  - Up/Down Arrows: Move cursor")
                 print(f"  - Space / Number (1-5): Toggle patch ON or OFF")
                 print(f"  - Press Enter: Confirm selection and start build")
-                print(f"  - Press 'q': Cancel and exit")
+                print(f"  - Press 'b': Go back to Main Menu")
+                print(f"  - Press 'q': Exit script")
                 print("=" * 76)
                 sys.stdout.flush()
 
@@ -379,6 +380,8 @@ def select_patches_interactively(force_interactive=False, skip_list=None, only_l
                 elif key == 'ENTER':
                     print()
                     break
+                elif key == 'BACK':
+                    return None
                 elif key == 'QUIT':
                     print(f"\n{Colors.RED}[!] Build cancelled by user.{Colors.RESET}")
                     sys.exit(0)
@@ -568,6 +571,8 @@ def get_single_keypress():
                 return 'ENTER'
             elif ch == ' ':
                 return 'SPACE'
+            elif ch in ('b', 'B'):
+                return 'BACK'
             elif ch == '\x03':
                 raise KeyboardInterrupt
             elif ch in ('q', 'Q'):
@@ -668,7 +673,10 @@ def show_main_menu():
 def prompt_back_to_menu():
     print("-" * 76)
     try:
-        input(f"{Colors.CYAN}Press Enter to return to Main Menu (or Ctrl+C to exit)... {Colors.RESET}")
+        ans = input(f"{Colors.CYAN}Press Enter or 'b' to return to Main Menu (or 'q' to exit)... {Colors.RESET}").strip().lower()
+        if ans in ('q', 'quit', 'exit'):
+            log_step("Exiting.")
+            sys.exit(0)
     except (KeyboardInterrupt, EOFError):
         print(f"\n{Colors.RED}[!] Exiting.{Colors.RESET}")
         sys.exit(0)
@@ -676,8 +684,6 @@ def prompt_back_to_menu():
 def run_build_pipeline(args):
     print(f"\n{Colors.BOLD}=== MIKUPATCHES BUILD PIPELINE ==={Colors.RESET}\n")
     preflight_check()
-    check_clean_prompt(args.yes)
-    ensure_keystore()
 
     skip_list = [s.strip() for s in args.skip_patches.split(',')] if args.skip_patches else None
     only_list = [s.strip() for s in args.only_patches.split(',')] if args.only_patches else None
@@ -687,6 +693,12 @@ def run_build_pipeline(args):
         skip_list=skip_list,
         only_list=only_list
     )
+    if active_patches is None:
+        log_step("Returning to Main Menu.")
+        return False
+
+    check_clean_prompt(args.yes)
+    ensure_keystore()
 
     input_file = find_input_file(args.input_file)
     if not input_file:
@@ -853,12 +865,14 @@ def main():
             sys.exit(0)
         elif choice == '1':
             args.select_patches = False
-            run_build_pipeline(args)
-            prompt_back_to_menu()
+            ok = run_build_pipeline(args)
+            if ok:
+                prompt_back_to_menu()
         elif choice == '2':
             args.select_patches = True
-            run_build_pipeline(args)
-            prompt_back_to_menu()
+            ok = run_build_pipeline(args)
+            if ok:
+                prompt_back_to_menu()
         elif choice == '3':
             clean_redundant()
             log_success("Cleaned build artifacts.")
