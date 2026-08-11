@@ -100,7 +100,6 @@ def preflight_check():
         sys.exit(1)
 
 def clean_redundant():
-    log_step("Cleaning up temporary and old build files...")
     redundants = [
         os.path.join(WORKSPACE, "patched_base.apk"),
         os.path.join(WORKSPACE, "aligned_base.apk"),
@@ -108,11 +107,17 @@ def clean_redundant():
         BUILD_STAGING,
         DIST_DIR
     ]
-    for path in redundants:
+    existing = [p for p in redundants if os.path.exists(p)]
+    if not existing:
+        return False
+
+    log_step("Cleaning up temporary and old build files...")
+    for path in existing:
         if os.path.isfile(path) or os.path.islink(path):
             os.remove(path)
         elif os.path.isdir(path):
             shutil.rmtree(path)
+    return True
 
 def check_clean_prompt(noconfirm=False):
     if os.path.exists(DIST_DIR) and any(os.scandir(DIST_DIR)):
@@ -957,11 +962,16 @@ def main():
             if ok:
                 prompt_back_to_menu()
         elif choice == '3':
-            clean_redundant()
-            status_lines = [
-                f" {Colors.YELLOW}[Step] Cleaning up temporary and old build files...{Colors.RESET}",
-                f" {Colors.GREEN}[Success] Cleaned build artifacts.{Colors.RESET}"
-            ]
+            cleaned = clean_redundant()
+            if cleaned:
+                status_lines = [
+                    f" {Colors.YELLOW}[Step] Cleaning up temporary and old build files...{Colors.RESET}",
+                    f" {Colors.GREEN}[Success] Cleaned build artifacts.{Colors.RESET}"
+                ]
+            else:
+                status_lines = [
+                    f" {Colors.GREEN}[Success] No leftover build files found to clean.{Colors.RESET}"
+                ]
         elif choice == '4':
             install_via_adb()
             prompt_back_to_menu()
