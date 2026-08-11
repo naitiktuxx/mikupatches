@@ -1,145 +1,57 @@
 # MikuPatches
 
-An automated decompilation, patching, and build pipeline for the **Bluetooth Keyboard & Mouse** Android application (version `6.22.0`).
+An easy-to-use tool for building a patched version of **Bluetooth Keyboard & Mouse** (v6.22.0) for Android.
 
 ---
 
-## Overview
+## Features
 
-MikuPatches provides a reproducible framework for modifying the Bluetooth Keyboard & Mouse Android app without storing or redistributing proprietary APK binaries or raw decompiled source code in version control.
+Building with MikuPatches unlocks the following improvements:
 
-```
-                  ┌─────────────────────────────────────┐
-                  │ Original v6.22.0 APKM (input/)      │
-                  └──────────────────┬──────────────────┘
-                                     │
-                                     ▼
-                   [Decompile base.apk via apktool]
-                                     │
-                                     ▼
-                     [Apply patches/base/ smali]
-                                     │
-                                     ▼
-                    [Recompile, zipalign & apksigner]
-                                     │
-                                     ▼
-                  ┌─────────────────────────────────────┐
-                  │ Output Bundles & APKs (dist/)       │
-                  └─────────────────────────────────────┘
-```
+- **Play Store Redirection Removed**: Eliminates the "Install from original source" popup.
+- **Pro & Premium Features Unlocked**: Access all paid remote keyboard and mouse features.
+- **Password Input Mode Enabled**: Unlocks password mode and the eye toggle in the keyboard.
+- **Clean Interface**: Hides promotional upgrade buttons and subscription menu items.
+- **Improved Default Theme**: Sets default colors to BlueGrey with System Default dark mode.
 
 ---
 
-## Quick Start
+## How to Build
+
+### 1. Requirements
+Make sure you have **Python 3**, **Java**, and **Apktool** installed on your computer.
+
+### 2. Run the Script
+Open your terminal and run:
 
 ```bash
-# Clone the repository
 git clone https://github.com/naitiktuxx/mikupatches.git
 cd mikupatches
-
-# Run the build pipeline
 python3 build.py
 ```
 
-If the original `v6.22.0` `.apkm` file is missing from `input/`, the script prompts to open APKMirror, displays package details, and waits for you to place the file into `input/`.
+### 3. Provide Original App File
+If the original app (`.apkm`) is not in the `input/` folder:
+1. The script will open the download page on APKMirror.
+2. Download the **v6.22.0 Universal APKM** file.
+3. Put the downloaded file into the `input/` folder.
+
+The script will automatically detect the file, apply the patches, and save your finished APK files in the `dist/` folder.
 
 ---
 
-## Features & Patch Modules
+## Installing on Your Phone
 
-MikuPatches includes modular patches that can be applied selectively or all together:
+Once the build is complete, you will find `universal.apkm` inside the `dist/` folder:
 
-- **PairIP & Store Verification Bypass** (`pairip`)
-  Neutralizes PairIP license checks, local installer package verification, and Google Play Store redirection dialogs.
-
-- **Pro & Premium Unlock** (`pro_unlock`)
-  Unlocks Pro feature flags, subscription statuses (`isPremium=true`, `isSubscribed=true`), and billing SKU verification checks.
-
-- **Password Mode & Eye Toggle** (`password_mode`)
-  Enables password input mode and the end-icon visibility toggle in the main keyboard interface.
-
-- **Clean Interface** (`clean_menu`)
-  Removes promotional menu items, subscription upgrade prompts, and feedback actions from application navigation.
-
-- **Default Theme Customization** (`theme_default`)
-  Configures default application preferences to use the `BlueGrey` primary palette and `System default` night mode out of the box.
+1. Copy `dist/universal.apkm` to your Android phone.
+2. Open **[Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai)** or **[APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod)** on your phone.
+3. Select `universal.apkm` and tap **Install**.
 
 ---
 
-## Prerequisites
+## Documentation & License
 
-The build script requires the following tools available in your system path or Android SDK environment:
-
-| Dependency | Purpose | Recommended Installation |
-|---|---|---|
-| **Python 3.8+** | Runs the build script (`build.py`) | Pre-installed / `brew install python3` |
-| **Java JDK 17+** | Required by `apktool` and `apksigner` | `brew install openjdk` |
-| **Apktool** | Decompiles and rebuilds Android APKs | `brew install apktool` |
-| **Android Build-Tools** | Resource alignment (`zipalign`) and signing (`apksigner`) | Included in Android SDK / Command Line Tools |
-
-The script automatically detects `zipalign` and `apksigner` from system `PATH`, `$ANDROID_HOME`, `$ANDROID_SDK_ROOT`, or Homebrew installation paths.
-
----
-
-## Usage & CLI Reference
-
-```
-usage: build.py [-h] [-i] [-c] [-y] [-f] [-p]
-                [--skip-patches SKIP_PATCHES]
-                [--only-patches ONLY_PATCHES]
-                [input_file]
-```
-
-### Options
-
-| Flag | Description |
-|---|---|
-| `input_file` | Direct path to input `.apkm`, `.apks`, or `.apk` file |
-| `-i`, `--install` | Auto-install the generated base APK onto a connected ADB device |
-| `-c`, `--clean` | Wipe `dist/` and temporary `build_staging/` directories |
-| `-y`, `--yes` | Auto-confirm prompts (e.g., clearing old build artifacts) |
-| `-f`, `--force` | Bypass version verification check |
-| `-p`, `--select-patches` | Launch interactive patch selection menu |
-| `--skip-patches <list>` | Comma-separated patch module IDs to skip (e.g., `clean_menu,theme_default`) |
-| `--only-patches <list>` | Comma-separated patch module IDs to apply (e.g., `pairip,pro_unlock`) |
-
----
-
-## Output Directory & Installation
-
-Upon successful completion, generated packages are stored in `dist/`:
-
-```
-dist/
-├── base.apk                         # Main patched standalone APK
-├── universal.apkm                   # Universal APKM bundle (Install via SAI / APKMirror Installer)
-├── universal.apks                   # Universal APKS bundle
-├── arm64-v8a/
-│   ├── arm64-v8a.apkm
-│   └── arm64-v8a.apks
-├── armeabi-v7a/
-├── x86/
-└── x86_64/
-```
-
-### How to Install on Android
-
-- **APKM Bundles (`universal.apkm`)**: Install using [Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai) or [APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod).
-- **Direct ADB Install**: Connect your phone via USB and run `python3 build.py -i`.
-
----
-
-## Adding Custom Patches
-
-To add new patches to the repository:
-
-1. Decompile `base.apk` into a working directory using `apktool d base.apk`.
-2. Modify the desired `.smali` or `AndroidManifest.xml` files.
-3. Copy the modified files maintaining their exact directory structure into `patches/base/`.
-4. Register the new patch mapping inside `PATCH_GROUPS` in `build.py`.
-
----
-
-## Disclaimer
-
-This repository is maintained for educational and research purposes only. All trademarks, registered trademarks, and application assets belong to their respective owners.
+- **Developer Documentation**: For CLI options, technical architecture, and patch details, see [TECHNICAL.md](TECHNICAL.md).
+- **Legal Information**: For disclaimers and trademark notices, see [LEGAL.md](LEGAL.md).
+- **License**: Released under the [GNU General Public License v3.0](LICENSE).
