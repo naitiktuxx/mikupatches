@@ -18,10 +18,10 @@ MikuPatches is cross-platform and compatible with major desktop operating system
 
 | Operating System | Compatibility Status | Notes |
 |---|---|---|
-| macOS (Apple Silicon & Intel) | 100% Native | Fully supported via Homebrew |
-| Linux (Ubuntu, Debian, Fedora, Arch, etc.) | 100% Native | Fully supported via system package managers |
 | Windows via WSL / WSL2 | 100% Native (Recommended) | Fully supported in Ubuntu/Debian on Windows |
 | Windows Native (Git Bash / PowerShell / CMD) | Supported | Fallback prompt mode if ANSI/TTY features are limited |
+| macOS (Apple Silicon & Intel) | 100% Native | Fully supported via Homebrew |
+| Linux (Ubuntu, Debian, Fedora, Arch, etc.) | 100% Native | Fully supported via system package managers |
 
 ## Requirements & Dependency Installation Guide
 
@@ -36,54 +36,54 @@ MikuPatches is cross-platform and compatible with major desktop operating system
 
 ### Installation Guide per OS
 
-#### 1. macOS (Apple Silicon & Intel)
-Install dependencies using [Homebrew](https://brew.sh/):
-```bash
-brew install apktool openjdk android-commandlinetools
-```
-
-#### 2. Linux (Ubuntu / Debian / Linux Mint)
-Install dependencies using `apt`:
-```bash
-sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner
-```
-
-#### 3. Linux (Fedora / RHEL / CentOS)
-Install dependencies using `dnf`:
-```bash
-sudo dnf install python3 apktool java-17-openjdk-devel zipalign android-tools
-```
-
-#### 4. Linux (Arch Linux / Manjaro)
-Install dependencies using `pacman`:
-```bash
-sudo pacman -S python android-tools java-environment-openjdk apktool
-```
-
-#### 5. Linux (openSUSE Leap / Tumbleweed)
-Install dependencies using `zypper`:
-```bash
-sudo zypper install python3 apktool java-17-openjdk-devel android-tools
-```
-
-#### 6. Linux (Alpine Linux)
-Install dependencies using `apk` (with `community` repository enabled):
-```bash
-sudo apk add python3 apktool openjdk17 android-tools
-```
-
-#### 7. Windows via WSL2 (Recommended for Windows Users)
+#### 1. Windows via WSL2 (Recommended for Windows Users)
 1. Open PowerShell and install WSL: `wsl --install`
 2. Open the Ubuntu terminal in WSL and run:
    ```bash
    sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner
    ```
 
-#### 8. Windows Native (Git Bash / PowerShell / Command Prompt)
+#### 2. Windows Native (Git Bash / PowerShell / Command Prompt)
 1. Install [Python 3](https://www.python.org/downloads/) (make sure to check "Add Python to PATH").
 2. Install [Java JDK 17+](https://adoptium.net/).
 3. Install [Android Studio / Command Line Tools](https://developer.android.com/studio) to acquire `zipalign` and `apksigner`.
 4. Download [Apktool](https://apktool.org/) and place `apktool.jar` / `apktool.bat` in your system `PATH`.
+
+#### 3. macOS (Apple Silicon & Intel)
+Install dependencies using [Homebrew](https://brew.sh/):
+```bash
+brew install apktool openjdk android-commandlinetools
+```
+
+#### 4. Linux (Ubuntu / Debian / Linux Mint)
+Install dependencies using `apt`:
+```bash
+sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner
+```
+
+#### 5. Linux (Fedora / RHEL / CentOS)
+Install dependencies using `dnf`:
+```bash
+sudo dnf install python3 apktool java-17-openjdk-devel zipalign android-tools
+```
+
+#### 6. Linux (Arch Linux / Manjaro)
+Install dependencies using `pacman`:
+```bash
+sudo pacman -S python android-tools java-environment-openjdk apktool
+```
+
+#### 7. Linux (openSUSE Leap / Tumbleweed)
+Install dependencies using `zypper`:
+```bash
+sudo zypper install python3 apktool java-17-openjdk-devel android-tools
+```
+
+#### 8. Linux (Alpine Linux)
+Install dependencies using `apk` (with `community` repository enabled):
+```bash
+sudo apk add python3 apktool openjdk17 android-tools
+```
 
 ---
 
@@ -97,16 +97,16 @@ cd mikupatches
 
 ### 2. Run the Build Script
 
-#### On macOS / Linux / WSL2:
-```bash
-python3 build.py
-```
-*(Or execute `./build.sh`).*
-
 #### On Windows Native (Git Bash / Command Prompt / PowerShell):
 ```cmd
 python build.py
 ```
+
+#### On Windows WSL2 / macOS / Linux:
+```bash
+python3 build.py
+```
+*(Or execute `./build.sh` on Unix/macOS/WSL).*
 
 ### 3. Provide the Input App Package
 - Place your target `v6.22.0` `.apkm`, `.apks`, `.apk`, or `.zip` file inside the `input/` directory.
