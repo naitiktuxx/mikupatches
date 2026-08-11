@@ -515,30 +515,118 @@ def show_toolchain_info():
     else:
         log_warn("Some dependencies are missing. Check TECHNICAL.md for setup instructions.")
 
-def show_main_menu():
-    print("\n" + "=" * 76)
-    print(f"{Colors.CYAN}{Colors.BOLD} [#] MIKUPATCHES MAIN MENU{Colors.RESET}")
-    print("------------------------------------------------------------------------")
-    print(" Select an action to perform:\n")
-    print(f"  [1] Start Patching & Build Pipeline (Default All Patches)")
-    print(f"  [2] Select Patches & Build (Interactive Patch Selection)")
-    print(f"  [3] Clean Build Artifacts (Reset dist/ and build_staging/)")
-    print(f"  [4] Install Patched App onto Android Device (via ADB)")
-    print(f"  [5] GitHub & Repository Maintenance (Clean & Check Git Status)")
-    print(f"  [6] Check Prerequisites & Toolchain Dependencies")
-    print(f"  [0] Exit")
-    print("=" * 76)
-
+def get_single_keypress():
+    if not sys.stdin.isatty():
+        return None
     try:
-        choice = input(f"\n{Colors.CYAN}Waiting for input... {Colors.RESET}").strip().lower()
-    except EOFError:
-        log_step("Exiting.")
-        sys.exit(0)
+        import tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            ch = sys.stdin.read(1)
+            if ch == '\x1b':
+                ch2 = sys.stdin.read(1)
+                if ch2 == '[':
+                    ch3 = sys.stdin.read(1)
+                    if ch3 == 'A':
+                        return 'UP'
+                    elif ch3 == 'B':
+                        return 'DOWN'
+                    elif ch3 == 'C':
+                        return 'RIGHT'
+                    elif ch3 == 'D':
+                        return 'LEFT'
+            elif ch in ('\r', '\n'):
+                return 'ENTER'
+            elif ch == '\x03':
+                raise KeyboardInterrupt
+            elif ch in ('q', 'Q'):
+                return 'QUIT'
+            elif ch.isdigit():
+                return ch
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     except KeyboardInterrupt:
-        print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
-        sys.exit(130)
+        raise KeyboardInterrupt
+    except Exception:
+        return None
+    return None
 
-    return choice
+def show_navigatable_menu(title, items, default_idx=0):
+    if not sys.stdin.isatty():
+        return 0
+
+    selected_idx = default_idx
+    num_items = len(items)
+    first_render = True
+
+    while True:
+        if not first_render:
+            sys.stdout.write(f"\033[{num_items + 7}A\r")
+        first_render = False
+
+        print("=" * 76)
+        print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
+        print("------------------------------------------------------------------------")
+        print(" Use Up/Down Arrow keys to navigate, Enter to select, or press number:\n")
+
+        for idx, (num_key, label, desc) in enumerate(items):
+            if idx == selected_idx:
+                pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
+                prefix = f"{Colors.CYAN}{Colors.BOLD}[{num_key}]{Colors.RESET}"
+                line_str = f" {pointer} {prefix} {Colors.BOLD}{label}{Colors.RESET}"
+            else:
+                pointer = "  "
+                prefix = f"[{num_key}]"
+                line_str = f" {pointer} {prefix} {label}"
+            
+            if desc:
+                line_str += f" ({desc})"
+            print(line_str)
+
+        print("=" * 76)
+        sys.stdout.flush()
+
+        key = get_single_keypress()
+        if key == 'UP':
+            selected_idx = (selected_idx - 1) % num_items
+        elif key == 'DOWN':
+            selected_idx = (selected_idx + 1) % num_items
+        elif key == 'ENTER':
+            return selected_idx
+        elif key == 'QUIT':
+            print(f"\n{Colors.RED}[!] Script terminated by user.{Colors.RESET}")
+            sys.exit(0)
+        elif key and key.isdigit():
+            for idx, (num_key, label, desc) in enumerate(items):
+                if str(num_key) == key:
+                    return idx
+        elif key is None:
+            try:
+                ans = input(f"\n{Colors.CYAN}Waiting for input (0-6): {Colors.RESET}").strip().lower()
+                if ans.isdigit():
+                    for idx, (num_key, label, desc) in enumerate(items):
+                        if str(num_key) == ans:
+                            return idx
+                elif ans in ('q', 'quit', 'exit'):
+                    sys.exit(0)
+                return selected_idx
+            except KeyboardInterrupt:
+                raise KeyboardInterrupt
+
+def show_main_menu():
+    items = [
+        ("1", "Start Patching & Build Pipeline", "Default All Patches"),
+        ("2", "Select Patches & Build", "Interactive Patch Selection"),
+        ("3", "Clean Build Artifacts", "Reset dist/ and build_staging/"),
+        ("4", "Install Patched App onto Android Device", "via ADB"),
+        ("5", "GitHub & Repository Maintenance", "Clean & Check Git Status"),
+        ("6", "Check Prerequisites & Toolchain Dependencies", ""),
+        ("0", "Exit", "")
+    ]
+    idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=0)
+    return items[idx][0]
 
 def main():
     parser = argparse.ArgumentParser(description="MikuPatches - Bluetooth Keyboard & Mouse Patch Pipeline")
