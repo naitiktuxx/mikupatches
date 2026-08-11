@@ -248,22 +248,117 @@ def verify_app_version(base_dir, force=False):
     else:
         log_success(f"App version verified: v{ver_name or TARGET_VERSION_NAME} (code {ver_code or TARGET_VERSION_CODE})")
 
-PATCH_DESCRIPTIONS = {
-    "AndroidManifest.xml": "Play Store Redirection & PairIP Application Bypass",
-    "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License & Installer Verification Bypass",
-    "smali/com/pairip/licensecheck/LicenseContentProvider.smali": "PairIP License ContentProvider Neutralization",
-    "smali/com/pairip/application/Application.smali": "PairIP Application Entry Point Bypass",
-    "smali/fj3.smali": "Premium & Subscription Status Unlock (isPremium=true, isSubscribed=true)",
-    "smali/ez.smali": "Global Premium Access Verification Unlock",
-    "smali/uy.smali": "In-App Billing SKU Verification Bypass",
-    "smali/uv.smali": "Password Mode & EndIcon Toggle Unlock",
-    "smali/eu5.smali": "MainActivity Internal Installer & Store Verification Bypass",
-    "smali/jh0.smali": "Compose Menu Removal & Slot Table Crash Fix",
-    "smali/m2.smali": "Pro & Subscription Menu Action Elimination",
-    "smali/ug5.smali": "Subscription & Feedback Action Elimination"
-}
+PATCH_GROUPS = [
+    {
+        "id": "pairip",
+        "name": "Play Store Redirection & PairIP License Bypass",
+        "desc": "Bypasses Play Store installer check and PairIP license dialogs",
+        "default": True,
+        "files": {
+            "AndroidManifest.xml": "Play Store Redirection & PairIP Application Bypass",
+            "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License & Installer Verification Bypass",
+            "smali/com/pairip/licensecheck/LicenseContentProvider.smali": "PairIP License ContentProvider Neutralization",
+            "smali/com/pairip/application/Application.smali": "PairIP Application Entry Point Bypass",
+            "smali/eu5.smali": "MainActivity Internal Installer & Store Verification Bypass"
+        }
+    },
+    {
+        "id": "pro_unlock",
+        "name": "Pro & Premium Features Unlock",
+        "desc": "Unlocks all Pro features, subscription status, and billing SKU checks",
+        "default": True,
+        "files": {
+            "smali/fj3.smali": "Premium & Subscription Status Unlock (isPremium=true, isSubscribed=true)",
+            "smali/ez.smali": "Global Premium Access Verification Unlock",
+            "smali/uy.smali": "In-App Billing SKU Verification Bypass"
+        }
+    },
+    {
+        "id": "password_mode",
+        "name": "Password Mode & EndIcon Toggle Unlock",
+        "desc": "Enables password mode / eye toggle in keyboard view",
+        "default": True,
+        "files": {
+            "smali/uv.smali": "Password Mode & EndIcon Toggle Unlock"
+        }
+    },
+    {
+        "id": "clean_menu",
+        "name": "Clean UI & Menu Items Removal",
+        "desc": "Removes Upgrade to Pro, Manage Subscription, and Feedback menu items",
+        "default": True,
+        "files": {
+            "smali/jh0.smali": "Compose Menu Removal & Slot Table Crash Fix",
+            "smali/m2.smali": "Pro & Subscription Menu Action Elimination",
+            "smali/ug5.smali": "Subscription & Feedback Action Elimination"
+        }
+    }
+]
 
-def apply_patches(base_dir):
+def select_patches_interactively(force_interactive=False, skip_list=None, only_list=None):
+    active_status = {group["id"]: group["default"] for group in PATCH_GROUPS}
+    
+    if skip_list:
+        for gid in skip_list:
+            if gid in active_status:
+                active_status[gid] = False
+                
+    if only_list:
+        for gid in active_status:
+            active_status[gid] = (gid in only_list)
+
+    if not force_interactive and not sys.stdin.isatty():
+        return active_status
+
+    if force_interactive or sys.stdin.isatty():
+        while True:
+            print("\n" + "=" * 76)
+            print(f"{Colors.CYAN}{Colors.BOLD} 🎛️ PATCH SELECTION MENU{Colors.RESET}")
+            print("------------------------------------------------------------------------")
+            print(" Select which patches to apply to the APK: \n")
+            
+            for idx, group in enumerate(PATCH_GROUPS, 1):
+                gid = group["id"]
+                mark = f"{Colors.GREEN}[✔]{Colors.RESET}" if active_status[gid] else f"{Colors.RED}[ ]{Colors.RESET}"
+                print(f"  [{idx}] {mark} {Colors.BOLD}{group['name']}{Colors.RESET}")
+                print(f"      └─ {group['desc']} ({len(group['files'])} file(s))")
+
+            print("\n" + "-" * 76)
+            print(f"  • Type item number(s) to toggle (e.g. '1', '2,4', 'all', 'none')")
+            print(f"  • Press {Colors.GREEN}Enter{Colors.RESET} to proceed with selected patches")
+            print(f"  • Type {Colors.RED}'q'{Colors.RESET} to quit")
+            print("=" * 76)
+
+            try:
+                cmd = input(f"{Colors.CYAN}Select option(s): {Colors.RESET}").strip().lower()
+            except (KeyboardInterrupt, EOFError):
+                print()
+                log_step("Exiting build process.")
+                sys.exit(0)
+
+            if cmd in ('', 'a', 'apply', 'start', 'b', 'build'):
+                break
+            elif cmd in ('q', 'quit', 'exit'):
+                log_step("Exiting build process.")
+                sys.exit(0)
+            elif cmd == 'all':
+                for gid in active_status:
+                    active_status[gid] = True
+            elif cmd == 'none':
+                for gid in active_status:
+                    active_status[gid] = False
+            else:
+                tokens = [t.strip() for t in cmd.replace(',', ' ').split() if t.strip()]
+                for t in tokens:
+                    if t.isdigit():
+                        idx = int(t)
+                        if 1 <= idx <= len(PATCH_GROUPS):
+                            gid = PATCH_GROUPS[idx - 1]["id"]
+                            active_status[gid] = not active_status[gid]
+
+    return active_status
+
+def apply_patches(base_dir, active_status):
     patches_base = os.path.join(PATCHES_DIR, "base")
     if not os.path.exists(patches_base):
         raise FileNotFoundError(f"Patches directory not found at '{patches_base}'")
@@ -271,6 +366,12 @@ def apply_patches(base_dir):
     log_step("Applying smali & manifest patches...")
     applied_patches = []
     
+    allowed_files = {}
+    for group in PATCH_GROUPS:
+        gid = group["id"]
+        if active_status.get(gid, False):
+            allowed_files.update(group["files"])
+
     for root, dirs, files in os.walk(patches_base):
         rel_root = os.path.relpath(root, patches_base)
         target_root = base_dir if rel_root == "." else os.path.join(base_dir, rel_root)
@@ -278,20 +379,23 @@ def apply_patches(base_dir):
         for f in files:
             src_file = os.path.join(root, f)
             dst_file = os.path.join(target_root, f)
-            os.makedirs(os.path.dirname(dst_file), exist_ok=True)
-            shutil.copyfile(src_file, dst_file)
-            
             rel_path = os.path.relpath(src_file, patches_base)
-            desc = PATCH_DESCRIPTIONS.get(rel_path, "Custom Patch")
             
-            if os.path.exists(dst_file):
-                applied_patches.append((rel_path, desc, True))
-                print(f"  -> Applied: {Colors.CYAN}{rel_path}{Colors.RESET} ({desc})")
+            if rel_path in allowed_files:
+                desc = allowed_files[rel_path]
+                os.makedirs(os.path.dirname(dst_file), exist_ok=True)
+                shutil.copyfile(src_file, dst_file)
+                
+                if os.path.exists(dst_file):
+                    applied_patches.append((rel_path, desc, True))
+                    print(f"  -> Applied: {Colors.CYAN}{rel_path}{Colors.RESET} ({desc})")
+                else:
+                    applied_patches.append((rel_path, desc, False))
+                    log_error(f"Failed to apply: {rel_path}")
             else:
-                applied_patches.append((rel_path, desc, False))
-                log_error(f"Failed to apply: {rel_path}")
+                print(f"  -> {Colors.YELLOW}Skipped (Disabled by user){Colors.RESET}: {rel_path}")
 
-    log_success(f"Successfully applied {len([p for p in applied_patches if p[2]])} / {len(applied_patches)} patch file(s).")
+    log_success(f"Successfully applied {len([p for p in applied_patches if p[2]])} patch file(s).")
     return applied_patches
 
 def align_and_sign(input_apk, output_apk):
@@ -345,6 +449,9 @@ def main():
     parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
     parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
     parser.add_argument("-f", "--force", action="store_true", help="Force build despite version mismatch")
+    parser.add_argument("-p", "--select-patches", action="store_true", help="Open interactive patch selection menu")
+    parser.add_argument("--skip-patches", help="Comma-separated list of patch module IDs to skip (pairip,pro_unlock,password_mode,clean_menu)")
+    parser.add_argument("--only-patches", help="Comma-separated list of patch module IDs to apply")
     args = parser.parse_args()
 
     if args.clean:
@@ -356,6 +463,15 @@ def main():
     preflight_check()
     check_clean_prompt(args.yes)
     ensure_keystore()
+
+    skip_list = [s.strip() for s in args.skip_patches.split(',')] if args.skip_patches else None
+    only_list = [s.strip() for s in args.only_patches.split(',')] if args.only_patches else None
+
+    active_patches = select_patches_interactively(
+        force_interactive=args.select_patches,
+        skip_list=skip_list,
+        only_list=only_list
+    )
 
     input_file = find_input_file(args.input_file)
     if not input_file:
@@ -375,7 +491,7 @@ def main():
 
     verify_app_version(decompiled_base_dir, force=args.force)
 
-    applied_patches = apply_patches(decompiled_base_dir)
+    applied_patches = apply_patches(decompiled_base_dir, active_patches)
 
     log_step("Recompiling patched base.apk with apktool...")
     raw_base = os.path.join(BUILD_STAGING, "raw_base.apk")
