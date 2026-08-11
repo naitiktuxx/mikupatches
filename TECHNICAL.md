@@ -108,6 +108,17 @@ usage: build.py [-h] [-m] [-i] [-c] [-y] [-f] [-p]
 - `--skip-patches <IDs>`: Comma-separated list of patch module IDs to skip (e.g. `--skip-patches clean_menu,theme_default`).
 - `--only-patches <IDs>`: Comma-separated list of patch module IDs to apply, disabling all others (e.g. `--only-patches pairip,pro_unlock`).
 
+### Force Building with -f / --force
+
+By default, the build engine parses `versionName` and `versionCode` from `apktool.yml` during decompilation. If the detected version differs from target version `6.22.0` (versionCode `255`), the script aborts with a version mismatch error to prevent building incompatible packages.
+
+Passing `-f` (or `--force`) bypasses this safety check:
+
+- Purpose: Force patching on experimental, older, or newer APK releases.
+- Basic Command: `python3 build.py -f`
+- With Custom File & Auto-Install: `python3 build.py input/app_v6.23.0.apkm -f -y -i`
+- Caveat: Smali patches in `patches/base/` target specific obfuscated class names in `v6.22.0`. If class names or methods differ in other versions, Apktool recompilation may fail or the app may crash on startup.
+
 ### Examples
 
 #### Non-interactive default build with custom input file
