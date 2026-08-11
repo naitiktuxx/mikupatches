@@ -151,19 +151,37 @@ def find_input_file(custom_path=None):
 
 def prompt_download():
     print("\n" + "=" * 76)
-    print(f"{Colors.YELLOW}{Colors.BOLD} [Input Required] Original APK / APKM file not found in 'input/' directory!{Colors.RESET}")
+    print(f"{Colors.RED}{Colors.BOLD} [Input Required] Target APKM File Not Found!{Colors.RESET}")
     print("------------------------------------------------------------------------")
-    print(" Opening APKMirror download page in your browser:")
-    print(f" {Colors.CYAN}{APKMIRROR_URL}{Colors.RESET}")
-    print("\n Please download the Bluetooth Keyboard & Mouse v6.22.0 APKM file")
-    print(" and save/move it into the 'input/' folder of this project.")
+    print(f"  Target App         : Bluetooth Keyboard & Mouse")
+    print(f"  Required Version   : {Colors.CYAN}v{TARGET_VERSION_NAME}{Colors.RESET} (versionCode: {TARGET_VERSION_CODE})")
+    print(f"  Target Package     : {Colors.CYAN}Universal (120-640dpi) (Android 12L+){Colors.RESET}")
+    print(f"  Status             : No .apkm / .apks / .apk file found in 'input/' folder")
     print("=" * 76 + "\n")
+
+    if sys.stdin.isatty():
+        print(f"{Colors.BOLD}Select an option:{Colors.RESET}")
+        print("  [1] Open APKMirror in browser to download v6.22.0 Universal APKM")
+        print("  [2] Go back / Exit build\n")
+        try:
+            choice = input(f"{Colors.CYAN}Select option [1-2] (default 1): {Colors.RESET}").strip()
+            if choice == "2":
+                log_step("Exiting build process.")
+                sys.exit(0)
+        except (KeyboardInterrupt, EOFError):
+            print()
+            log_step("Exiting build process.")
+            sys.exit(0)
+
+    print(f"\nOpening APKMirror download page in your browser:")
+    print(f" {Colors.CYAN}{APKMIRROR_URL}{Colors.RESET}\n")
 
     try:
         webbrowser.open(APKMIRROR_URL)
     except Exception as e:
         log_warn(f"Failed to open browser automatically: {e}")
 
+    print(f"Please save the downloaded {Colors.CYAN}v6.22.0 Universal APKM{Colors.RESET} into the 'input/' folder.")
     print("Waiting for file to be placed in 'input/' directory...")
     while True:
         infile = find_input_file()
