@@ -324,58 +324,74 @@ def select_patches_interactively(force_interactive=False, skip_list=None, only_l
         for gid in active_status:
             active_status[gid] = (gid in only_list)
 
-    if not force_interactive and not sys.stdin.isatty():
+    if not force_interactive:
         return active_status
 
-    if force_interactive or sys.stdin.isatty():
-        while True:
-            print("\n" + "=" * 76)
-            print(f"{Colors.CYAN}{Colors.BOLD} [#] PATCH SELECTION MENU (All Patches Enabled by Default){Colors.RESET}")
-            print("------------------------------------------------------------------------")
-            print(" Below are the patches that will be applied to your app:\n")
-            
-            for idx, group in enumerate(PATCH_GROUPS, 1):
-                gid = group["id"]
-                status_badge = f"{Colors.GREEN}[+] ENABLED {Colors.RESET}" if active_status[gid] else f"{Colors.RED}[-] DISABLED{Colors.RESET}"
-                print(f"  {idx}. {status_badge} {Colors.BOLD}{group['name']}{Colors.RESET}")
-                print(f"     -> {group['desc']}")
+    if sys.stdin.isatty():
+        selected_idx = 0
+        num_items = len(PATCH_GROUPS)
 
-            print("\n" + "-" * 76)
-            print(f"{Colors.BOLD}[*] Controls:{Colors.RESET}")
-            print(f"  - Press {Colors.GREEN}Enter{Colors.RESET} to build with all enabled patches")
-            print(f"  - Type a number to turn a patch ON or OFF (e.g. type {Colors.CYAN}2{Colors.RESET} or {Colors.CYAN}3,4{Colors.RESET})")
-            print(f"  - Type {Colors.CYAN}'all'{Colors.RESET} to turn everything ON, or {Colors.CYAN}'none'{Colors.RESET} to turn everything OFF")
-            print(f"  - Type {Colors.RED}'q'{Colors.RESET} to cancel and exit")
-            print("=" * 76)
+        try:
+            sys.stdout.write("\033[?25l")
+            sys.stdout.flush()
 
-            try:
-                cmd = input(f"\n{Colors.CYAN}Waiting for input... {Colors.RESET}").strip().lower()
-            except EOFError:
-                log_step("Exiting build process.")
-                sys.exit(0)
-            except KeyboardInterrupt:
-                print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
-                sys.exit(130)
+            while True:
+                sys.stdout.write("\033[H\033[J")
 
-            if cmd in ('', 'a', 'apply', 'start', 'b', 'build'):
-                break
-            elif cmd in ('q', 'quit', 'exit'):
-                log_step("Exiting build process.")
-                sys.exit(0)
-            elif cmd == 'all':
-                for gid in active_status:
-                    active_status[gid] = True
-            elif cmd == 'none':
-                for gid in active_status:
-                    active_status[gid] = False
-            else:
-                tokens = [t.strip() for t in cmd.replace(',', ' ').split() if t.strip()]
-                for t in tokens:
-                    if t.isdigit():
-                        idx = int(t)
-                        if 1 <= idx <= len(PATCH_GROUPS):
-                            gid = PATCH_GROUPS[idx - 1]["id"]
-                            active_status[gid] = not active_status[gid]
+                print("=" * 76)
+                print(f"{Colors.CYAN}{Colors.BOLD} [#] PATCH SELECTION MENU (Option 2){Colors.RESET}")
+                print("------------------------------------------------------------------------")
+                print(" Use Up/Down Arrows to navigate, Space/Number to toggle, Enter to build:\n")
+
+                for idx, group in enumerate(PATCH_GROUPS):
+                    gid = group["id"]
+                    status_badge = f"{Colors.GREEN}[+] ENABLED {Colors.RESET}" if active_status[gid] else f"{Colors.RED}[-] DISABLED{Colors.RESET}"
+                    
+                    if idx == selected_idx:
+                        pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
+                        prefix = f"{Colors.CYAN}{Colors.BOLD}[{idx + 1}]{Colors.RESET}"
+                        line_str = f" {pointer} {prefix} {status_badge} {Colors.BOLD}{group['name']}{Colors.RESET}"
+                    else:
+                        pointer = "  "
+                        prefix = f"[{idx + 1}]"
+                        line_str = f" {pointer} {prefix} {status_badge} {group['name']}"
+                    
+                    print(line_str)
+                    print(f"     -> {group['desc']}")
+
+                print("\n" + "-" * 76)
+                print(f"{Colors.BOLD}[*] Controls:{Colors.RESET}")
+                print(f"  - Up/Down Arrows: Move cursor")
+                print(f"  - Space / Number (1-5): Toggle patch ON or OFF")
+                print(f"  - Press Enter: Confirm selection and start build")
+                print(f"  - Press 'q': Cancel and exit")
+                print("=" * 76)
+                sys.stdout.flush()
+
+                key = get_single_keypress()
+                if key == 'UP':
+                    selected_idx = (selected_idx - 1) % num_items
+                elif key == 'DOWN':
+                    selected_idx = (selected_idx + 1) % num_items
+                elif key == 'SPACE':
+                    gid = PATCH_GROUPS[selected_idx]["id"]
+                    active_status[gid] = not active_status[gid]
+                elif key == 'ENTER':
+                    print()
+                    break
+                elif key == 'QUIT':
+                    print(f"\n{Colors.RED}[!] Build cancelled by user.{Colors.RESET}")
+                    sys.exit(0)
+                elif key and key.isdigit():
+                    idx_val = int(key)
+                    if 1 <= idx_val <= num_items:
+                        gid = PATCH_GROUPS[idx_val - 1]["id"]
+                        active_status[gid] = not active_status[gid]
+                elif key is None:
+                    break
+        finally:
+            sys.stdout.write("\033[?25h")
+            sys.stdout.flush()
 
     return active_status
 
@@ -539,6 +555,8 @@ def get_single_keypress():
                         return 'LEFT'
             elif ch in ('\r', '\n'):
                 return 'ENTER'
+            elif ch == ' ':
+                return 'SPACE'
             elif ch == '\x03':
                 raise KeyboardInterrupt
             elif ch in ('q', 'Q'):
