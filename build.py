@@ -456,9 +456,85 @@ def install_via_adb():
         except Exception as e:
             log_warn(f"ADB installation failed: {e}")
 
+def github_maintenance():
+    log_step("Performing GitHub & Repository Maintenance...")
+    clean_redundant()
+    
+    if shutil.which("git"):
+        print(f"\n{Colors.BOLD}[*] Git Repository Status:{Colors.RESET}")
+        try:
+            status = run_cmd("git status --short").strip()
+            if not status:
+                log_success("Git working tree is completely clean.")
+            else:
+                print(f"Untracked / Modified files:\n{status}")
+            
+            remotes = run_cmd("git remote -v").strip()
+            if remotes:
+                print(f"\n{Colors.BOLD}[*] Configured Git Remotes:{Colors.RESET}\n{remotes}")
+        except Exception as e:
+            log_warn(f"Failed to query git status: {e}")
+    else:
+        log_warn("Git binary not found in PATH.")
+    log_success("Maintenance check complete.")
+
+def show_toolchain_info():
+    log_step("Checking Prerequisites & Toolchain Dependencies...")
+    tools = [
+        ("Python 3", shutil.which("python3") or sys.executable),
+        ("Java / JDK", shutil.which("java")),
+        ("Apktool", shutil.which("apktool")),
+        ("zipalign", ZIPALIGN),
+        ("apksigner", APKSIGNER),
+        ("Git", shutil.which("git")),
+        ("ADB", shutil.which("adb"))
+    ]
+    
+    print("\n" + "=" * 76)
+    print(f"{Colors.BOLD}[*] Toolchain Status & Paths:{Colors.RESET}")
+    print("------------------------------------------------------------------------")
+    all_ok = True
+    for name, path in tools:
+        if path and (os.path.exists(path) if "/" in str(path) else True):
+            print(f"  [+] {Colors.BOLD}{name:<15}{Colors.RESET}: {Colors.CYAN}{path}{Colors.RESET}")
+        else:
+            print(f"  [-] {Colors.BOLD}{name:<15}{Colors.RESET}: {Colors.RED}NOT FOUND{Colors.RESET}")
+            if name in ("Python 3", "Java / JDK", "Apktool", "zipalign", "apksigner"):
+                all_ok = False
+    print("=" * 76 + "\n")
+    
+    if all_ok:
+        log_success("All required build dependencies are present and ready!")
+    else:
+        log_warn("Some dependencies are missing. Check TECHNICAL.md for setup instructions.")
+
+def show_main_menu():
+    print("\n" + "=" * 76)
+    print(f"{Colors.CYAN}{Colors.BOLD} [#] MIKUPATCHES MAIN MENU{Colors.RESET}")
+    print("------------------------------------------------------------------------")
+    print(" Select an action to perform:\n")
+    print(f"  [1] Start Patching & Build Pipeline (Default All Patches)")
+    print(f"  [2] Select Patches & Build (Interactive Patch Selection)")
+    print(f"  [3] Clean Build Artifacts (Reset dist/ and build_staging/)")
+    print(f"  [4] Install Patched App onto Android Device (via ADB)")
+    print(f"  [5] GitHub & Repository Maintenance (Clean & Check Git Status)")
+    print(f"  [6] Check Prerequisites & Toolchain Dependencies")
+    print(f"  [0] Exit")
+    print("=" * 76)
+
+    try:
+        choice = input(f"\n{Colors.CYAN}Waiting for input... {Colors.RESET}").strip().lower()
+    except (KeyboardInterrupt, EOFError):
+        print()
+        log_step("Exiting.")
+        sys.exit(0)
+
+    return choice
+
 def main():
     parser = argparse.ArgumentParser(description="MikuPatches - Bluetooth Keyboard & Mouse Patch Pipeline")
     parser.add_argument("input_file", nargs="?", help="Path to input .apkm / .apks / .apk file")
+    parser.add_argument("-m", "--menu", action="store_true", help="Open interactive main menu")
     parser.add_argument("-i", "--install", action="store_true", help="Auto-install built APK onto connected ADB device")
     parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
     parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
@@ -467,6 +543,27 @@ def main():
     parser.add_argument("--skip-patches", help="Comma-separated list of patch module IDs to skip (pairip,pro_unlock,password_mode,clean_menu,theme_default)")
     parser.add_argument("--only-patches", help="Comma-separated list of patch module IDs to apply")
     args = parser.parse_args()
+
+    if args.menu or (not args.input_file and not args.clean and not args.install and not args.select_patches and not args.skip_patches and not args.only_patches and sys.stdin.isatty()):
+        choice = show_main_menu()
+        if choice in ('0', 'q', 'exit', 'quit'):
+            log_step("Exiting.")
+            sys.exit(0)
+        elif choice == '2':
+            args.select_patches = True
+        elif choice == '3':
+            clean_redundant()
+            log_success("Cleaned build artifacts.")
+            sys.exit(0)
+        elif choice == '4':
+            install_via_adb()
+            sys.exit(0)
+        elif choice == '5':
+            github_maintenance()
+            sys.exit(0)
+        elif choice == '6':
+            show_toolchain_info()
+            sys.exit(0)
 
     if args.clean:
         clean_redundant()
