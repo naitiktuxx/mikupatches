@@ -559,8 +559,6 @@ def show_navigatable_menu(title, items, default_idx=0):
 
     selected_idx = default_idx
     num_items = len(items)
-    total_lines = 7 + num_items
-    first_render = True
 
     try:
         # Hide cursor during menu navigation
@@ -568,10 +566,8 @@ def show_navigatable_menu(title, items, default_idx=0):
         sys.stdout.flush()
 
         while True:
-            if not first_render:
-                # Move cursor up and erase to end of screen to prevent text overlapping
-                sys.stdout.write(f"\033[{total_lines}A\033[J")
-            first_render = False
+            # Move cursor to top-left (0,0) and clear screen to prevent terminal scrolling
+            sys.stdout.write("\033[H\033[J")
 
             print("=" * 76)
             print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
