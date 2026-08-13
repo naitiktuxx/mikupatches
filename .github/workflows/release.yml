@@ -41,70 +41,47 @@ jobs:
 
           if ref.startswith("refs/tags/"):
               tag_name = ref.split("/")[-1]
-              release_title = f"MikuPatches {tag_name}"
           else:
               tag_name = f"v{version}-{commit_short}"
-              release_title = f"MikuPatches - {commit_title} ({commit_short})"
-
-          archive_name = f"mikupatches-v{version}-{commit_short}"
 
           try:
               commits_log = run(f"git log --pretty=format:\"* %s ([%h]({repo_url}/commit/%H)) - @%an\" HEAD~1..HEAD")
-              changed_files = run("git diff-tree --no-commit-id --name-status -r HEAD")
           except Exception:
               commits_log = f"* {commit_title} ([{commit_short}]({repo_url}/commit/{commit_full})) - @{commit_author}"
-              changed_files = run("git show --stat --oneline HEAD")
 
           # 1. Standalone CHANGELOG.md file
           changelog_content = textwrap.dedent(f"""\
-          # MikuPatches Release Changelog
-
-          ## Release: {release_title}
-          - **Tag:** `{tag_name}`
-          - **Commit:** [`{commit_short}`]({repo_url}/commit/{commit_full})
-          - **Author:** {commit_author}
-          - **Date:** {commit_date}
-
-          ---
+          # mikupatches changelog
 
           ### What'\''s Changed
           {commits_log}
 
-          ### Modified Files in this Commit
-          ```text
-          {changed_files}
-          ```
+          ### Commit Information
+          - **Commit:** [`{commit_short}`]({repo_url}/commit/{commit_full})
+          - **Author:** {commit_author}
+          - **Date:** {commit_date}
           """)
           with open("CHANGELOG.md", "w", encoding="utf-8") as f:
               f.write(changelog_content)
 
           # 2. Release body description for GitHub UI
           release_notes = textwrap.dedent(f"""\
-          ## {release_title}
+          ## mikupatches
 
-          ### What'\''s Changed in this Release
+          ### What'\''s Changed
           {commits_log}
 
           ---
 
-          ### Commit Information
-          - **Commit SHA:** [`{commit_short}`]({repo_url}/commit/{commit_full})
-          - **Author:** {commit_author}
-          - **Commit Date:** {commit_date}
-
-          ---
-
           ### Release Assets
-          - `{archive_name}.tar.gz` (Linux / macOS source archive)
-          - `{archive_name}.zip` (Windows / Universal ZIP archive)
-          - `CHANGELOG.md` (Standalone commit & diff changelog)
-
-          ---
+          - `mikupatches.tar.gz` (Linux / macOS source archive)
+          - `mikupatches.zip` (Windows / Universal ZIP archive)
+          - `CHANGELOG.md` (Standalone changelog file)
 
           ### Quick Start
           ```bash
-          tar -xzvf {archive_name}.tar.gz
-          cd {archive_name}
+          tar -xzvf mikupatches.tar.gz
+          cd mikupatches
           python3 build.py
           ```
           """)
@@ -116,23 +93,21 @@ jobs:
           if env_file:
               with open(env_file, "a", encoding="utf-8") as f:
                   f.write(f"TAG_NAME={tag_name}\n")
-                  f.write(f"RELEASE_TITLE={release_title}\n")
-                  f.write(f"ARCHIVE_NAME={archive_name}\n")
-                  f.write(f"COMMIT_SHORT={commit_short}\n")
+                  f.write("RELEASE_TITLE=mikupatches\n")
           '
 
       - name: Prepare Release Archives
         run: |
           # Create clean staging directory
-          mkdir -p "staging/${ARCHIVE_NAME}"
+          mkdir -p "staging/mikupatches"
           
           # Copy project files excluding git metadata, build outputs, and temp files
-          rsync -av --exclude='.git*' --exclude='dist' --exclude='build_staging' --exclude='staging' --exclude='release_notes.md' --exclude='__pycache__' ./ "staging/${ARCHIVE_NAME}/"
+          rsync -av --exclude='.git*' --exclude='dist' --exclude='build_staging' --exclude='staging' --exclude='release_notes.md' --exclude='__pycache__' ./ "staging/mikupatches/"
           
-          # Create ZIP and tar.gz archives
+          # Create clean ZIP and tar.gz archives
           cd staging
-          zip -r "../${ARCHIVE_NAME}.zip" "${ARCHIVE_NAME}"
-          tar -czvf "../${ARCHIVE_NAME}.tar.gz" "${ARCHIVE_NAME}"
+          zip -r "../mikupatches.zip" "mikupatches"
+          tar -czvf "../mikupatches.tar.gz" "mikupatches"
           cd ..
 
       - name: Create or Update GitHub Release
@@ -144,8 +119,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ${{ env.ARCHIVE_NAME }}.zip
-            ${{ env.ARCHIVE_NAME }}.tar.gz
+            mikupatches.zip
+            mikupatches.tar.gz
             CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
