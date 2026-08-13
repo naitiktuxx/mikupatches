@@ -5,6 +5,12 @@
 .Spotlight-V100
 .Trashes
 
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
 # Decompiled source code, original bundle, & input files (downloaded / staged dynamically)
 /base/
 /bundle/
@@ -17,6 +23,7 @@ build_staging/
 *.apk
 *.apkm
 *.apks
+*.xapk
 *.idsig
 
 # Keys & Keystores

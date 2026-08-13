@@ -1,0 +1,28 @@
+[
+  {
+    "id": "remove_ads",
+    "name": "Ad-Free Experience",
+    "desc": "Blocks all banner, popup, and interstitial ad networks",
+    "default": true,
+    "files": {
+      "AndroidManifest.xml": "Truecaller Manifest Configuration & Ad ID permission cleanup",
+      "smali_classes5/r90/d.smali": "AdsRouter shouldShowAds and hasAvailableAd override (disable all ad requests)",
+      "smali_classes6/p92/k.smali": "PremiumFeature NO_ADS & PREMIUM_BADGE status override",
+      "smali_classes8/sg3/j.smali": "Coroutines Dispatchers.Main looper fallback override"
+    }
+  },
+  {
+    "id": "gold_theme_unlock",
+    "name": "Unlock Gold Caller ID & Badge",
+    "desc": "Unlocks Gold membership, metallic incoming call screen, and gold badge",
+    "default": true,
+    "files": {
+      "smali_classes6/h92/t1.smali": "PremiumStateSettings level override to GOLD tier and isPremium true",
+      "smali_classes6/p92/k.smali": "PremiumFeature entitlement status override",
+      "smali_classes6/xc2/i.smali": "Premium Features list lock removal and Upgrade Required label cleanup",
+      "smali_classes6/br1/bar.smali": "CallerGradientConfig force isGold = true for Gold Call Screen gradient",
+      "smali_classes7/we2/qux.smali": "we2/qux force isGoldGradientEnabled = true",
+      "smali_classes3/com/truecaller/common/ui/avatar/AvatarXConfig.smali": "AvatarXConfig force isGold = true for Gold Crown badge"
+    }
+  }
+]

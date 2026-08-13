@@ -1,0 +1,8 @@
+{
+  "package_name": "com.truecaller",
+  "app_title": "Truecaller",
+  "target_version_name": "26.30.5",
+  "target_version_code": "2630005",
+  "main_activity": "com.truecaller.ui.TruecallerInit",
+  "apkmirror_url": "https://www.apkmirror.com/apk/true-software-scandinavia-ab/truecaller-caller-id-block/truecaller-trusted-caller-id-26-30-5-release/truecaller-trusted-caller-id-26-30-5-android-apk-download/download/?key=fb296f009d223a3550a6b0c322c7bb56e5912f84"
+}

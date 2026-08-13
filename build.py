@@ -1,945 +1,388 @@
 #!/usr/bin/env python3
-import os
+"""
+MikuPatches - Dynamic Multi-App Android Patch Engine
+CLI Entrypoint and Interactive Menu Launcher.
+"""
+
 import sys
-import shutil
-import subprocess
+import os
 import json
-import zipfile
-import webbrowser
-import time
-import argparse
-import re
+import dataclasses
+from typing import List, Dict, Any, Optional
 
+# Ensure package is resolvable when running as a script
 WORKSPACE = os.path.dirname(os.path.abspath(__file__))
-DIST_DIR = os.path.join(WORKSPACE, "dist")
-BUILD_STAGING = os.path.join(WORKSPACE, "build_staging")
-INPUT_DIR = os.path.join(WORKSPACE, "input")
-PATCHES_DIR = os.path.join(WORKSPACE, "patches")
-FRAMEWORK_DIR = os.path.join(WORKSPACE, "framework")
-KEYSTORE = os.path.join(WORKSPACE, "debug.keystore")
+if WORKSPACE not in sys.path:
+    sys.path.insert(0, WORKSPACE)
 
-TARGET_VERSION_NAME = "6.22.0"
-TARGET_VERSION_CODE = "255"
+from mikupatches.constants import Colors, DEFAULT_DIST_DIR, DEFAULT_STAGING_DIR
+from mikupatches.models import BuildOptions
+from mikupatches.cli import parse_cli_options
+from mikupatches.engine import BuildEngine
+from mikupatches.toolchain import Toolchain
+from mikupatches.patcher import AppManager
+from mikupatches.extractor import Extractor
+from mikupatches.adb import AdbManager
+from mikupatches.bundler import Bundler
+from mikupatches.ui.console import Console
+from mikupatches.ui.menu import (
+    show_main_menu,
+    show_app_selection_menu,
+    show_patch_selection_menu,
+    show_arch_selection_menu,
+    prompt_back_to_menu,
+    show_navigatable_menu,
+)
 
-APKMIRROR_URL = "https://www.apkmirror.com/apk/appground-io/bluetooth-keyboard-mouse-2/bluetooth-keyboard-mouse-6-22-0-release/bluetooth-keyboard-mouse-6-22-0-2-android-apk-download/download/?key=1c64014febe7a4b159644f6439cf66cb1e9f2897"
 
-class Colors:
-    CYAN = "\033[96m"
-    GREEN = "\033[92m"
-    YELLOW = "\033[93m"
-    RED = "\033[91m"
-    BOLD = "\033[1m"
-    RESET = "\033[0m"
-
-def log_step(msg):
-    print(f"{Colors.CYAN}{Colors.BOLD}[Step] {msg}{Colors.RESET}")
-
-def log_success(msg):
-    print(f"{Colors.GREEN}{Colors.BOLD}[Success] {msg}{Colors.RESET}")
-
-def log_warn(msg):
-    print(f"{Colors.YELLOW}[Warning] {msg}{Colors.RESET}")
-
-def log_error(msg):
-    print(f"{Colors.RED}{Colors.BOLD}[Error] {msg}{Colors.RESET}")
-
-def run_cmd(cmd):
-    res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    if res.returncode != 0:
-        raise RuntimeError(f"Command failed: {cmd}\nStdout: {res.stdout}\nStderr: {res.stderr}")
-    return res.stdout
-
-def find_tool(tool_name, default_homebrew_path=""):
-    path = shutil.which(tool_name)
-    if path:
-        return path
-    if default_homebrew_path and os.path.exists(default_homebrew_path):
-        return default_homebrew_path
-    
-    sdk_root = os.environ.get("ANDROID_HOME") or os.environ.get("ANDROID_SDK_ROOT")
-    if sdk_root and os.path.exists(os.path.join(sdk_root, "build-tools")):
-        bt_dir = os.path.join(sdk_root, "build-tools")
-        if os.path.exists(bt_dir):
-            versions = sorted(os.listdir(bt_dir), reverse=True)
-            for ver in versions:
-                tool_path = os.path.join(bt_dir, ver, tool_name)
-                if os.path.exists(tool_path):
-                    return tool_path
-    return None
-
-ZIPALIGN = find_tool("zipalign", "/opt/homebrew/share/android-commandlinetools/build-tools/34.0.0/zipalign")
-APKSIGNER = find_tool("apksigner", "/opt/homebrew/share/android-commandlinetools/build-tools/34.0.0/apksigner")
-
-def preflight_check():
-    missing = []
-    if not shutil.which("apktool"):
-        missing.append("Apktool (CLI tool for decompiling/rebuilding APKs)")
-    if not shutil.which("java"):
-        missing.append("Java JDK 17+ (Required by Apktool and apksigner)")
-    if not ZIPALIGN:
-        missing.append("zipalign (Android SDK build-tools for APK alignment)")
-    if not APKSIGNER:
-        missing.append("apksigner (Android SDK build-tools for APK signing)")
-    
-    if missing:
-        print("\n" + "=" * 76)
-        log_error("MISSING REQUIRED SYSTEM TOOLS!")
-        print("------------------------------------------------------------------------")
-        print(" The build pipeline cannot run because the following tools were not found:\n")
-        for tool in missing:
-            print(f"  - {Colors.RED}✗ {tool}{Colors.RESET}")
-        print("\n" + f"{Colors.BOLD}[*] How to Install on macOS (Homebrew):{Colors.RESET}")
-        print(f"  {Colors.CYAN}brew install apktool openjdk android-commandlinetools{Colors.RESET}")
-        print("\n" + f"{Colors.BOLD}[*] How to Install on Linux (Ubuntu / Debian / Mint):{Colors.RESET}")
-        print(f"  {Colors.CYAN}sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner{Colors.RESET}")
-        print("\n" + f"{Colors.BOLD}[*] How to Install on Linux (Fedora / RHEL):{Colors.RESET}")
-        print(f"  {Colors.CYAN}sudo dnf install python3 apktool java-17-openjdk-devel zipalign android-tools{Colors.RESET}")
-        print("\n" + f"{Colors.BOLD}[*] How to Install on Linux (Arch / Manjaro):{Colors.RESET}")
-        print(f"  {Colors.CYAN}sudo pacman -S python android-tools java-environment-openjdk apktool{Colors.RESET}")
-        print("=" * 76 + "\n")
-        sys.exit(1)
-
-def clean_redundant():
-    redundants = [
-        os.path.join(WORKSPACE, "patched_base.apk"),
-        os.path.join(WORKSPACE, "aligned_base.apk"),
-        os.path.join(WORKSPACE, "aligned_base.apk.idsig"),
-        BUILD_STAGING,
-        DIST_DIR
-    ]
-    existing = [p for p in redundants if os.path.exists(p)]
-    if not existing:
-        return False
-
-    log_step("Cleaning up temporary and old build files...")
-    for path in existing:
-        if os.path.isfile(path) or os.path.islink(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
-    return True
-
-def check_clean_prompt(noconfirm=False):
-    if os.path.exists(DIST_DIR) and any(os.scandir(DIST_DIR)):
-        if noconfirm or not sys.stdin.isatty():
-            clean_redundant()
-        else:
-            try:
-                ans = input(f"{Colors.YELLOW}[Clean] Previous build outputs found in 'dist/'. Clear old outputs before starting? [y/N]: {Colors.RESET}").strip().lower()
-                if ans in ('y', 'yes'):
-                    clean_redundant()
-                else:
-                    log_step("Keeping existing 'dist/' directory.")
-            except EOFError:
-                log_step("Keeping existing 'dist/' directory.")
-            except KeyboardInterrupt:
-                print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
-                sys.exit(130)
-    else:
-        clean_redundant()
-
-def ensure_keystore():
-    if not os.path.exists(KEYSTORE):
-        log_step("Generating debug keystore...")
-        cmd = (
-            f'keytool -genkey -v -keystore "{KEYSTORE}" -storepass android '
-            f'-alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 '
-            f'-validity 10000 -dname "CN=Android Debug,O=Android,C=US"'
-        )
-        run_cmd(cmd)
-
-def find_input_file(custom_path=None):
-    if custom_path:
-        if os.path.exists(custom_path):
-            return custom_path
-        else:
-            log_error(f"Specified input file '{custom_path}' does not exist.")
-            sys.exit(1)
-
-    if not os.path.exists(INPUT_DIR):
-        os.makedirs(INPUT_DIR, exist_ok=True)
-    
-    valid_exts = (".apkm", ".apks", ".zip", ".apk")
-    candidates = [
-        f for f in os.listdir(INPUT_DIR)
-        if f.endswith(valid_exts) and not f.startswith(".")
-    ]
-    if candidates:
-        candidates.sort(key=lambda x: (not x.endswith(".apkm"), not x.endswith(".apks"), x))
-        return os.path.join(INPUT_DIR, candidates[0])
-    return None
-
-def prompt_download():
-    print("\n" + "=" * 76)
-    print(f"{Colors.RED}{Colors.BOLD} [Input Required] Target APKM File Not Found!{Colors.RESET}")
-    print("------------------------------------------------------------------------")
-    print(f"  Target App         : Bluetooth Keyboard & Mouse")
-    print(f"  Required Version   : {Colors.CYAN}v{TARGET_VERSION_NAME}{Colors.RESET} (versionCode: {TARGET_VERSION_CODE})")
-    print(f"  Target Package     : {Colors.CYAN}Universal (120-640dpi) (Android 12L+){Colors.RESET}")
-    print(f"  Status             : No .apkm / .apks / .apk file found in 'input/' folder")
-    print("=" * 76 + "\n")
-
-    if sys.stdin.isatty():
-        print(f"{Colors.BOLD}Select an option:{Colors.RESET}")
-        print("  [1] Open APKMirror in browser to download v6.22.0 Universal APKM")
-        print("  [2] Go back / Exit build\n")
-        try:
-            choice = input(f"{Colors.CYAN}Select option [1-2] (default 1): {Colors.RESET}").strip()
-            if choice == "2":
-                log_step("Exiting build process.")
-                sys.exit(0)
-        except EOFError:
-            log_step("Exiting build process.")
-            sys.exit(0)
-        except KeyboardInterrupt:
-            print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
-            sys.exit(130)
-
-    print("\n" + "-" * 76)
-    print(f"{Colors.GREEN}{Colors.BOLD}[+] Opening APKMirror download page in your browser...{Colors.RESET}")
-    print(f"  Link: {Colors.CYAN}{APKMIRROR_URL}{Colors.RESET}")
-    print("-" * 76)
-    print(f"\n{Colors.BOLD}[*] Instructions:{Colors.RESET}")
-    print(f"  1. Download the {Colors.CYAN}v6.22.0 Universal APKM{Colors.RESET} file in your browser.")
-    print(f"  2. Move or copy the downloaded file into the {Colors.CYAN}'input/'{Colors.RESET} folder of this project.")
-    print(f"\n{Colors.YELLOW}[*] Waiting for input file in 'input/' directory... (Auto-detecting){Colors.RESET}\n")
-
-    try:
-        webbrowser.open(APKMIRROR_URL)
-    except Exception as e:
-        log_warn(f"Failed to open browser automatically: {e}")
-
-    while True:
-        infile = find_input_file()
-        if infile:
-            log_success(f"Found input file: {os.path.basename(infile)}")
-            return infile
-        time.sleep(2)
-
-def prepare_bundle(input_file, bundle_staging):
-    os.makedirs(bundle_staging, exist_ok=True)
-    ext = os.path.splitext(input_file)[1].lower()
-
-    try:
-        if ext in (".apkm", ".apks", ".zip"):
-            log_step(f"Extracting '{os.path.basename(input_file)}' into bundle staging...")
-            with zipfile.ZipFile(input_file, 'r') as zf:
-                zf.extractall(bundle_staging)
-        elif ext == ".apk":
-            log_step(f"Copying single APK '{os.path.basename(input_file)}' to bundle staging...")
-            shutil.copyfile(input_file, os.path.join(bundle_staging, "base.apk"))
-    except zipfile.BadZipFile:
-        log_error(f"CORRUPTED INPUT FILE: '{os.path.basename(input_file)}' is not a valid archive.")
-        log_error("Fix: Delete the corrupted file from 'input/' and download a fresh copy from APKMirror.")
-        sys.exit(1)
-
-    base_apk = os.path.join(bundle_staging, "base.apk")
-    if not os.path.exists(base_apk):
-        log_error(f"INVALID BUNDLE STRUCTURE: 'base.apk' was not found inside '{os.path.basename(input_file)}'.")
-        log_error("Fix: Ensure you downloaded the complete Universal APKM bundle from APKMirror (not a standalone split).")
-        sys.exit(1)
-
-    fallback_dir = os.path.join(PATCHES_DIR, "bundle_fallback")
-    info_json = os.path.join(bundle_staging, "info.json")
-    icon_png = os.path.join(bundle_staging, "icon.png")
-    if not os.path.exists(info_json) and os.path.exists(os.path.join(fallback_dir, "info.json")):
-        shutil.copyfile(os.path.join(fallback_dir, "info.json"), info_json)
-    if not os.path.exists(icon_png) and os.path.exists(os.path.join(fallback_dir, "icon.png")):
-        shutil.copyfile(os.path.join(fallback_dir, "icon.png"), icon_png)
-
-def verify_app_version(base_dir, force=False):
-    apktool_yml = os.path.join(base_dir, "apktool.yml")
-    ver_name = None
-    ver_code = None
-
-    if os.path.exists(apktool_yml):
-        with open(apktool_yml, "r", encoding="utf-8") as f:
-            content = f.read()
-            match_name = re.search(r"versionName:\s*['\"]?([^'\"\n]+)['\"]?", content)
-            match_code = re.search(r"versionCode:\s*['\"]?([^'\"\n]+)['\"]?", content)
-            if match_name:
-                ver_name = match_name.group(1).strip()
-            if match_code:
-                ver_code = match_code.group(1).strip()
-
-    log_step(f"Verifying input app version (Detected: v{ver_name or 'Unknown'} / code {ver_code or 'Unknown'})...")
-
-    is_mismatch = (ver_name and ver_name != TARGET_VERSION_NAME) or (ver_code and ver_code != TARGET_VERSION_CODE)
-    if is_mismatch:
-        print("\n" + "=" * 76)
-        log_error("APPLICATION VERSION MISMATCH DETECTED!")
-        print("------------------------------------------------------------------------")
-        print(f"  - Target Version Required : {Colors.GREEN}v{TARGET_VERSION_NAME}{Colors.RESET} (versionCode: {TARGET_VERSION_CODE})")
-        print(f"  - Detected Input Version  : {Colors.RED}v{ver_name or 'Unknown'}{Colors.RESET} (versionCode: {ver_code or 'Unknown'})")
-        print("\n  [!] Why this matters:")
-        print("      These patches are crafted for Smali bytecode structures in v6.22.0.")
-        print("      Applying them to another version may fail or cause app crashes.")
-        if not force:
-            print(f"\n  {Colors.BOLD}Fix Options:{Colors.RESET}")
-            print(f"   1. Download {Colors.CYAN}v6.22.0 Universal APKM{Colors.RESET} from APKMirror and place in 'input/'.")
-            print(f"   2. Force build anyway by passing {Colors.YELLOW}'-f'{Colors.RESET} or {Colors.YELLOW}'--force'{Colors.RESET} flag.")
-            print("=" * 76 + "\n")
-            sys.exit(1)
-        else:
-            log_warn("Forcing build despite version mismatch (--force enabled)...")
-            print("=" * 76 + "\n")
-    else:
-        log_success(f"App version verified: v{ver_name or TARGET_VERSION_NAME} (code {ver_code or TARGET_VERSION_CODE})")
-
-PATCH_GROUPS = [
-    {
-        "id": "pairip",
-        "name": "Play Store Redirection & PairIP License Bypass",
-        "desc": "Bypasses Play Store installer check and PairIP license dialogs",
-        "default": True,
-        "files": {
-            "AndroidManifest.xml": "Play Store Redirection & PairIP Application Bypass",
-            "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License & Installer Verification Bypass",
-            "smali/com/pairip/licensecheck/LicenseContentProvider.smali": "PairIP License ContentProvider Neutralization",
-            "smali/com/pairip/application/Application.smali": "PairIP Application Entry Point Bypass",
-            "smali/eu5.smali": "MainActivity Internal Installer & Store Verification Bypass"
-        }
-    },
-    {
-        "id": "pro_unlock",
-        "name": "Pro & Premium Features Unlock",
-        "desc": "Unlocks all Pro features, subscription status, and billing SKU checks",
-        "default": True,
-        "files": {
-            "smali/fj3.smali": "Premium & Subscription Status Unlock (isPremium=true, isSubscribed=true)",
-            "smali/ez.smali": "Global Premium Access Verification Unlock",
-            "smali/uy.smali": "In-App Billing SKU Verification Bypass"
-        }
-    },
-    {
-        "id": "password_mode",
-        "name": "Password Mode & EndIcon Toggle Unlock",
-        "desc": "Enables password mode / eye toggle in keyboard view",
-        "default": True,
-        "files": {
-            "smali/uv.smali": "Password Mode & EndIcon Toggle Unlock"
-        }
-    },
-    {
-        "id": "clean_menu",
-        "name": "Clean UI & Menu Items Removal",
-        "desc": "Removes Upgrade to Pro, Manage Subscription, and Feedback menu items",
-        "default": True,
-        "files": {
-            "smali/jh0.smali": "Compose Menu Removal & Slot Table Crash Fix",
-            "smali/m2.smali": "Pro & Subscription Menu Action Elimination",
-            "smali/ug5.smali": "Subscription & Feedback Action Elimination"
-        }
-    },
-    {
-        "id": "theme_default",
-        "name": "Default Theme: BlueGrey & System Default",
-        "desc": "Sets default theme color to BlueGrey and design option to System Default",
-        "default": True,
-        "files": {
-            "smali/b64.smali": "Settings Screen Default Theme Color & Option",
-            "smali/c64.smali": "Theme Option Preference Default",
-            "smali/wv3.smali": "SharedPreferences Initializer BlueGrey & System Theme",
-            "smali/io/appground/blek/MainActivity.smali": "MainActivity Default BlueGrey & System Theme"
-        }
-    }
-]
-
-def select_patches_interactively(force_interactive=False, skip_list=None, only_list=None):
-    active_status = {group["id"]: group["default"] for group in PATCH_GROUPS}
-    
-    if skip_list:
-        for gid in skip_list:
-            if gid in active_status:
-                active_status[gid] = False
-                
-    if only_list:
-        for gid in active_status:
-            active_status[gid] = (gid in only_list)
-
-    if not force_interactive:
-        return active_status
-
-    if sys.stdin.isatty():
-        selected_idx = 0
-        num_items = len(PATCH_GROUPS)
-
-        try:
-            sys.stdout.write("\033[?25l")
-            sys.stdout.flush()
-
-            while True:
-                sys.stdout.write("\033[H\033[J")
-
-                print("=" * 76)
-                print(f"{Colors.CYAN}{Colors.BOLD} [#] PATCH SELECTION MENU (Option 2){Colors.RESET}")
-                print("------------------------------------------------------------------------")
-                print(" Use Up/Down Arrows to navigate, Space/Number to toggle, Enter to build:\n")
-
-                for idx, group in enumerate(PATCH_GROUPS):
-                    gid = group["id"]
-                    status_badge = f"{Colors.GREEN}[+] ENABLED {Colors.RESET}" if active_status[gid] else f"{Colors.RED}[-] DISABLED{Colors.RESET}"
-                    
-                    if idx == selected_idx:
-                        pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
-                        prefix = f"{Colors.CYAN}{Colors.BOLD}[{idx + 1}]{Colors.RESET}"
-                        line_str = f" {pointer} {prefix} {status_badge} {Colors.BOLD}{group['name']}{Colors.RESET}"
-                    else:
-                        pointer = "  "
-                        prefix = f"[{idx + 1}]"
-                        line_str = f" {pointer} {prefix} {status_badge} {group['name']}"
-                    
-                    print(line_str)
-                    print(f"     -> {group['desc']}")
-
-                print("\n" + "-" * 76)
-                print(f"{Colors.BOLD}[*] Controls:{Colors.RESET}")
-                print(f"  - Up/Down Arrows: Move cursor")
-                print(f"  - Space / Number (1-5): Toggle patch ON or OFF")
-                print(f"  - Press Enter: Confirm selection and start build")
-                print(f"  - Press 'b': Go back to Main Menu")
-                print(f"  - Press 'q': Exit script")
-                print("=" * 76)
-                sys.stdout.flush()
-
-                key = get_single_keypress()
-                if key == 'UP':
-                    selected_idx = (selected_idx - 1) % num_items
-                elif key == 'DOWN':
-                    selected_idx = (selected_idx + 1) % num_items
-                elif key == 'SPACE':
-                    gid = PATCH_GROUPS[selected_idx]["id"]
-                    active_status[gid] = not active_status[gid]
-                elif key == 'ENTER':
-                    print()
-                    break
-                elif key == 'BACK':
-                    return None
-                elif key == 'QUIT':
-                    print(f"\n{Colors.RED}[!] Build cancelled by user.{Colors.RESET}")
-                    sys.exit(0)
-                elif key and key.isdigit():
-                    idx_val = int(key)
-                    if 1 <= idx_val <= num_items:
-                        gid = PATCH_GROUPS[idx_val - 1]["id"]
-                        active_status[gid] = not active_status[gid]
-                elif key is None:
-                    break
-        finally:
-            sys.stdout.write("\033[?25h")
-            sys.stdout.flush()
-
-    return active_status
-
-def apply_patches(base_dir, active_status):
-    patches_base = os.path.join(PATCHES_DIR, "base")
-    if not os.path.exists(patches_base):
-        raise FileNotFoundError(f"Patches directory not found at '{patches_base}'")
-
-    log_step("Applying smali & manifest patches...")
-    group_results = []
-    
-    for group in PATCH_GROUPS:
-        gid = group["id"]
-        gname = group["name"]
-        is_active = active_status.get(gid, False)
-        
-        if not is_active:
-            group_results.append({
-                "id": gid,
-                "name": gname,
-                "applied": False,
-                "files": []
-            })
-            continue
-
-        group_files = []
-        for rel_path, desc in group["files"].items():
-            src_file = os.path.join(patches_base, rel_path)
-            dst_file = os.path.join(base_dir, rel_path)
-            
-            if os.path.exists(src_file):
-                os.makedirs(os.path.dirname(dst_file), exist_ok=True)
-                shutil.copyfile(src_file, dst_file)
-                if os.path.exists(dst_file):
-                    group_files.append((rel_path, desc, True))
-                    print(f"  -> Applied: {Colors.CYAN}{rel_path}{Colors.RESET} ({desc})")
-                else:
-                    group_files.append((rel_path, desc, False))
-                    log_error(f"Failed to apply: {rel_path}")
-            else:
-                log_error(f"Patch file missing in repository: {rel_path}")
-                group_files.append((rel_path, desc, False))
-
-        group_results.append({
-            "id": gid,
-            "name": gname,
-            "applied": True,
-            "files": group_files
-        })
-
-    applied_count = sum(1 for g in group_results if g["applied"])
-    log_success(f"Successfully applied {applied_count}/{len(PATCH_GROUPS)} patch module(s).")
-    return group_results
-
-def align_and_sign(input_apk, output_apk):
-    unaligned_tmp = output_apk + ".unaligned"
-    shutil.copyfile(input_apk, unaligned_tmp)
-    run_cmd(f'zip -d "{unaligned_tmp}" "META-INF/*" || true')
-    run_cmd(f'"{ZIPALIGN}" -p -f -v 4 "{unaligned_tmp}" "{output_apk}"')
-    if os.path.exists(unaligned_tmp):
-        os.remove(unaligned_tmp)
-    run_cmd(
-        f'"{APKSIGNER}" sign --v1-signing-enabled true --v2-signing-enabled true '
-        f'--v3-signing-enabled true --ks "{KEYSTORE}" --ks-pass pass:android '
-        f'--key-pass pass:android --ks-key-alias androiddebugkey "{output_apk}"'
-    )
-    run_cmd(f'"{ZIPALIGN}" -c -v 4 "{output_apk}"')
-    run_cmd(f'"{APKSIGNER}" verify --verbose "{output_apk}"')
-
-def create_zip(source_files, target_zip_path):
-    os.makedirs(os.path.dirname(target_zip_path), exist_ok=True)
-    with zipfile.ZipFile(target_zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-        for file_path, arcname in source_files:
-            zf.write(file_path, arcname)
-
-def install_via_adb():
-    adb_path = shutil.which("adb")
-    if not adb_path:
-        log_warn("ADB tool not found in PATH. Cannot auto-install.")
+def list_apps_cli():
+    apps = AppManager.list_supported_apps()
+    Console.banner("SUPPORTED APPLICATIONS")
+    if not apps:
+        Console.warn("No application profiles found in 'patches/' folder.")
         return
+    for idx, app in enumerate(apps, 1):
+        print(f"  {Colors.CYAN}[{idx}]{Colors.RESET} {Colors.BOLD}{app.app_title}{Colors.RESET}")
+        print(f"      Package : {app.package_name}")
+        print(f"      Version : v{app.target_version_name} (code: {app.target_version_code})")
+        print(f"      Patches : {len(app.patch_groups)} modules available")
+        print(f"      URL     : {app.apkmirror_url}")
+        print()
 
-    log_step("Checking connected ADB devices...")
-    res = run_cmd("adb devices").strip().splitlines()
-    devices = [line for line in res[1:] if line.strip() and "device" in line and not "offline" in line]
 
-    if not devices:
-        log_warn("No active ADB device/emulator connected. Skipping auto-install.")
-        return
+def list_patches_cli(target_app: str = None):
+    apps = AppManager.list_supported_apps()
+    if target_app:
+        matched = [a for a in apps if a.package_name.lower() == target_app.lower() or target_app.lower() in a.app_title.lower()]
+        if not matched:
+            Console.error(f"Application '{target_app}' not found.")
+            return
+        apps = matched
 
-    staged_base = os.path.join(DIST_DIR, "base.apk")
-    if os.path.exists(staged_base):
-        log_step("Installing patched base.apk onto connected Android device...")
-        try:
-            run_cmd(f'adb install -r "{staged_base}"')
-            log_success("App installed successfully on device!")
-        except Exception as e:
-            log_warn(f"ADB installation failed: {e}")
-
-def show_toolchain_info():
-    log_step("Checking Prerequisites & Toolchain Dependencies...")
-    tools = [
-        ("Python 3", shutil.which("python3") or sys.executable),
-        ("Java / JDK", shutil.which("java")),
-        ("Apktool", shutil.which("apktool")),
-        ("zipalign", ZIPALIGN),
-        ("apksigner", APKSIGNER),
-        ("Git", shutil.which("git")),
-        ("ADB", shutil.which("adb"))
-    ]
-    
-    print("\n" + "=" * 76)
-    print(f"{Colors.BOLD}[*] Toolchain Status & Paths:{Colors.RESET}")
-    print("------------------------------------------------------------------------")
-    all_ok = True
-    for name, path in tools:
-        if path and (os.path.exists(path) if "/" in str(path) else True):
-            print(f"  [+] {Colors.BOLD}{name:<15}{Colors.RESET}: {Colors.CYAN}{path}{Colors.RESET}")
-        else:
-            print(f"  [-] {Colors.BOLD}{name:<15}{Colors.RESET}: {Colors.RED}NOT FOUND{Colors.RESET}")
-            if name in ("Python 3", "Java / JDK", "Apktool", "zipalign", "apksigner"):
-                all_ok = False
-    print("=" * 76 + "\n")
-    
-    if all_ok:
-        log_success("All required build dependencies are present and ready!")
-    else:
-        log_warn("Some dependencies are missing. Check TECHNICAL.md for setup instructions.")
-
-def get_single_keypress():
-    if not sys.stdin.isatty():
-        return None
-    try:
-        import tty, termios
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-            if ch == '\x1b':
-                ch2 = sys.stdin.read(1)
-                if ch2 == '[':
-                    ch3 = sys.stdin.read(1)
-                    if ch3 == 'A':
-                        return 'UP'
-                    elif ch3 == 'B':
-                        return 'DOWN'
-                    elif ch3 == 'C':
-                        return 'RIGHT'
-                    elif ch3 == 'D':
-                        return 'LEFT'
-            elif ch in ('\r', '\n'):
-                return 'ENTER'
-            elif ch == ' ':
-                return 'SPACE'
-            elif ch in ('b', 'B'):
-                return 'BACK'
-            elif ch == '\x03':
-                raise KeyboardInterrupt
-            elif ch in ('q', 'Q'):
-                return 'QUIT'
-            elif ch.isdigit():
-                return ch
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    except KeyboardInterrupt:
-        raise KeyboardInterrupt
-    except Exception:
-        return None
-    return None
-
-def show_navigatable_menu(title, items, default_idx=0, status_lines=None):
-    if not sys.stdin.isatty():
-        return 0
-
-    selected_idx = default_idx
-    num_items = len(items)
-
-    try:
-        # Hide cursor during menu navigation
-        sys.stdout.write("\033[?25l")
-        sys.stdout.flush()
-
-        while True:
-            # Move cursor to top-left (0,0) and clear screen to prevent terminal scrolling
-            sys.stdout.write("\033[H\033[J")
-
-            print("=" * 76)
-            print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
-            print("------------------------------------------------------------------------")
-            print(" Use Up/Down arrows to move, Enter/number to select, or 'q' to exit:")
+    Console.banner("AVAILABLE PATCHES")
+    for app in apps:
+        print(f"\n{Colors.BOLD}=== {app.app_title} ({app.package_name}) [Target: v{app.target_version_name}] ==={Colors.RESET}\n")
+        for idx, group in enumerate(app.patch_groups, 1):
+            status = f"{Colors.GREEN}[ON]{Colors.RESET}" if group.default else f"{Colors.YELLOW}[OFF]{Colors.RESET}"
+            print(f"  {idx}. {Colors.CYAN}{group.id:<20}{Colors.RESET} {status} - {Colors.BOLD}{group.name}{Colors.RESET}")
+            print(f"     {group.desc}")
             print()
 
-            for idx, (num_key, label, desc) in enumerate(items):
-                if idx == selected_idx:
-                    pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
-                    prefix = f"{Colors.CYAN}{Colors.BOLD}[{num_key}]{Colors.RESET}"
-                    line_str = f" {pointer} {prefix} {Colors.BOLD}{label}{Colors.RESET}"
-                else:
-                    pointer = "  "
-                    prefix = f"[{num_key}]"
-                    line_str = f" {pointer} {prefix} {label}"
-                
-                if desc:
-                    line_str += f" ({desc})"
-                print(line_str)
-
-            print("=" * 76)
-
-            if status_lines:
-                for sline in status_lines:
-                    print(sline)
-
-            sys.stdout.flush()
-
-            key = get_single_keypress()
-            if key == 'UP':
-                selected_idx = (selected_idx - 1) % num_items
-            elif key == 'DOWN':
-                selected_idx = (selected_idx + 1) % num_items
-            elif key == 'ENTER':
-                return selected_idx
-            elif key == 'QUIT':
-                print(f"\n{Colors.RED}[!] Script terminated by user.{Colors.RESET}")
-                sys.exit(0)
-            elif key and key.isdigit():
-                for idx, (num_key, label, desc) in enumerate(items):
-                    if str(num_key) == key:
-                        return idx
-            elif key is None:
-                try:
-                    ans = input(f"\n{Colors.CYAN}Waiting for input (0-6): {Colors.RESET}").strip().lower()
-                    if ans.isdigit():
-                        for idx, (num_key, label, desc) in enumerate(items):
-                            if str(num_key) == ans:
-                                return idx
-                    elif ans in ('q', 'quit', 'exit'):
-                        sys.exit(0)
-                    return selected_idx
-                except KeyboardInterrupt:
-                    raise KeyboardInterrupt
-    finally:
-        # Always restore cursor visibility
-        sys.stdout.write("\033[?25h")
-        sys.stdout.flush()
-
-def show_main_menu(default_idx=0, status_lines=None):
-    items = [
-        ("1", "(Recommended) Build App with All Patches", ""),
-        ("2", "Choose Patches & Build", "Custom Selection"),
-        ("3", "Clean Build Files", "Reset dist/ outputs"),
-        ("4", "Install App on Phone", "via ADB"),
-        ("5", "Check System Requirements", "Verify Python, Java, Apktool"),
-        ("6", "Help & Usage Guide", "View CLI options & troubleshooting"),
-        ("0", "Exit", "")
-    ]
-    idx = show_navigatable_menu("MIKUPATCHES MAIN MENU", items, default_idx=default_idx, status_lines=status_lines)
-    return idx, items[idx][0]
 
 def show_help_guide():
-    log_step("Displaying Help & Usage Guide...")
-    print("\n" + "=" * 76)
-    print(f"{Colors.CYAN}{Colors.BOLD} MIKUPATCHES - HELP & USAGE GUIDE{Colors.RESET}")
-    print("=" * 76)
+    apps = AppManager.list_supported_apps()
+    app_list_str = "\n".join(f"   - {a.app_title} ({a.package_name} v{a.target_version_name})" for a in apps)
+
+    Console.banner("HELP & CLI REFERENCE")
     print(f"""
-{Colors.BOLD}1. Overview & Purpose{Colors.RESET}
-   MikuPatches patches 'Bluetooth Keyboard & Mouse' (v6.22.0 / code 255).
-   Unlocks Pro features, password mode, removes Store redirection & clean UI.
+{Colors.BOLD}1. Supported Applications:{Colors.RESET}
+{app_list_str}
 
-{Colors.BOLD}2. How to Build (Step-by-Step){Colors.RESET}
-   - Download the target v6.22.0 APKM bundle from APKMirror.
-   - Place the downloaded file inside the 'input/' folder.
-   - Run 'python3 build.py' and choose option [1] to start building.
-   - Patched APKs and bundles will be saved under 'dist/'.
+{Colors.BOLD}2. How to Build:{Colors.RESET}
+   1. Download the app package from APKMirror and put it in the 'input/' folder.
+   2. Run 'python3 build.py' and choose your app.
+   3. Patched outputs will be saved in 'dist/'.
 
-{Colors.BOLD}3. Input & Output Formats{Colors.RESET}
-   - Input : .apkm, .apks, .apk, or .zip placed in 'input/' (or CLI path).
-   - Output: 'dist/universal.apkm' (for SAI/APKMirror Installer) and 'dist/base.apk'.
-
-{Colors.BOLD}4. Command Line Reference (CLI Flags){Colors.RESET}
+{Colors.BOLD}3. CLI Flags:{Colors.RESET}
    python3 build.py [input_file] [options]
 
    -m, --menu            Open interactive main menu
-   -i, --install         Auto-install base.apk via ADB after building
-   -c, --clean           Clean 'dist/' and build staging files
-   -y, --yes             Auto-confirm prompts (non-interactive mode)
-   -f, --force           Bypass app version verification check
-   -p, --select-patches  Open interactive patch selection menu
-   --skip-patches <ids>  Skip patches (pairip,pro_unlock,password_mode,clean_menu,theme_default)
-   --only-patches <ids>  Apply specified patches only
-
-{Colors.BOLD}5. Common Troubleshooting Steps{Colors.RESET}
-   - Version Mismatch: Download v6.22.0 APKM or use '-f' to force build.
-   - Missing Tools: Install Java 17+ and Apktool ('brew install apktool openjdk').
-   - ADB Install Failed: Enable USB Debugging & uninstall original app first.
+   -a, --app <pkg>       Target specific package (e.g. io.appground.blek or com.truecaller)
+   -i, --input <path>    Explicit input file or directory
+   -o, --output-dir <p>  Custom output directory (default: 'dist/')
+   -p, --select-patches  Open interactive patch checklist
+   --clone               Enable App Clone mode to install alongside original app
+   --arch <arches>       Filter architecture (arm64-v8a, armeabi-v7a, x86, x86_64)
+   -f, --force           Bypass version check
+   --dry-run             Simulate patch injection without building
+   -I, --install         Auto-install built APK via ADB
+   -d, --device <ser>    Target specific ADB device serial
+   --launch              Auto-launch app after ADB install
+   -c, --clean           Clean output and staging files
+   -y, --yes             Auto-confirm non-interactive mode
+   --list-apps           List supported applications
+   --list-patches        List available patches
 """)
-    print("=" * 76 + "\n")
 
-def prompt_back_to_menu():
-    print("-" * 76)
-    print(f"{Colors.BOLD}[*] Options:{Colors.RESET}")
-    print(f"  - Press {Colors.CYAN}'b'{Colors.RESET} (or Enter) to return to Main Menu")
-    print(f"  - Press {Colors.CYAN}'q'{Colors.RESET} to Exit script")
-    print("-" * 76)
-    sys.stdout.flush()
 
-    if not sys.stdin.isatty():
-        try:
-            ans = input().strip().lower()
-            if ans in ('q', 'quit', 'exit'):
-                sys.exit(0)
-        except Exception:
-            pass
-        return
+def scan_dist_variants(dist_dir: str) -> List[Dict[str, Any]]:
+    """Scans dist_dir for distinct built variants, choosing the best package per variant."""
+    variants = []
+    if not os.path.exists(dist_dir):
+        return variants
 
-    while True:
-        key = get_single_keypress()
-        if key in ('ENTER', 'BACK'):
-            return
-        elif key == 'QUIT':
-            print(f"\n{Colors.RED}[!] Script terminated by user.{Colors.RESET}")
-            sys.exit(0)
+    for app_name in sorted(os.listdir(dist_dir)):
+        app_dir = os.path.join(dist_dir, app_name)
+        if not os.path.isdir(app_dir) or app_name.startswith("."):
+            continue
 
-def run_build_pipeline(args):
-    print(f"\n{Colors.BOLD}=== MIKUPATCHES BUILD PIPELINE ==={Colors.RESET}\n")
-    preflight_check()
+        subdirs = [
+            d for d in sorted(os.listdir(app_dir))
+            if os.path.isdir(os.path.join(app_dir, d)) and not d.startswith(".")
+        ]
 
-    skip_list = [s.strip() for s in args.skip_patches.split(',')] if args.skip_patches else None
-    only_list = [s.strip() for s in args.only_patches.split(',')] if args.only_patches else None
-
-    active_patches = select_patches_interactively(
-        force_interactive=args.select_patches,
-        skip_list=skip_list,
-        only_list=only_list
-    )
-    if active_patches is None:
-        log_step("Returning to Main Menu.")
-        return False
-
-    check_clean_prompt(args.yes)
-    ensure_keystore()
-
-    input_file = find_input_file(args.input_file)
-    if not input_file:
-        input_file = prompt_download()
-
-    os.makedirs(DIST_DIR, exist_ok=True)
-    os.makedirs(BUILD_STAGING, exist_ok=True)
-
-    bundle_staging = os.path.join(BUILD_STAGING, "bundle")
-    prepare_bundle(input_file, bundle_staging)
-
-    base_apk_path = os.path.join(bundle_staging, "base.apk")
-    decompiled_base_dir = os.path.join(BUILD_STAGING, "base")
-
-    log_step("Decompiling base.apk with apktool...")
-    try:
-        run_cmd(f'apktool d -p "{FRAMEWORK_DIR}" "{base_apk_path}" -o "{decompiled_base_dir}" -f')
-    except RuntimeError as e:
-        log_error("APKTOOL DECOMPILATION FAILED!")
-        print(f"Details: {e}")
-        log_warn("Troubleshooting: Ensure Java 17+ and Apktool 2.9+ are installed and input APK is valid.")
-        return False
-
-    verify_app_version(decompiled_base_dir, force=args.force)
-
-    applied_patches = apply_patches(decompiled_base_dir, active_patches)
-
-    log_step("Recompiling patched base.apk with apktool...")
-    raw_base = os.path.join(BUILD_STAGING, "raw_base.apk")
-    try:
-        run_cmd(f'apktool b -p "{FRAMEWORK_DIR}" "{decompiled_base_dir}" -o "{raw_base}"')
-    except RuntimeError as e:
-        log_error("APKTOOL RECOMPILATION FAILED!")
-        print(f"Details: {e}")
-        log_warn("Troubleshooting: A Smali patch syntax error or resource conflict occurred during rebuild.")
-        return False
-
-    staged_base = os.path.join(BUILD_STAGING, "staged_base.apk")
-    log_step("Aligning & signing base.apk...")
-    align_and_sign(raw_base, staged_base)
-
-    shutil.copyfile(staged_base, os.path.join(DIST_DIR, "base.apk"))
-
-    log_step("Processing split APKs...")
-    arch_splits = {
-        "arm64-v8a": "split_config.arm64_v8a.apk",
-        "armeabi-v7a": "split_config.armeabi_v7a.apk",
-        "x86": "split_config.x86.apk",
-        "x86_64": "split_config.x86_64.apk"
-    }
-
-    staged_splits = {}
-    for fname in os.listdir(bundle_staging):
-        fpath = os.path.join(bundle_staging, fname)
-        if fname.endswith(".apk") and fname != "base.apk":
-            out_staged = os.path.join(BUILD_STAGING, fname)
-            align_and_sign(fpath, out_staged)
-            staged_splits[fname] = out_staged
-
-    info_json_path = os.path.join(bundle_staging, "info.json")
-    if os.path.exists(info_json_path):
-        with open(info_json_path, "r") as f:
-            base_info = json.load(f)
-    else:
-        base_info = {}
-
-    icon_path = os.path.join(bundle_staging, "icon.png")
-
-    log_step("Creating Universal APKM & APKS in dist/...")
-    univ_apkm_files = [(staged_base, "base.apk")]
-    if os.path.exists(info_json_path):
-        univ_apkm_files.append((info_json_path, "info.json"))
-    if os.path.exists(icon_path):
-        univ_apkm_files.append((icon_path, "icon.png"))
-    univ_apkm_files.extend([(path, fname) for fname, path in staged_splits.items()])
-
-    univ_apks_files = [(staged_base, "base.apk")] + [(path, fname) for fname, path in staged_splits.items()]
-
-    create_zip(univ_apkm_files, os.path.join(DIST_DIR, "universal.apkm"))
-    create_zip(univ_apks_files, os.path.join(DIST_DIR, "universal.apks"))
-
-    non_arch_splits = {
-        fname: path for fname, path in staged_splits.items()
-        if fname not in arch_splits.values()
-    }
-
-    for arch, arch_split_fname in arch_splits.items():
-        log_step(f"Creating arch bundle for {arch}...")
-        arch_dir = os.path.join(DIST_DIR, arch)
-
-        arch_info = dict(base_info)
-        arch_info["arches"] = [arch]
-        arch_info["variant"] = f"({arch}) (120-640dpi) (Android 12L+)"
-        arch_info["release_title"] = f"Bluetooth Keyboard & Mouse 6.22.0 ({arch})"
-
-        arch_info_path = os.path.join(BUILD_STAGING, f"info_{arch}.json")
-        with open(arch_info_path, "w") as f:
-            json.dump(arch_info, f, indent=4)
-
-        arch_specific_splits = dict(non_arch_splits)
-        if arch_split_fname in staged_splits:
-            arch_specific_splits[arch_split_fname] = staged_splits[arch_split_fname]
-
-        arch_apkm_files = [(staged_base, "base.apk")]
-        if os.path.exists(arch_info_path):
-            arch_apkm_files.append((arch_info_path, "info.json"))
-        if os.path.exists(icon_path):
-            arch_apkm_files.append((icon_path, "icon.png"))
-        arch_apkm_files.extend([(path, fname) for fname, path in arch_specific_splits.items()])
-
-        arch_apks_files = [(staged_base, "base.apk")] + [(path, fname) for fname, path in arch_specific_splits.items()]
-
-        create_zip(arch_apkm_files, os.path.join(arch_dir, f"{arch}.apkm"))
-        create_zip(arch_apks_files, os.path.join(arch_dir, f"{arch}.apks"))
-
-    shutil.rmtree(BUILD_STAGING)
-
-    if args.install:
-        install_via_adb()
-
-    print("\n" + "=" * 76)
-    print(f"{Colors.GREEN}{Colors.BOLD} [+] BUILD COMPLETE & SUCCESSFUL{Colors.RESET}")
-    print("------------------------------------------------------------------------")
-    print(f"{Colors.BOLD} [*] Applied Patches Status:{Colors.RESET}\n")
-    for idx, g in enumerate(applied_patches, 1):
-        if g["applied"]:
-            status_badge = f"{Colors.GREEN}[+] APPLIED {Colors.RESET}"
-            print(f"  {idx}. {status_badge} {Colors.BOLD}{g['name']}{Colors.RESET}")
-            for rel_path, desc, ok in g["files"]:
-                f_status = f"{Colors.GREEN}✓{Colors.RESET}" if ok else f"{Colors.RED}✗{Colors.RESET}"
-                print(f"     {f_status} {Colors.CYAN}{rel_path}{Colors.RESET} ({desc})")
+        variant_dirs = []
+        is_direct_variant = any(
+            os.path.exists(os.path.join(app_dir, fname)) for fname in ("universal.apkm", "base.apk", "info.json")
+        )
+        if is_direct_variant and not subdirs:
+            variant_dirs.append(app_dir)
         else:
-            status_badge = f"{Colors.YELLOW}[-] SKIPPED {Colors.RESET}"
-            print(f"  {idx}. {status_badge} {g['name']} (Disabled by user)")
+            for sub in subdirs:
+                sub_path = os.path.join(app_dir, sub)
+                if sub not in ("arm64-v8a", "armeabi-v7a", "x86", "x86_64"):
+                    variant_dirs.append(sub_path)
+                elif is_direct_variant and app_dir not in variant_dirs:
+                    variant_dirs.append(app_dir)
 
-    abs_dist = os.path.abspath(DIST_DIR)
-    print(f"\n{Colors.BOLD} [*] Output Save Location (Save Directory):{Colors.RESET}")
-    print(f"    Absolute Path: {Colors.CYAN}{abs_dist}{Colors.RESET}\n")
+        if not variant_dirs:
+            variant_dirs = [app_dir]
 
-    print(f"{Colors.BOLD} [*] Generated Packages:{Colors.RESET}")
-    for root, dirs, files in os.walk(DIST_DIR):
-        for f in sorted(files):
-            full_path = os.path.join(root, f)
-            rel_path = os.path.relpath(full_path, DIST_DIR)
-            sz_mb = os.path.getsize(full_path) / (1024 * 1024)
-            print(f"   - {Colors.CYAN}dist/{rel_path}{Colors.RESET} ({sz_mb:.2f} MB)")
-    print("=" * 76 + "\n")
+        for v_dir in variant_dirs:
+            primary_pkg = None
+            univ_apkm = os.path.join(v_dir, "universal.apkm")
+            if os.path.exists(univ_apkm):
+                primary_pkg = univ_apkm
+            else:
+                for root, _, files in os.walk(v_dir):
+                    for f in sorted(files):
+                        if f.endswith(".apkm") and not f.startswith("."):
+                            primary_pkg = os.path.join(root, f)
+                            break
+                    if primary_pkg:
+                        break
+
+            if not primary_pkg:
+                base_apk = os.path.join(v_dir, "base.apk")
+                if os.path.exists(base_apk):
+                    primary_pkg = base_apk
+                else:
+                    for root, _, files in os.walk(v_dir):
+                        for f in sorted(files):
+                            if f.endswith(".apk") and not f.startswith("."):
+                                primary_pkg = os.path.join(root, f)
+                                break
+                        if primary_pkg:
+                            break
+
+            if not primary_pkg or not os.path.exists(primary_pkg):
+                continue
+
+            rel_path = os.path.relpath(v_dir, dist_dir)
+            parts = rel_path.split(os.sep)
+            app_title = parts[0].replace("_", " ")
+
+            # Resolve official app title from info.json or registered AppProfiles
+            info_path = os.path.join(v_dir, "info.json")
+            if os.path.exists(info_path):
+                try:
+                    with open(info_path, "r", encoding="utf-8") as f:
+                        info_data = json.load(f)
+                        if info_data.get("app_name"):
+                            app_title = info_data.get("app_name")
+                except Exception:
+                    pass
+            else:
+                for prof in AppManager.list_supported_apps():
+                    if Bundler.get_clean_app_dirname(prof) == parts[0]:
+                        app_title = prof.app_title
+                        break
+
+            variant_tag = parts[1] if len(parts) > 1 else "Default"
+
+            display_variant = variant_tag.replace("+", " + ")
+            if display_variant == "Full":
+                desc = "All Patches Included"
+            elif "Clone" in display_variant:
+                desc = "Dual-Install Clone (.tux)"
+            elif display_variant == "Vanilla":
+                desc = "Original Unpatched Base"
+            else:
+                desc = f"Custom: {display_variant}"
+
+            patches_txt = os.path.join(v_dir, "PATCHES.txt")
+            if os.path.exists(patches_txt):
+                try:
+                    with open(patches_txt, "r", encoding="utf-8") as f:
+                        for line in f:
+                            if line.strip().startswith("Variant :"):
+                                raw_v = line.split(":", 1)[1].strip()
+                                if raw_v == "Full":
+                                    desc = "All Patches Included"
+                                elif "Clone" in raw_v:
+                                    desc = f"Dual-Install Clone (.tux) - {raw_v}"
+                                else:
+                                    desc = f"Custom: {raw_v}"
+                                break
+                except Exception:
+                    pass
+
+            sz_mb = os.path.getsize(primary_pkg) / (1024 * 1024)
+            variants.append({
+                "app_title": app_title,
+                "variant_tag": variant_tag,
+                "display_title": f"{app_title} [{variant_tag}]",
+                "desc": f"{sz_mb:.2f} MB - {desc}",
+                "package_path": primary_pkg,
+                "dir": v_dir,
+            })
+
+    return variants
+
+
+def handle_adb_install_menu(dist_dir: str):
+    """Dynamic ADB install menu supporting multiple devices and multiple generated APKs."""
+    if not Toolchain.get_adb():
+        Console.warn("ADB is not installed or not found in system PATH.")
+        Toolchain.print_install_guide()
+        return False
+
+    devices = AdbManager.list_devices()
+    if not devices:
+        Console.warn("No Android phone or emulator connected.")
+        print(f"  {Colors.CYAN}[*] Connect your phone via USB with USB Debugging enabled, or start an emulator.{Colors.RESET}\n")
+        return False
+
+    if not os.path.exists(dist_dir):
+        Console.warn(f"Output folder '{os.path.basename(dist_dir)}/' does not exist. Build an app first.")
+        return False
+
+    # Scan distinct variants in dist/
+    variants = scan_dist_variants(dist_dir)
+
+    if not variants:
+        Console.warn(f"No built packages found in '{os.path.basename(dist_dir)}/'. Build an app first.")
+        return False
+
+    # Device selection if multiple connected
+    chosen_device = None
+    if len(devices) > 1 and sys.stdin.isatty():
+        dev_items = []
+        for idx, (serial, model) in enumerate(devices, 1):
+            dev_items.append((str(idx), model, f"Serial: {serial}"))
+        dev_items.append(("b", "Cancel", ""))
+
+        dev_idx = show_navigatable_menu("SELECT TARGET DEVICE", dev_items, default_idx=0)
+        if dev_idx == len(dev_items) - 1:
+            return False
+        chosen_device = devices[dev_idx][0]
+    else:
+        chosen_device = devices[0][0]
+
+    # Variant package selection if multiple found
+    selected_variant = variants[0]
+    if len(variants) > 1 and sys.stdin.isatty():
+        items = []
+        for idx, v in enumerate(variants, 1):
+            items.append((str(idx), v["display_title"], v["desc"]))
+        items.append(("b", "Cancel", ""))
+
+        choice_idx = show_navigatable_menu("SELECT PACKAGE TO INSTALL", items, default_idx=0)
+        if choice_idx == len(items) - 1:
+            return False
+        selected_variant = variants[choice_idx]
+    else:
+        if sys.stdin.isatty():
+            print(f"\n{Colors.BOLD}Found Build:{Colors.RESET} {Colors.CYAN}{selected_variant['display_title']}{Colors.RESET} ({selected_variant['desc']})")
+            try:
+                confirm = input(f"{Colors.CYAN}Install on device [{chosen_device}]? [Y/n]: {Colors.RESET}").strip().lower()
+                if confirm in ("n", "no"):
+                    return False
+            except (EOFError, KeyboardInterrupt):
+                return False
+
+    selected_target = selected_variant["package_path"]
+    installed_ok = AdbManager.install(selected_target, device_serial=chosen_device)
+    if installed_ok and sys.stdin.isatty():
+        # Determine package name from info.json in APK's folder or app profile
+        pkg_to_launch = None
+
+        # 1. Search for info.json in the selected variant folder and parent folders
+        curr_dir = selected_variant["dir"]
+        while curr_dir and os.path.abspath(curr_dir) != os.path.abspath(os.path.dirname(dist_dir)):
+            info_candidate = os.path.join(curr_dir, "info.json")
+            if os.path.isfile(info_candidate):
+                try:
+                    with open(info_candidate, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        if data.get("pname"):
+                            pkg_to_launch = data.get("pname")
+                            break
+                except Exception:
+                    pass
+            if os.path.abspath(curr_dir) == os.path.abspath(dist_dir):
+                break
+            curr_dir = os.path.dirname(curr_dir)
+
+        # 2. Fallback matching against app folder name and clone status
+        rel_path = os.path.relpath(selected_target, dist_dir)
+        app_folder = rel_path.split(os.sep)[0]
+        is_clone = "clone" in selected_variant.get("variant_tag", "").lower() or "clone" in rel_path.lower()
+
+        if not pkg_to_launch:
+            for app in AppManager.list_supported_apps():
+                clean_name = Bundler.get_clean_app_dirname(app)
+                if clean_name.lower() in app_folder.lower() or app.package_name.lower() in app_folder.lower():
+                    pkg_to_launch = f"{app.package_name}.tux" if is_clone else app.package_name
+                    break
+
+        if is_clone and pkg_to_launch and not pkg_to_launch.endswith(".tux"):
+            pkg_to_launch = f"{pkg_to_launch}.tux"
+
+        if pkg_to_launch:
+            try:
+                launch_ans = input(f"\n{Colors.CYAN}[?] Launch {pkg_to_launch} on device now? [Y/n]: {Colors.RESET}").strip().lower()
+                if launch_ans in ("", "y", "yes"):
+                    AdbManager.launch_app(package_name=pkg_to_launch, device_serial=chosen_device)
+            except (EOFError, KeyboardInterrupt):
+                pass
     return True
 
+
 def main():
-    parser = argparse.ArgumentParser(description="MikuPatches - Bluetooth Keyboard & Mouse Patch Pipeline")
-    parser.add_argument("input_file", nargs="?", help="Path to input .apkm / .apks / .apk file")
-    parser.add_argument("-m", "--menu", action="store_true", help="Open interactive main menu")
-    parser.add_argument("-i", "--install", action="store_true", help="Auto-install built APK onto connected ADB device")
-    parser.add_argument("-c", "--clean", action="store_true", help="Clean dist and build_staging directories")
-    parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm all prompts (e.g. clear old outputs)")
-    parser.add_argument("-f", "--force", action="store_true", help="Force build despite version mismatch")
-    parser.add_argument("-p", "--select-patches", action="store_true", help="Open interactive patch selection menu")
-    parser.add_argument("--skip-patches", help="Comma-separated list of patch module IDs to skip (pairip,pro_unlock,password_mode,clean_menu,theme_default)")
-    parser.add_argument("--only-patches", help="Comma-separated list of patch module IDs to apply")
-    args = parser.parse_args()
+    parsed, options = parse_cli_options()
 
-    is_interactive_menu = args.menu or (not args.input_file and not args.clean and not args.install and not args.select_patches and not args.skip_patches and not args.only_patches and sys.stdin.isatty())
+    if parsed.no_color:
+        Console.set_color_enabled(False)
 
-    if not is_interactive_menu:
-        if args.clean:
-            clean_redundant()
-            log_success("Cleaned build artifacts.")
-            sys.exit(0)
-        run_build_pipeline(args)
+    # Handle quick informational queries
+    if parsed.list_apps:
+        list_apps_cli()
         sys.exit(0)
 
+    if parsed.list_patches:
+        list_patches_cli(options.target_app)
+        sys.exit(0)
+
+    if parsed.clean:
+        cleaned = BuildEngine.clean_redundant(options.output_dir, options.staging_dir)
+        if cleaned:
+            Console.success("Cleaned build artifacts.")
+        else:
+            Console.step("No temporary build files found to clean.")
+        sys.exit(0)
+
+    # Determine whether to launch interactive menu or direct pipeline
+    has_explicit_actions = (
+        parsed.input_file
+        or parsed.custom_input
+        or parsed.target_app
+        or parsed.only_patches
+        or parsed.skip_patches
+        or parsed.dry_run
+        or parsed.yes
+        or parsed.install
+        or parsed.clean
+        or parsed.select_patches
+    )
+
+    is_interactive_menu = parsed.menu or (not has_explicit_actions and sys.stdin.isatty())
+
+    if not is_interactive_menu:
+        res = BuildEngine.run_pipeline(options)
+        sys.exit(0 if res.success else 1)
+
+    # Interactive Main Menu Loop
     current_idx = 0
     status_lines = None
 
@@ -949,42 +392,126 @@ def main():
         current_idx = choice_idx
 
         if choice in ('0', 'q', 'exit', 'quit'):
-            log_step("Exiting.")
+            Console.step("Exiting.")
             sys.exit(0)
+
         elif choice == '1':
-            args.select_patches = False
-            ok = run_build_pipeline(args)
-            if ok:
+            # Option 1: Build App (All Patches)
+            apps = AppManager.list_supported_apps()
+            chosen_app = show_app_selection_menu(apps, title="SELECT APPLICATION TO BUILD")
+            if not chosen_app:
+                continue
+
+            target_pkg = chosen_app.package_name
+
+            enable_clone = False
+            if sys.stdin.isatty():
+                try:
+                    clone_ans = input(
+                        f"\n{Colors.CYAN}[?] Enable App Clone to install alongside original app? [y/N]: {Colors.RESET}"
+                    ).strip().lower()
+                    if clone_ans in ("y", "yes"):
+                        enable_clone = True
+                except (EOFError, KeyboardInterrupt):
+                    pass
+
+            opts = dataclasses.replace(
+                options,
+                target_app=target_pkg,
+                clone=enable_clone,
+                select_patches=False,
+                only_patches=None,
+                skip_patches=None,
+            )
+            res = BuildEngine.run_pipeline(opts)
+            if res.success:
                 prompt_back_to_menu()
+
         elif choice == '2':
-            args.select_patches = True
-            ok = run_build_pipeline(args)
-            if ok:
+            # Option 2: Custom Patch Selection
+            apps = AppManager.list_supported_apps()
+            chosen_app = show_app_selection_menu(apps, title="SELECT APPLICATION TO CONFIGURE")
+            if not chosen_app:
+                continue
+
+            opts = dataclasses.replace(
+                options,
+                target_app=chosen_app.package_name,
+                select_patches=True,
+                only_patches=None,
+                skip_patches=None,
+            )
+            res = BuildEngine.run_pipeline(opts)
+            if res.success:
                 prompt_back_to_menu()
+
         elif choice == '3':
-            cleaned = clean_redundant()
+            # Option 3: Build for Specific Arch
+            chosen_arches = show_arch_selection_menu()
+            if chosen_arches is None:
+                continue
+
+            apps = AppManager.list_supported_apps()
+            chosen_app = show_app_selection_menu(apps, title="SELECT APPLICATION")
+            if not chosen_app:
+                continue
+
+            enable_clone = False
+            if sys.stdin.isatty():
+                try:
+                    clone_ans = input(
+                        f"\n{Colors.CYAN}[?] Enable App Clone to install alongside original app? [y/N]: {Colors.RESET}"
+                    ).strip().lower()
+                    if clone_ans in ("y", "yes"):
+                        enable_clone = True
+                except (EOFError, KeyboardInterrupt):
+                    pass
+
+            opts = dataclasses.replace(
+                options,
+                target_app=chosen_app.package_name,
+                arches=chosen_arches,
+                clone=enable_clone,
+                select_patches=False,
+                only_patches=None,
+                skip_patches=None,
+            )
+            res = BuildEngine.run_pipeline(opts)
+            if res.success:
+                prompt_back_to_menu()
+
+        elif choice == '4':
+            # Option 4: Install App to Phone via ADB
+            did_install = handle_adb_install_menu(options.output_dir)
+            if did_install:
+                prompt_back_to_menu()
+
+        elif choice == '5':
+            # Option 5: Clean Output Files
+            cleaned = BuildEngine.clean_redundant(options.output_dir, options.staging_dir)
             if cleaned:
                 status_lines = [
-                    f" {Colors.YELLOW}[Step] Cleaning up temporary and old build files...{Colors.RESET}",
-                    f" {Colors.GREEN}[Success] Cleaned build artifacts.{Colors.RESET}"
+                    f" {Colors.GREEN}[Success] Cleaned dist/ and temporary build files.{Colors.RESET}"
                 ]
             else:
                 status_lines = [
-                    f" {Colors.GREEN}[Success] No leftover build files found to clean.{Colors.RESET}"
+                    f" {Colors.GREEN}[Success] Output folder already clean.{Colors.RESET}"
                 ]
-        elif choice == '4':
-            install_via_adb()
-            prompt_back_to_menu()
-        elif choice == '5':
-            show_toolchain_info()
-            prompt_back_to_menu()
+
         elif choice == '6':
+            # Option 6: System Toolchain Status
+            Toolchain.print_diagnostics()
+            prompt_back_to_menu()
+
+        elif choice == '7':
+            # Option 7: Help & Usage Guide
             show_help_guide()
             prompt_back_to_menu()
+
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print(f"\n{Colors.RED}[!] Script terminated by user (Ctrl+C).{Colors.RESET}")
+        print(f"\n{Colors.RED}[!] Terminated (Ctrl+C).{Colors.RESET}")
         sys.exit(130)

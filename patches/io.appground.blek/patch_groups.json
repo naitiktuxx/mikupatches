@@ -1,0 +1,58 @@
+[
+  {
+    "id": "pairip",
+    "name": "Bypass License & Play Store Check",
+    "desc": "Bypasses PairIP anti-piracy verification and Play Store prompt",
+    "default": true,
+    "files": {
+      "AndroidManifest.xml": "Play Store Redirection & PairIP Application Bypass",
+      "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License & Installer Verification Bypass",
+      "smali/com/pairip/licensecheck/LicenseContentProvider.smali": "PairIP License ContentProvider Neutralization",
+      "smali/com/pairip/application/Application.smali": "PairIP Application Entry Point Bypass",
+      "smali/eu5.smali": "MainActivity Internal Installer & Store Verification Bypass"
+    }
+  },
+  {
+    "id": "pro_unlock",
+    "name": "Unlock Pro & Premium Features",
+    "desc": "Unlocks all Pro features and lifetime subscription",
+    "default": true,
+    "files": {
+      "smali/fj3.smali": "Premium & Subscription Status Unlock (isPremium=true, isSubscribed=true)",
+      "smali/ez.smali": "Global Premium Access Verification Unlock",
+      "smali/uy.smali": "In-App Billing SKU Verification Bypass"
+    }
+  },
+  {
+    "id": "password_mode",
+    "name": "Unlock Password Mode",
+    "desc": "Enables keyboard password visibility toggle",
+    "default": true,
+    "files": {
+      "smali/uv.smali": "Password Mode & EndIcon Toggle Unlock"
+    }
+  },
+  {
+    "id": "clean_menu",
+    "name": "Clean Interface",
+    "desc": "Removes upgrade banners, feedback, and subscription menu items",
+    "default": true,
+    "files": {
+      "smali/jh0.smali": "Compose Menu Removal & Slot Table Crash Fix",
+      "smali/m2.smali": "Pro & Subscription Menu Action Elimination",
+      "smali/ug5.smali": "Subscription & Feedback Action Elimination"
+    }
+  },
+  {
+    "id": "theme_default",
+    "name": "Default BlueGrey & System Theme",
+    "desc": "Applies BlueGrey accent and System Dark/Light theme as default",
+    "default": true,
+    "files": {
+      "smali/b64.smali": "Settings Screen Default Theme Color & Option",
+      "smali/c64.smali": "Theme Option Preference Default",
+      "smali/wv3.smali": "SharedPreferences Initializer BlueGrey & System Theme",
+      "smali/io/appground/blek/MainActivity.smali": "MainActivity Default BlueGrey & System Theme"
+    }
+  }
+]

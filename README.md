@@ -1,151 +1,194 @@
 # MikuPatches
 
-MikuPatches is a build tool that applies custom patches to Bluetooth Keyboard & Mouse (v6.22.0) for Android.
+MikuPatches is a modular multi-app patch build engine for Android applications. It automatically detects input packages, supports selective patch toggling, enables dual-install app cloning, and builds signed release APKs and split bundles.
 
-## Features
+---
 
-Running MikuPatches applies five core patch modules:
+## Supported Applications & Universal Patches
 
-- Play Store Redirection & PairIP Bypass (`pairip`): Removes the "Install from original source" popup and neutralizes PairIP installer checks.
-- Pro & Premium Unlock (`pro_unlock`): Unlocks all paid remote keyboard and mouse features and billing checks.
-- Password Mode (`password_mode`): Enables password input mode and the eye visibility toggle in the keyboard.
-- Clean Interface (`clean_menu`): Removes upgrade buttons, subscription management items, and feedback actions.
-- Improved Default Theme (`theme_default`): Sets default theme preferences to BlueGrey and System Default dark mode.
+### 1. Bluetooth Keyboard & Mouse (`io.appground.blek` v6.22.0)
+- **Play Store Redirection & PairIP License Bypass** (`pairip`): Neutralizes PairIP anti-piracy checks, license client verification, and Play Store redirection dialogs.
+- **Pro & Premium Features Unlock** (`pro_unlock`): Activates lifetime subscription, unlocks all Pro controls and features.
+- **Password Mode Unlock** (`password_mode`): Enables keyboard password visibility toggling.
+- **Clean Interface** (`clean_menu`): Removes upgrade banners, subscription prompts, feedback dialogs, and unused menu actions.
+- **BlueGrey & System Theme Defaults** (`theme_default`): Sets BlueGrey accent color and system Dark/Light theme as default.
+
+### 2. Truecaller (`com.truecaller` v26.30.5)
+- **Ad-Free Experience** (`remove_ads`): Blocks all banner, interstitial, native, and popup ad networks (AdMob, GAM, Facebook, InMobi, Vungle).
+- **Gold Caller ID & Badge Unlock** (`gold_theme_unlock`): Activates Gold membership tier, metallic call screen gradient, and gold caller badge while removing upgrade lock labels.
+
+### 3. Universal Patches (All Applications)
+- **App Clone & Dual Installation** (`clone_dual_install` / `--clone`): Renames package name with `.tux` suffix (e.g., `io.appground.blek.tux`, `com.truecaller.tux`), updates component permissions, and isolates ContentProvider authorities so you can install and run the patched app side-by-side with the official app without uninstalling.
+
+---
 
 ## Operating System Compatibility
 
-MikuPatches is cross-platform and compatible with major desktop operating systems:
+MikuPatches is cross-platform and fully supported across major desktop operating systems:
 
-| Operating System | Compatibility Status | Notes |
+| Operating System | Compatibility Status | Recommended Environment |
 |---|---|---|
-| Windows via WSL / WSL2 | 100% Native (Recommended) | Fully supported in Ubuntu/Debian on Windows |
-| Windows Native (Git Bash / PowerShell / CMD) | Supported | Fallback prompt mode if ANSI/TTY features are limited |
-| macOS (Apple Silicon & Intel) | 100% Native | Fully supported via Homebrew |
-| Linux (Ubuntu, Debian, Fedora, Arch, etc.) | 100% Native | Fully supported via system package managers |
+| **Linux (Ubuntu, Debian, Mint)** | 100% Native | System package manager (`apt`) |
+| **Linux (Fedora, RHEL, CentOS)** | 100% Native | System package manager (`dnf`) |
+| **Linux (Arch Linux, Manjaro)** | 100% Native | Official repositories (`pacman`) |
+| **Linux (openSUSE, Alpine)** | 100% Native | System package manager (`zypper` / `apk`) |
+| **macOS (Apple Silicon & Intel)** | 100% Native | Homebrew (`brew`) |
+| **Windows via WSL / WSL2** | 100% Native (Recommended) | Ubuntu / Debian on WSL2 |
+| **Windows Native (PowerShell / CMD / Git Bash)** | Supported | JDK 17+, Apktool, and Android SDK Build-Tools on PATH |
 
-## Requirements & Dependency Installation Guide
+---
+
+## Requirements & Installation Guide
 
 ### Prerequisites
-- Python (3.8 or newer)
-- Java JDK (17 or newer, required by Apktool and apksigner)
-- Apktool (2.9.0 or newer)
-- Android SDK Build-Tools (`zipalign` and `apksigner`)
-- Optional: ADB (for auto-installing built APKs onto a connected Android device)
+- **Python** (3.8 or newer)
+- **Java JDK** (17 or newer, required by Apktool and apksigner)
+- **Apktool** (2.9.0 or newer)
+- **Android SDK Build-Tools** (`zipalign` and `apksigner`)
+- *Optional:* **ADB** (`android-tools`) for auto-installing onto a connected Android device
 
 ---
 
-### Installation Guide per OS
+### Quick Installation per Operating System
 
-#### 1. Windows via WSL2 (Recommended for Windows Users)
-1. Open PowerShell and install WSL: `wsl --install`
-2. Open the Ubuntu terminal in WSL and run:
-   ```bash
-   sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner
-   ```
-
-#### 2. Windows Native (Git Bash / PowerShell / Command Prompt)
-1. Install [Python 3](https://www.python.org/downloads/) (make sure to check "Add Python to PATH").
-2. Install [Java JDK 17+](https://adoptium.net/).
-3. Install [Android Studio / Command Line Tools](https://developer.android.com/studio) to acquire `zipalign` and `apksigner`.
-4. Download [Apktool](https://apktool.org/) and place `apktool.jar` / `apktool.bat` in your system `PATH`.
-
-#### 3. macOS (Apple Silicon & Intel)
-Install dependencies using [Homebrew](https://brew.sh/):
+#### macOS (Homebrew)
 ```bash
-brew install apktool openjdk android-commandlinetools
+brew install python apktool openjdk android-commandlinetools
 ```
 
-#### 4. Linux (Ubuntu / Debian / Linux Mint)
-Install dependencies using `apt`:
+#### Ubuntu / Debian / Linux Mint / WSL2
 ```bash
-sudo apt update && sudo apt install python3 apktool default-jdk zipalign apksigner
+sudo apt update && sudo apt install -y python3 apktool default-jdk zipalign apksigner android-tools-adb
 ```
 
-#### 5. Linux (Fedora / RHEL / CentOS)
-Install dependencies using `dnf`:
+#### Fedora / RHEL / CentOS
 ```bash
-sudo dnf install python3 apktool java-17-openjdk-devel zipalign android-tools
+sudo dnf install -y python3 apktool java-17-openjdk-devel zipalign android-tools
 ```
 
-#### 6. Linux (Arch Linux / Manjaro)
-Install dependencies using `pacman`:
+#### Arch Linux / Manjaro
 ```bash
-sudo pacman -S python android-tools java-environment-openjdk apktool
+sudo pacman -S --needed python apktool java-environment-openjdk android-tools
 ```
 
-#### 7. Linux (openSUSE Leap / Tumbleweed)
-Install dependencies using `zypper`:
+#### openSUSE (Tumbleweed / Leap)
 ```bash
-sudo zypper install python3 apktool java-17-openjdk-devel android-tools
+sudo zypper install -y python3 apktool java-17-openjdk-devel android-tools
 ```
 
-#### 8. Linux (Alpine Linux)
-Install dependencies using `apk` (with `community` repository enabled):
+#### Alpine Linux
 ```bash
-sudo apk add python3 apktool openjdk17 android-tools
+sudo apk add python3 openjdk17-jre apktool android-tools
+```
+
+#### Windows (Native via Winget / Scoop / Chocolatey)
+```powershell
+# Using Winget:
+winget install Python.Python.3.12
+winget install Microsoft.OpenJDK.17
+
+# Using Scoop:
+scoop install python openjdk apktool adb
 ```
 
 ---
 
-## How to Use per OS
+## How to Use
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/naitiktuxx/mikupatches.git
-cd mikupatches
-```
-
-### 2. Run the Build Script
-
-#### On Windows Native (Git Bash / Command Prompt / PowerShell):
-```cmd
-python build.py
-```
-
-#### On Windows WSL2 / macOS / Linux:
+### 1. Interactive Menu Mode
+Simply launch the build script in your terminal:
 ```bash
 python3 build.py
 ```
-*(Or execute `./build.sh` on Unix/macOS/WSL).*
+*(Or execute `./build.sh` on Unix/macOS/Linux).*
 
-### 3. Provide the Input App Package
-- Place your target `v6.22.0` `.apkm`, `.apks`, `.apk`, or `.zip` file inside the `input/` directory.
-- If no input file is found, `build.py` will prompt to open the APKMirror download page in your browser and automatically wait for the file to be placed in `input/`.
+The interactive TUI provides guided options:
+- **`[1] (Recommended) Build App with All Patches`**: Auto-detects input file or prompts app selection, asks if you want to enable App Clone (`[y/N]`), and builds with all patches enabled.
+- **`[2] Custom Patch Selection & Build`**: Lets you choose the target app and opens an interactive checkbox menu to toggle individual patch modules on or off.
+- **`[3] Architecture Filter & Build`**: Filter target ABI (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) to build lightweight packages.
+- **`[4] Install Built App on Phone`**: Push patched APK directly to a connected Android phone via ADB.
+- **`[5] Clean Build Files`**: Clean `dist/` and temporary `build_staging/` directories.
+- **`[6] Check System Requirements`**: Run diagnostic checks for all required toolchain binaries (`apktool`, `zipalign`, `apksigner`, `adb`, `java`).
+- **`[7] Help & CLI Reference`**: View all CLI arguments and usage instructions.
 
-The script decompiles `base.apk`, verifies the target version, injects selected patches, rebuilds, aligns, signs, and generates output files under `dist/`.
+---
 
-## Input and Output Formats
+### 2. Command Line Interface (CLI) Examples
+
+#### Build specific app non-interactively:
+```bash
+python3 build.py -a com.truecaller -y
+```
+
+#### Build with App Clone enabled (dual install alongside original app):
+```bash
+python3 build.py input/app.apkm --clone -y
+```
+
+#### Build for a specific architecture only (e.g. ARM64) and auto-install via ADB:
+```bash
+python3 build.py input/blek.apkm --arch arm64-v8a -I --launch
+```
+
+#### Apply specific patch modules only:
+```bash
+python3 build.py --only-patches pairip,pro_unlock
+```
+
+#### Simulate build and verify patch targets without compiling (Dry-Run):
+```bash
+python3 build.py --dry-run
+```
+
+#### List all supported apps and patch modules:
+```bash
+python3 build.py --list-apps
+python3 build.py --list-patches -a com.truecaller
+```
+
+#### Clean build outputs and staging files:
+```bash
+python3 build.py --clean
+```
+
+---
+
+## Input & Output Formats
 
 ### Supported Input Formats
-- `.apkm` / `.apks` / `.zip`: Complete split APK bundles (recommended).
-- `.apk`: Single APK file (fallback metadata and icons from `patches/bundle_fallback/` will be used if `info.json` or `icon.png` are missing).
-
-Target app version must be `6.22.0` (versionCode `255`). To force a build on a different version, pass `-f` or `--force`.
+Place your input file into `input/` or pass its path as a CLI argument:
+- **`.apkm` / `.apks` / `.xapk` / `.zip`**: Complete split APK bundles (recommended).
+- **`.apk`**: Single standalone APK file (fallback bundle metadata will be automatically generated).
 
 ### Build Outputs (`dist/`)
-Once complete, all generated files are saved to `dist/`:
-
-- `dist/universal.apkm`: Universal multi-split bundle for installation via bundle installers.
-- `dist/universal.apks`: Alternative APKS bundle.
+All generated release artifacts are saved in the `dist/` directory:
 - `dist/base.apk`: Standalone patched primary APK.
-- `dist/<arch>/`: Architecture-specific bundles (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`).
+- `dist/universal.apkm`: Universal multi-split bundle for bundle installers.
+- `dist/universal.apks`: Alternative APKS format bundle.
+- `dist/<arch>/<arch>.apkm`: Architecture-specific bundles (e.g., `dist/arm64-v8a/arm64-v8a.apkm`).
 
-## Installation
+---
 
-### Method 1: Installing `.apkm` Bundles on Your Phone
-1. Transfer `dist/universal.apkm` (or an architecture bundle from `dist/<arch>/`) to your Android device.
-2. Download and install [APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod&hl=en_IN) from the Google Play Store (or use [Split APKs Installer (SAI)](https://play.google.com/store/apps/details?id=com.aefyr.sai)).
-3. Open APKMirror Installer, tap "Browse files", and select the `universal.apkm` file.
-4. Tap "Install app" and grant installation permission when prompted.
+## Installing on Android Devices
 
-### Method 2: Installing Base APK via ADB
-Connect your phone with USB debugging enabled, then either:
-- Pass the `-i` flag during build: `python3 build.py -i`
-- Select option `[4]` from the interactive menu: `python3 build.py -m`
-- Manually run: `adb install -r dist/base.apk`
+### Method 1: Installing `.apkm` Bundles
+1. Transfer `dist/universal.apkm` (or `dist/arm64-v8a/arm64-v8a.apkm`) to your Android device.
+2. Install via [APKMirror Installer](https://play.google.com/store/apps/details?id=com.apkmirror.helper.prod) or [SAI (Split APKs Installer)](https://play.google.com/store/apps/details?id=com.aefyr.sai).
+
+### Method 2: Installing via ADB
+Connect your Android phone with USB debugging enabled, then run:
+```bash
+python3 build.py -I --launch
+```
+Or manually:
+```bash
+adb install -r dist/base.apk
+```
+
+---
 
 ## Further Reading
 
-- [TECHNICAL.md](TECHNICAL.md): CLI options reference, build pipeline details, patch file mappings, and contributor guide.
-- [LEGAL.md](LEGAL.md): Non-affiliation disclaimer, redistribution policy, and trademark notices.
-- [LICENSE](LICENSE): Released under the GNU General Public License v3.0.
+- [TECHNICAL.md](TECHNICAL.md): Architecture details, modular engine breakdown, full CLI flags reference, and guide for adding new apps/patches.
+- [LEGAL.md](LEGAL.md): Non-affiliation disclaimer, redistribution notices, and educational use policies.
+- [LICENSE](LICENSE): GNU General Public License v3.0.
