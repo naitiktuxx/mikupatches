@@ -17,61 +17,135 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Release Metadata & Changelog
+        id: release_meta
+        run: |
+          python3 -c '
+          import os, subprocess, textwrap
+
+          def run(cmd):
+              return subprocess.check_output(cmd, shell=True, text=True).strip()
+
+          version = "6.22.0"
+          commit_short = run("git rev-parse --short HEAD")
+          commit_full = run("git rev-parse HEAD")
+          commit_title = run("git log -1 --pretty=%s")
+          commit_author = run("git log -1 --pretty=%an")
+          commit_date = run("git log -1 --date=iso --pretty=%cd")
+          repo = os.environ.get("GITHUB_REPOSITORY", "naitiktuxx/mikupatches")
+          repo_url = f"https://github.com/{repo}"
+          ref = os.environ.get("GITHUB_REF", "")
+
+          if ref.startswith("refs/tags/"):
+              tag_name = ref.split("/")[-1]
+              release_title = f"MikuPatches {tag_name}"
+          else:
+              tag_name = f"v{version}-{commit_short}"
+              release_title = f"MikuPatches - {commit_title} ({commit_short})"
+
+          archive_name = f"mikupatches-v{version}-{commit_short}"
+
+          try:
+              commits_log = run(f"git log --pretty=format:\"* %s ([%h]({repo_url}/commit/%H)) - @%an\" HEAD~1..HEAD")
+              changed_files = run("git diff-tree --no-commit-id --name-status -r HEAD")
+          except Exception:
+              commits_log = f"* {commit_title} ([{commit_short}]({repo_url}/commit/{commit_full})) - @{commit_author}"
+              changed_files = run("git show --stat --oneline HEAD")
+
+          # 1. Standalone CHANGELOG.md file
+          changelog_content = textwrap.dedent(f"""\
+          # MikuPatches Release Changelog
+
+          ## Release: {release_title}
+          - **Tag:** `{tag_name}`
+          - **Commit:** [`{commit_short}`]({repo_url}/commit/{commit_full})
+          - **Author:** {commit_author}
+          - **Date:** {commit_date}
+
+          ---
+
+          ### What'\''s Changed
+          {commits_log}
+
+          ### Modified Files in this Commit
+          ```text
+          {changed_files}
+          ```
+          """)
+          with open("CHANGELOG.md", "w", encoding="utf-8") as f:
+              f.write(changelog_content)
+
+          # 2. Release body description for GitHub UI
+          release_notes = textwrap.dedent(f"""\
+          ## {release_title}
+
+          ### What'\''s Changed in this Release
+          {commits_log}
+
+          ---
+
+          ### Commit Information
+          - **Commit SHA:** [`{commit_short}`]({repo_url}/commit/{commit_full})
+          - **Author:** {commit_author}
+          - **Commit Date:** {commit_date}
+
+          ---
+
+          ### Release Assets
+          - `{archive_name}.tar.gz` (Linux / macOS source archive)
+          - `{archive_name}.zip` (Windows / Universal ZIP archive)
+          - `CHANGELOG.md` (Standalone commit & diff changelog)
+
+          ---
+
+          ### Quick Start
+          ```bash
+          tar -xzvf {archive_name}.tar.gz
+          cd {archive_name}
+          python3 build.py
+          ```
+          """)
+          with open("release_notes.md", "w", encoding="utf-8") as f:
+              f.write(release_notes)
+
+          # Export GitHub Environment Variables
+          env_file = os.environ.get("GITHUB_ENV")
+          if env_file:
+              with open(env_file, "a", encoding="utf-8") as f:
+                  f.write(f"TAG_NAME={tag_name}\n")
+                  f.write(f"RELEASE_TITLE={release_title}\n")
+                  f.write(f"ARCHIVE_NAME={archive_name}\n")
+                  f.write(f"COMMIT_SHORT={commit_short}\n")
+          '
 
       - name: Prepare Release Archives
         run: |
-          VERSION="6.22.0"
-          COMMIT_SHORT=$(git rev-parse --short HEAD)
-          ARCHIVE_NAME="mikupatches-v${VERSION}-${COMMIT_SHORT}"
-          
-          echo "ARCHIVE_NAME=${ARCHIVE_NAME}" >> $GITHUB_ENV
-          
           # Create clean staging directory
           mkdir -p "staging/${ARCHIVE_NAME}"
           
-          # Copy project files excluding git metadata and temp build outputs
-          rsync -av --exclude='.git*' --exclude='dist' --exclude='build_staging' ./ "staging/${ARCHIVE_NAME}/"
+          # Copy project files excluding git metadata, build outputs, and temp files
+          rsync -av --exclude='.git*' --exclude='dist' --exclude='build_staging' --exclude='staging' --exclude='release_notes.md' --exclude='__pycache__' ./ "staging/${ARCHIVE_NAME}/"
           
-          # Create ZIP archive
+          # Create ZIP and tar.gz archives
           cd staging
           zip -r "../${ARCHIVE_NAME}.zip" "${ARCHIVE_NAME}"
-          
-          # Create Linux tar.gz archive preserving file permissions
           tar -czvf "../${ARCHIVE_NAME}.tar.gz" "${ARCHIVE_NAME}"
           cd ..
-
-      - name: Determine Tag and Release Name
-        id: release_info
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            TAG_NAME="${{ github.ref_name }}"
-          else
-            TAG_NAME="v6.22.0"
-          fi
-          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG_NAME }}
-          name: "mikupatches"
-          body: |
-            Release build for MikuPatches (Target App Version v6.22.0).
-
-            ### Release Assets Included:
-            - `${{ env.ARCHIVE_NAME }}.tar.gz` (Standard Linux/Unix gzipped tarball)
-            - `${{ env.ARCHIVE_NAME }}.zip` (Cross-platform ZIP archive)
-
-            ### Quick Start (Linux / macOS):
-            ```bash
-            tar -xzvf ${{ env.ARCHIVE_NAME }}.tar.gz
-            cd ${{ env.ARCHIVE_NAME }}
-            python3 build.py
-            ```
+          name: ${{ env.RELEASE_TITLE }}
+          body_path: release_notes.md
           draft: false
           prerelease: false
           files: |
             ${{ env.ARCHIVE_NAME }}.zip
             ${{ env.ARCHIVE_NAME }}.tar.gz
+            CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
