@@ -103,8 +103,9 @@ class ApktoolRunner:
                     pkg_name = m_pkg_yml.group(1).strip()
 
         if os.path.exists(manifest_xml):
-            with open(manifest_xml, "r", encoding="utf-8", errors="ignore") as f:
-                content = f.read()
+            try:
+                with open(manifest_xml, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
                 m_pkg = re.search(r'package=["\']([^"\']+)["\']', content)
                 if m_pkg:
                     pkg_name = m_pkg.group(1).strip()
@@ -116,5 +117,70 @@ class ApktoolRunner:
                     m_vcode = re.search(r'android:versionCode=["\']([^"\']+)["\']', content)
                     if m_vcode:
                         ver_code = m_vcode.group(1).strip()
+            except Exception:
+                pass
+
+            # If manifest is in binary AXML format (from -r decompilation)
+            if not pkg_name or not ver_name:
+                try:
+                    b_pkg, b_vname, b_vcode = cls._parse_binary_axml(manifest_xml)
+                    if b_pkg and not pkg_name:
+                        pkg_name = b_pkg
+                    if b_vname and not ver_name:
+                        ver_name = b_vname
+                    if b_vcode and not ver_code:
+                        ver_code = b_vcode
+                except Exception:
+                    pass
+
+        return pkg_name, ver_name, ver_code
+
+    @classmethod
+    def _parse_binary_axml(cls, manifest_path: str) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+        import struct
+        with open(manifest_path, "rb") as f:
+            data = f.read()
+        if len(data) < 8 or data[0:2] != b"\x03\x00":
+            return None, None, None
+        idx = 8
+        strings = []
+        while idx < len(data) - 8:
+            chunk_type, chunk_size = struct.unpack("<II", data[idx:idx+8])
+            if chunk_type == 0x001c0001:
+                string_count, style_count, flags, strings_start, styles_start = struct.unpack("<IIIII", data[idx+8:idx+28])
+                is_utf8 = bool(flags & (1 << 8))
+                offsets = struct.unpack(f"<{string_count}I", data[idx+28:idx+28+string_count*4])
+                pool_data = data[idx+strings_start:]
+                for off in offsets:
+                    if is_utf8:
+                        str_len = pool_data[off+1]
+                        s = pool_data[off+2:off+2+str_len].decode("utf-8", errors="ignore")
+                    else:
+                        str_len = struct.unpack("<H", pool_data[off:off+2])[0]
+                        s = pool_data[off+2:off+2+str_len*2].decode("utf-16le", errors="ignore")
+                    strings.append(s)
+                idx += chunk_size
+                break
+            idx += chunk_size
+
+        pkg_name, ver_name, ver_code = None, None, None
+        while idx < len(data) - 8:
+            chunk_type, chunk_size = struct.unpack("<II", data[idx:idx+8])
+            if chunk_type == 0x00100102: # START_TAG <manifest>
+                attr_start, attr_size, attr_count = struct.unpack("<HHH", data[idx+24:idx+30])
+                attr_offset = idx + 16 + attr_start
+                for _ in range(attr_count):
+                    attr_ns, attr_name_idx, attr_raw_val, attr_type, attr_data = struct.unpack("<IIIII", data[attr_offset:attr_offset+20])
+                    attr_name = strings[attr_name_idx] if 0 <= attr_name_idx < len(strings) else ""
+                    val = strings[attr_raw_val] if (0 <= attr_raw_val < len(strings) and attr_raw_val != 0xffffffff) else str(attr_data)
+                    if attr_name == "package":
+                        pkg_name = val
+                    elif attr_name == "versionName":
+                        ver_name = val
+                    elif attr_name == "versionCode":
+                        ver_code = str(attr_data) if attr_type in (16, 17) else val
+                    attr_offset += attr_size
+                break
+            idx += chunk_size
 
         return pkg_name, ver_name, ver_code

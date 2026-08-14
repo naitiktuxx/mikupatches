@@ -70,6 +70,7 @@ class AppProfile:
     supported_arches: List[str] = field(default_factory=lambda: list(SUPPORTED_ARCHITECTURES))
     patch_groups: List[PatchGroup] = field(default_factory=list)
     profile_dir: Optional[str] = None
+    no_res: bool = False
 
     @classmethod
     def from_directory(cls, app_patch_dir: str) -> "AppProfile":
@@ -103,6 +104,7 @@ class AppProfile:
             supported_arches=cfg.get("supported_arches", list(SUPPORTED_ARCHITECTURES)),
             patch_groups=patch_groups,
             profile_dir=app_patch_dir,
+            no_res=bool(cfg.get("no_res", False)),
         )
 
     def get_patch_group(self, group_id: str) -> Optional[PatchGroup]:

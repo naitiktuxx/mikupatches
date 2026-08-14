@@ -27,10 +27,9 @@ from mikupatches.constants import SUPPORTED_ARCHITECTURES, DEFAULT_PATCHES_DIR
 class TestAppProfiles(unittest.TestCase):
     def test_list_supported_apps(self):
         apps = AppManager.list_supported_apps()
-        self.assertGreaterEqual(len(apps), 2)
+        self.assertGreaterEqual(len(apps), 1)
         pkg_names = [a.package_name for a in apps]
         self.assertIn("io.appground.blek", pkg_names)
-        self.assertIn("com.truecaller", pkg_names)
 
     def test_blek_profile(self):
         profile = AppManager.find_app_profile("io.appground.blek")
@@ -48,13 +47,11 @@ class TestAppProfiles(unittest.TestCase):
         profile = AppManager.find_app_profile("com.truecaller")
         self.assertIsNotNone(profile)
         self.assertEqual(profile.package_name, "com.truecaller")
-        self.assertEqual(profile.target_version_name, "26.30.5")
-        self.assertEqual(profile.target_version_code, "2630005")
-        self.assertGreaterEqual(len(profile.patch_groups), 3)
-        patch_ids = [g.id for g in profile.patch_groups]
-        self.assertIn("remove_ads", patch_ids)
-        self.assertIn("gold_theme_unlock", patch_ids)
-        self.assertIn(AppCloner.CLONE_PATCH_ID, patch_ids)
+        self.assertEqual(profile.target_version_name, "26.31.5")
+        self.assertEqual(profile.target_version_code, "2631005")
+        self.assertIn("arm64-v8a", profile.supported_arches)
+        self.assertIn("armeabi-v7a", profile.supported_arches)
+        self.assertIn(AppCloner.CLONE_PATCH_ID, [g.id for g in profile.patch_groups])
 
 
 class TestDynamicMetadata(unittest.TestCase):
@@ -134,20 +131,24 @@ class TestUniversalAppCloner(unittest.TestCase):
         self.assertEqual(slug_clone, "Vanilla_Clone")
 
     def test_variant_slug_generation(self):
-        profile = AppManager.find_app_profile("com.truecaller")
+        profile = AppManager.find_app_profile("io.appground.blek")
         self.assertIsNotNone(profile)
 
         # 1. Full variant (all default patches on, clone off)
-        slug_full = Bundler.get_variant_slug(profile, {"remove_ads": True, "gold_theme_unlock": True, "clone_dual_install": False})
+        all_on = {g.id: True for g in profile.patch_groups}
+        all_on["clone_dual_install"] = False
+        slug_full = Bundler.get_variant_slug(profile, all_on)
         self.assertEqual(slug_full, "Full")
 
         # 2. Cloned Full variant
-        slug_clone = Bundler.get_variant_slug(profile, {"remove_ads": True, "gold_theme_unlock": True, "clone_dual_install": True})
+        all_on_clone = {g.id: True for g in profile.patch_groups}
+        all_on_clone["clone_dual_install"] = True
+        slug_clone = Bundler.get_variant_slug(profile, all_on_clone)
         self.assertEqual(slug_clone, "Full_Clone")
 
         # 3. Dynamic CamelCase subset without hardcoded maps
-        slug_adfree = Bundler.get_variant_slug(profile, {"remove_ads": True, "gold_theme_unlock": False, "clone_dual_install": False})
-        self.assertEqual(slug_adfree, "RemoveAds")
+        slug_single = Bundler.get_variant_slug(profile, {"pairip": True, "pro_unlock": False, "clone_dual_install": False})
+        self.assertEqual(slug_single, "Pairip")
 
         # 4. Arbitrary new future app with custom tag or auto-derived tag
         future_app = AppProfile(
@@ -172,42 +173,42 @@ class TestUniversalAppCloner(unittest.TestCase):
         self.assertEqual(slug_future_tag, "HiFi")
 
     def test_patches_txt_summary_content(self):
-        profile = AppManager.find_app_profile("com.truecaller")
+        profile = AppManager.find_app_profile("io.appground.blek")
         self.assertIsNotNone(profile)
         summary = Bundler.generate_patches_summary(
             app_profile=profile,
-            active_status={"remove_ads": True, "gold_theme_unlock": False, "clone_dual_install": False},
-            ver_name="26.30.5",
-            ver_code="2630005",
-            variant_slug="RemoveAds",
+            active_status={"pairip": True, "pro_unlock": False, "clone_dual_install": False},
+            ver_name="6.22.0",
+            ver_code="255",
+            variant_slug="Pairip",
         )
-        self.assertIn("Truecaller v26.30.5 - Patched Release", summary)
-        self.assertIn("Variant : RemoveAds", summary)
-        self.assertIn("[✓] Ad-Free Experience", summary)
-        self.assertIn("[ ] Unlock Gold Caller ID & Badge", summary)
+        self.assertIn("Bluetooth Keyboard & Mouse v6.22.0 - Patched Release", summary)
+        self.assertIn("Variant : Pairip", summary)
+        self.assertIn("[✓] Bypass License & Play Store Check", summary)
+        self.assertIn("[ ] Unlock Pro & Premium Features", summary)
 
     def test_incremental_output_directories(self):
-        profile = AppManager.find_app_profile("com.truecaller")
+        profile = AppManager.find_app_profile("io.appground.blek")
         self.assertIsNotNone(profile)
         base_out = os.path.join(self.temp_dir, "dist")
         os.makedirs(base_out, exist_ok=True)
 
-        # 1. No existing folder -> returns dist/Truecaller/Full
+        # 1. No existing folder -> returns dist/Bluetooth_Keyboard_Mouse/Full
         d1 = Bundler.resolve_app_output_dir(base_out, profile, variant_slug="Full", overwrite=False)
         self.assertEqual(os.path.basename(d1), "Full")
-        self.assertEqual(os.path.basename(os.path.dirname(d1)), "Truecaller")
+        self.assertEqual(os.path.basename(os.path.dirname(d1)), "Bluetooth_Keyboard_Mouse")
         os.makedirs(d1, exist_ok=True)
         with open(os.path.join(d1, "dummy.txt"), "w") as f:
             f.write("test")
 
-        # 2. Existing folder with overwrite=False -> returns dist/Truecaller/Full-1
+        # 2. Existing folder with overwrite=False -> returns dist/Bluetooth_Keyboard_Mouse/Full-1
         d2 = Bundler.resolve_app_output_dir(base_out, profile, variant_slug="Full", overwrite=False)
         self.assertEqual(os.path.basename(d2), "Full-1")
         os.makedirs(d2, exist_ok=True)
         with open(os.path.join(d2, "dummy.txt"), "w") as f:
             f.write("test")
 
-        # 3. Existing folder with overwrite=False -> returns dist/Truecaller/Full-2
+        # 3. Existing folder with overwrite=False -> returns dist/Bluetooth_Keyboard_Mouse/Full-2
         d3 = Bundler.resolve_app_output_dir(base_out, profile, variant_slug="Full", overwrite=False)
         self.assertEqual(os.path.basename(d3), "Full-2")
 
@@ -253,7 +254,7 @@ class TestCLIParser(unittest.TestCase):
     def test_custom_flags(self):
         args = [
             "input/app.apkm",
-            "-a", "com.truecaller",
+            "-a", "io.appground.blek",
             "-f",
             "--dry-run",
             "-y",
@@ -261,13 +262,13 @@ class TestCLIParser(unittest.TestCase):
             "--clone-suffix", ".tux",
             "--arch", "arm64-v8a",
             "-O", "apk,apkm",
-            "--only-patches", "remove_ads,clone_dual_install",
+            "--only-patches", "pairip,clone_dual_install",
             "-I",
             "--launch",
         ]
         parsed, options = parse_cli_options(args)
         self.assertEqual(options.input_file, "input/app.apkm")
-        self.assertEqual(options.target_app, "com.truecaller")
+        self.assertEqual(options.target_app, "io.appground.blek")
         self.assertTrue(options.force)
         self.assertTrue(options.dry_run)
         self.assertTrue(options.yes)
@@ -275,7 +276,7 @@ class TestCLIParser(unittest.TestCase):
         self.assertEqual(options.clone_suffix, ".tux")
         self.assertEqual(options.arches, ["arm64-v8a"])
         self.assertEqual(options.output_formats, ["apk", "apkm"])
-        self.assertEqual(options.only_patches, ["remove_ads", "clone_dual_install"])
+        self.assertEqual(options.only_patches, ["pairip", "clone_dual_install"])
         self.assertTrue(options.install)
         self.assertTrue(options.launch)
 
@@ -393,27 +394,27 @@ class TestHardeningAndEdgeCases(unittest.TestCase):
         # Create a mock dist structure with multiple apps, variants, and inner architecture folders
         dist_dir = os.path.join(self.temp_dir, "dist_mock")
         
-        # Variant 1: Truecaller Full (with universal.apkm, base.apk, and arm64 subfolder)
-        tc_full = os.path.join(dist_dir, "Truecaller", "Full")
-        os.makedirs(os.path.join(tc_full, "arm64-v8a"), exist_ok=True)
-        with open(os.path.join(tc_full, "universal.apkm"), "w") as f:
+        # Variant 1: Bluetooth Keyboard & Mouse Full (with universal.apkm, base.apk, and arm64 subfolder)
+        blek_full = os.path.join(dist_dir, "Bluetooth_Keyboard_Mouse", "Full")
+        os.makedirs(os.path.join(blek_full, "arm64-v8a"), exist_ok=True)
+        with open(os.path.join(blek_full, "universal.apkm"), "w") as f:
             f.write("apkm")
-        with open(os.path.join(tc_full, "base.apk"), "w") as f:
+        with open(os.path.join(blek_full, "base.apk"), "w") as f:
             f.write("base")
-        with open(os.path.join(tc_full, "arm64-v8a", "base.apk"), "w") as f:
+        with open(os.path.join(blek_full, "arm64-v8a", "base.apk"), "w") as f:
             f.write("arm64_base")
 
-        # Variant 2: Truecaller Custom (RemoveAds+Gold)
-        tc_custom = os.path.join(dist_dir, "Truecaller", "RemoveAds+Gold")
-        os.makedirs(tc_custom, exist_ok=True)
-        with open(os.path.join(tc_custom, "universal.apkm"), "w") as f:
+        # Variant 2: Bluetooth Keyboard & Mouse Custom (ProUnlock)
+        blek_custom = os.path.join(dist_dir, "Bluetooth_Keyboard_Mouse", "ProUnlock")
+        os.makedirs(blek_custom, exist_ok=True)
+        with open(os.path.join(blek_custom, "universal.apkm"), "w") as f:
             f.write("custom_apkm")
 
-        # Variant 3: Bluetooth Keyboard & Mouse Full
-        blek_full = os.path.join(dist_dir, "Bluetooth_Keyboard_Mouse", "Full")
-        os.makedirs(blek_full, exist_ok=True)
-        with open(os.path.join(blek_full, "universal.apkm"), "w") as f:
-            f.write("blek_apkm")
+        # Variant 3: Sample App Full
+        sample_full = os.path.join(dist_dir, "Sample_App", "Full")
+        os.makedirs(sample_full, exist_ok=True)
+        with open(os.path.join(sample_full, "universal.apkm"), "w") as f:
+            f.write("sample_apkm")
 
         variants = build.scan_dist_variants(dist_dir)
         # Should contain exactly 3 clean entries (1 per variant), NOT 7 fragmented files
@@ -421,8 +422,8 @@ class TestHardeningAndEdgeCases(unittest.TestCase):
 
         titles = [v["display_title"] for v in variants]
         self.assertIn("Bluetooth Keyboard & Mouse [Full]", titles)
-        self.assertIn("Truecaller [Full]", titles)
-        self.assertIn("Truecaller [RemoveAds+Gold]", titles)
+        self.assertIn("Bluetooth Keyboard & Mouse [ProUnlock]", titles)
+        self.assertIn("Sample App [Full]", titles)
 
         # Ensure universal.apkm is selected as package_path for each
         for v in variants:

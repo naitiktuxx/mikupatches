@@ -157,13 +157,29 @@ class BuildEngine:
 
         # 6. Decompile base.apk
         decompiled_dir = os.path.join(options.staging_dir, "base")
+        effective_no_res = options.no_res
+        if not effective_no_res and not options.clone:
+            prof = None
+            if options.target_app:
+                prof = AppManager.find_app_profile(options.target_app)
+            elif os.path.exists(os.path.join(bundle_staging, "info.json")):
+                try:
+                    with open(os.path.join(bundle_staging, "info.json"), "r", encoding="utf-8") as f_info:
+                        pname = json.load(f_info).get("pname")
+                        if pname:
+                            prof = AppManager.find_app_profile(pname)
+                except Exception:
+                    pass
+            if prof and getattr(prof, "no_res", False):
+                effective_no_res = True
+
         try:
             ApktoolRunner.decompile(
                 apk_path=base_apk_path,
                 output_dir=decompiled_dir,
                 framework_dir=options.framework_dir,
                 no_src=options.no_src,
-                no_res=options.no_res,
+                no_res=effective_no_res,
                 extra_args=options.apktool_args,
                 verbose=options.verbose,
             )

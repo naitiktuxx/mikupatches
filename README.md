@@ -6,9 +6,27 @@ Modular multi-app patch build engine for Android applications. It automatically 
 
 ## ⚙️ Patch Details
 
-> [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · `main` · 9 patches total
+> [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · `main` · 8 patches across 2 applications
 
-<details>
+<details open>
+<summary>📦 <b>Truecaller: Trusted Caller ID</b> · 2 patches</summary>
+
+<br>
+
+#### 🎯 Supported versions:
+
+```
+26.31.5
+```
+
+| 💊 Patch | 📜 Description | ⚙️ Options |
+|:---|:---|:---|
+| [Remove Ads & Promotional Banners](patches/com.truecaller/patch_groups.json) | Completely removes in-app ads, disables AdsRouter engine (`shouldShowAds=false`), blocks SMS/Insights notification ads, neutralizes MultiAd autoscroll, and enables the official `NO_ADS` feature entitlement without breaking XML drawables. | |
+| [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the official Truecaller app by renaming package name to `com.truecaller.tux` and isolating ContentProvider authorities. | • Clone suffix<br>• Custom package |
+
+</details>
+
+<details open>
 <summary>📦 <b>Bluetooth Keyboard & Mouse</b> · 6 patches</summary>
 
 <br>
@@ -27,25 +45,6 @@ Modular multi-app patch build engine for Android applications. It automatically 
 | [Clean Interface](patches/io.appground.blek/base) | Removes upgrade banners, subscription prompts, feedback dialogs, and unused menu actions. | |
 | [Default BlueGrey & System Theme](patches/io.appground.blek/base) | Sets BlueGrey accent color and System Dark/Light theme as default. | |
 | [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the original app by renaming package name to `io.appground.blek.tux` and isolating ContentProvider authorities. | • Clone suffix<br>• Custom package |
-
-</details>
-
-<details>
-<summary>📦 <b>Truecaller</b> · 3 patches</summary>
-
-<br>
-
-#### 🎯 Supported versions:
-
-```
-26.30.5
-```
-
-| 💊 Patch | 📜 Description | ⚙️ Options |
-|:---|:---|:---|
-| [Ad-Free Experience](patches/com.truecaller/base) | Blocks all banner, interstitial, native, and popup ad networks (AdMob, GAM, Facebook, InMobi, Vungle). | |
-| [Unlock Gold Caller ID & Badge](patches/com.truecaller/base) | Unlocks Gold membership tier, metallic incoming call screen gradient, and gold badge while removing upgrade locks. | |
-| [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the original app by renaming package name to `com.truecaller.tux` and isolating ContentProvider authorities. | • Clone suffix<br>• Custom package |
 
 </details>
 
@@ -127,35 +126,41 @@ The interactive TUI provides guided options:
 
 ### 2. Command Line Interface (CLI) Examples
 
-#### Build specific app non-interactively:
+#### Build Truecaller or BLEK non-interactively:
 ```bash
-python3 build.py -a com.truecaller -y
+# Truecaller (v26.31.5) with ad removal:
+python3 build.py input/truecaller.apkm -y
+
+# Bluetooth Keyboard & Mouse (v6.22.0):
+python3 build.py -a io.appground.blek -y
 ```
 
 #### Build with App Clone enabled (dual install alongside original app):
 ```bash
-python3 build.py input/app.apkm --clone -y
+python3 build.py input/truecaller.apkm --clone -y
 ```
 
 #### Build for a specific architecture only (e.g. ARM64) and auto-install via ADB:
 ```bash
-python3 build.py input/blek.apkm --arch arm64-v8a -I --launch
+python3 build.py input/truecaller.apkm --arch arm64-v8a -I --launch
 ```
 
 #### Apply specific patch modules only:
 ```bash
-python3 build.py --only-patches pairip,pro_unlock
+python3 build.py -a com.truecaller --only-patches remove_ads -y
+python3 build.py -a io.appground.blek --only-patches pairip,pro_unlock -y
 ```
 
 #### Simulate build and verify patch targets without compiling (Dry-Run):
 ```bash
-python3 build.py --dry-run
+python3 build.py input/truecaller.apkm --dry-run
 ```
 
 #### List all supported apps and patch modules:
 ```bash
 python3 build.py --list-apps
 python3 build.py --list-patches -a com.truecaller
+python3 build.py --list-patches -a io.appground.blek
 ```
 
 ---
@@ -200,8 +205,3 @@ adb install -r dist/base.apk
 - [LEGAL.md](LEGAL.md): Non-affiliation disclaimer, redistribution notices, and educational use policies.
 - [LICENSE](LICENSE): GNU General Public License v3.0.
 
----
-
-## ✨ Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/naitiktuxx/mikupatches.svg?variant=adaptive)](https://starchart.cc/naitiktuxx/mikupatches)

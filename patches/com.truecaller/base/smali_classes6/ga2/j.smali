@@ -1,11 +1,11 @@
-.class public final Lp92/k;
+.class public final Lga2/j;
 .super Ljava/lang/Object;
 .source "SourceFile"
 
 # interfaces
-.implements Lp92/g;
-.implements Lp92/l;
-.implements Lp92/h;
+.implements Lga2/g;
+.implements Lga2/k;
+.implements Lga2/h;
 
 
 # static fields
@@ -13,23 +13,23 @@
 
 
 # instance fields
-.field public final a:Lh92/s1;
+.field public final a:Ly92/r1;
 
-.field public final b:Lp92/q;
+.field public final b:Ldy1/baz;
 
-.field public final c:Lvo1/baz;
+.field public final c:Llp1/a;
 
 .field public final d:Lkotlin/coroutines/CoroutineContext;
 
-.field public final e:Lap1/qux;
+.field public final e:Lqp1/qux;
 
-.field public final f:Lap1/o;
+.field public final f:Lqp1/o;
 
-.field public final g:Lxc3/bar;
+.field public final g:Lrd3/bar;
 
 .field public final h:Lcom/google/gson/Gson;
 
-.field public final i:Le83/a;
+.field public final i:Lnq2/a;
 
 .field public volatile j:Ljava/util/List;
 
@@ -54,7 +54,7 @@
 
     .line 7
     .line 8
-    const-class v4, Lp92/k;
+    const-class v4, Lga2/j;
 
     .line 9
     .line 10
@@ -86,14 +86,14 @@
 
     .line 23
     .line 24
-    sput-object v1, Lp92/k;->k:[Lkotlin/reflect/KProperty;
+    sput-object v1, Lga2/j;->k:[Lkotlin/reflect/KProperty;
 
     .line 25
     .line 26
     return-void
 .end method
 
-.method public constructor <init>(Lh92/s1;Lp92/q;Lvo1/baz;Lkotlin/coroutines/CoroutineContext;Lap1/qux;Lap1/o;Lxc3/bar;)V
+.method public constructor <init>(Ly92/r1;Ldy1/baz;Llp1/a;Lkotlin/coroutines/CoroutineContext;Lqp1/qux;Lqp1/o;Lrd3/bar;)V
     .locals 1
 
     .line 1
@@ -165,31 +165,31 @@
     .line 37
     .line 38
     .line 39
-    iput-object p1, p0, Lp92/k;->a:Lh92/s1;
+    iput-object p1, p0, Lga2/j;->a:Ly92/r1;
 
     .line 40
     .line 41
-    iput-object p2, p0, Lp92/k;->b:Lp92/q;
+    iput-object p2, p0, Lga2/j;->b:Ldy1/baz;
 
     .line 42
     .line 43
-    iput-object p3, p0, Lp92/k;->c:Lvo1/baz;
+    iput-object p3, p0, Lga2/j;->c:Llp1/a;
 
     .line 44
     .line 45
-    iput-object p4, p0, Lp92/k;->d:Lkotlin/coroutines/CoroutineContext;
+    iput-object p4, p0, Lga2/j;->d:Lkotlin/coroutines/CoroutineContext;
 
     .line 46
     .line 47
-    iput-object p5, p0, Lp92/k;->e:Lap1/qux;
+    iput-object p5, p0, Lga2/j;->e:Lqp1/qux;
 
     .line 48
     .line 49
-    iput-object p6, p0, Lp92/k;->f:Lap1/o;
+    iput-object p6, p0, Lga2/j;->f:Lqp1/o;
 
     .line 50
     .line 51
-    iput-object p7, p0, Lp92/k;->g:Lxc3/bar;
+    iput-object p7, p0, Lga2/j;->g:Lrd3/bar;
 
     .line 52
     .line 53
@@ -202,18 +202,18 @@
     .line 56
     .line 57
     .line 58
-    iput-object p1, p0, Lp92/k;->h:Lcom/google/gson/Gson;
+    iput-object p1, p0, Lga2/j;->h:Lcom/google/gson/Gson;
 
     .line 59
     .line 60
-    new-instance p1, Lox1/bar;
+    new-instance p1, Lg23/baz;
 
     .line 61
     .line 62
     const/4 p2, 0x4
 
     .line 63
-    invoke-direct {p1, p0, p2}, Lox1/bar;-><init>(Ljava/lang/Object;I)V
+    invoke-direct {p1, p0, p2}, Lg23/baz;-><init>(Ljava/lang/Object;I)V
 
     .line 64
     .line 65
@@ -227,16 +227,16 @@
     .line 69
     .line 70
     .line 71
-    new-instance p2, Le83/a;
+    new-instance p2, Lnq2/a;
 
     .line 72
     .line 73
-    invoke-direct {p2, p1}, Le83/a;-><init>(Lox1/bar;)V
+    invoke-direct {p2, p1}, Lnq2/a;-><init>(Lg23/baz;)V
 
     .line 74
     .line 75
     .line 76
-    iput-object p2, p0, Lp92/k;->i:Le83/a;
+    iput-object p2, p0, Lga2/j;->i:Lnq2/a;
 
     .line 77
     .line 78
@@ -268,7 +268,7 @@
 
     .line 11
     .line 12
-    invoke-static {p0, v1}, Lkotlin/collections/y;->q(Ljava/lang/Iterable;I)I
+    invoke-static {p0, v1}, Lkotlin/collections/a0;->q(Ljava/lang/Iterable;I)I
 
     .line 13
     .line 14
@@ -310,15 +310,15 @@
     move-result-object v1
 
     .line 33
-    check-cast v1, Lp92/e;
+    check-cast v1, Lga2/e;
 
     .line 34
     .line 35
-    new-instance v2, Lp92/c;
+    new-instance v2, Lga2/c;
 
     .line 36
     .line 37
-    invoke-virtual {v1}, Lp92/e;->b()Lcom/truecaller/premium/data/feature/PremiumFeature;
+    invoke-virtual {v1}, Lga2/e;->b()Lcom/truecaller/premium/data/feature/PremiumFeature;
 
     .line 38
     .line 39
@@ -334,7 +334,7 @@
     move-result-object v3
 
     .line 45
-    invoke-virtual {v1}, Lp92/e;->d()Lcom/truecaller/premium/data/feature/PremiumFeatureStatus;
+    invoke-virtual {v1}, Lga2/e;->d()Lcom/truecaller/premium/data/feature/PremiumFeatureStatus;
 
     .line 46
     .line 47
@@ -350,7 +350,7 @@
     move-result-object v4
 
     .line 53
-    invoke-virtual {v1}, Lp92/e;->c()I
+    invoke-virtual {v1}, Lga2/e;->c()I
 
     .line 54
     .line 55
@@ -358,7 +358,7 @@
     move-result v5
 
     .line 57
-    invoke-virtual {v1}, Lp92/e;->e()Z
+    invoke-virtual {v1}, Lga2/e;->e()Z
 
     .line 58
     .line 59
@@ -374,7 +374,7 @@
     move-result-object v1
 
     .line 65
-    invoke-direct {v2, v3, v4, v5, v1}, Lp92/c;-><init>(Ljava/lang/String;Ljava/lang/String;ILjava/lang/Boolean;)V
+    invoke-direct {v2, v3, v4, v5, v1}, Lga2/c;-><init>(Ljava/lang/String;Ljava/lang/String;ILjava/lang/Boolean;)V
 
     .line 66
     .line 67
@@ -393,178 +393,453 @@
 
 
 # virtual methods
-.method public final b(Lmf3/qux;)Ljava/lang/Object;
-    .locals 4
+.method public final b()Ljava/lang/Boolean;
+    .locals 1
 
     .line 1
-    instance-of v0, p1, Lp92/i;
+    iget-object v0, p0, Lga2/j;->g:Lrd3/bar;
 
     .line 2
     .line 3
-    if-eqz v0, :cond_0
+    invoke-interface {v0}, Lrd3/bar;->get()Ljava/lang/Object;
 
     .line 4
     .line 5
-    move-object v0, p1
-
     .line 6
-    check-cast v0, Lp92/i;
+    move-result-object v0
+
+    .line 7
+    check-cast v0, Lpk1/bar;
+
+    .line 8
+    .line 9
+    invoke-interface {v0}, Lpk1/bar;->getStatus()Lpk1/baz;
+
+    .line 10
+    .line 11
+    .line 12
+    move-result-object v0
+
+    .line 13
+    iget-boolean v0, v0, Lpk1/baz;->a:Z
+
+    .line 14
+    .line 15
+    invoke-static {v0}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+
+    .line 16
+    .line 17
+    .line 18
+    move-result-object v0
+
+    .line 19
+    return-object v0
+.end method
+
+.method public final c(Lcom/truecaller/premium/data/feature/PremiumFeature;Z)Z
+    .locals 6
+
+    .line 1
+    const-string v0, "feature"
+
+    .line 2
+    .line 3
+    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->checkNotNullParameter(Ljava/lang/Object;Ljava/lang/String;)V
+
+    .line 4
+    .line 5
+    .line 6
+    iget-object v0, p0, Lga2/j;->j:Ljava/util/List;
 
     .line 7
     .line 8
-    iget v1, v0, Lp92/i;->z:I
+    if-nez v0, :cond_0
 
     .line 9
     .line 10
-    const/high16 v2, -0x80000000
+    invoke-virtual {p0}, Lga2/j;->i()V
 
     .line 11
     .line 12
-    and-int v3, v1, v2
-
     .line 13
+    :cond_0
+    iget-object v0, p0, Lga2/j;->b:Ldy1/baz;
+
     .line 14
-    if-eqz v3, :cond_0
-
     .line 15
-    .line 16
-    sub-int/2addr v1, v2
+    iget-object v0, v0, Ldy1/baz;->b:Ljava/lang/Object;
 
+    .line 16
     .line 17
-    iput v1, v0, Lp92/i;->z:I
+    check-cast v0, Lcom/truecaller/qa/w;
 
     .line 18
     .line 19
-    goto :goto_0
+    const-string v1, "disabledPremiumFeatures"
 
     .line 20
-    :cond_0
-    new-instance v0, Lp92/i;
-
     .line 21
-    .line 22
-    invoke-direct {v0, p0, p1}, Lp92/i;-><init>(Lp92/k;Lmf3/qux;)V
+    invoke-virtual {v0, v1}, Lbs/h;->D(Ljava/lang/String;)Ljava/lang/String;
 
+    .line 22
     .line 23
     .line 24
+    move-result-object v0
+
     .line 25
-    :goto_0
-    iget-object p1, v0, Lp92/i;->x:Ljava/lang/Object;
+    const/4 v1, 0x0
 
     .line 26
+    if-nez v0, :cond_1
+
     .line 27
-    sget-object v1, Llf3/bar;->a:Llf3/bar;
-
     .line 28
-    .line 29
-    iget v2, v0, Lp92/i;->z:I
+    sget-object v0, Lkotlin/collections/i0;->a:Lkotlin/collections/i0;
 
+    .line 29
     .line 30
+    goto :goto_2
+
     .line 31
-    const/4 v3, 0x1
+    :cond_1
+    const-string v2, ","
 
     .line 32
-    if-eqz v2, :cond_2
-
     .line 33
-    .line 34
-    if-ne v2, v3, :cond_1
+    filled-new-array {v2}, [Ljava/lang/String;
 
+    .line 34
     .line 35
     .line 36
-    invoke-static {p1}, Lsk3/bar;->Z(Ljava/lang/Object;)V
+    move-result-object v2
 
     .line 37
+    const/4 v3, 0x6
+
     .line 38
+    invoke-static {v0, v2, v1, v3}, Lkotlin/text/StringsKt;->h0(Ljava/lang/CharSequence;[Ljava/lang/String;II)Ljava/util/List;
+
     .line 39
-    goto :goto_1
-
     .line 40
-    :cond_1
-    new-instance p1, Ljava/lang/IllegalStateException;
-
     .line 41
+    move-result-object v0
+
     .line 42
-    const-string v0, "call to \'resume\' before \'invoke\' with coroutine"
+    check-cast v0, Ljava/lang/Iterable;
 
     .line 43
     .line 44
-    invoke-direct {p1, v0}, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+    new-instance v2, Ljava/util/ArrayList;
 
     .line 45
     .line 46
-    .line 47
-    throw p1
+    const/16 v3, 0xa
 
+    .line 47
     .line 48
-    :cond_2
-    invoke-static {p1}, Lsk3/bar;->Z(Ljava/lang/Object;)V
+    invoke-static {v0, v3}, Lkotlin/collections/a0;->q(Ljava/lang/Iterable;I)I
 
     .line 49
     .line 50
     .line 51
-    iget-object p1, p0, Lp92/k;->g:Lxc3/bar;
+    move-result v3
 
     .line 52
-    .line 53
-    invoke-interface {p1}, Lxc3/bar;->get()Ljava/lang/Object;
+    invoke-direct {v2, v3}, Ljava/util/ArrayList;-><init>(I)V
 
+    .line 53
     .line 54
     .line 55
+    invoke-interface {v0}, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
+
     .line 56
-    move-result-object p1
-
     .line 57
-    check-cast p1, Lzj1/bar;
-
     .line 58
+    move-result-object v0
+
     .line 59
-    iput v3, v0, Lp92/i;->z:I
+    :goto_0
+    invoke-interface {v0}, Ljava/util/Iterator;->hasNext()Z
 
     .line 60
     .line 61
-    invoke-interface {p1, v0}, Lzj1/bar;->g(Lkf3/bar;)Ljava/lang/Object;
-
     .line 62
-    .line 63
-    .line 64
-    move-result-object p1
+    move-result v3
 
+    .line 63
+    if-eqz v3, :cond_2
+
+    .line 64
     .line 65
-    if-ne p1, v1, :cond_3
+    invoke-interface {v0}, Ljava/util/Iterator;->next()Ljava/lang/Object;
 
     .line 66
     .line 67
-    return-object v1
-
     .line 68
-    :cond_3
-    :goto_1
-    check-cast p1, Lzj1/baz;
+    move-result-object v3
 
     .line 69
+    check-cast v3, Ljava/lang/String;
+
     .line 70
-    iget-boolean p1, p1, Lzj1/baz;->a:Z
-
     .line 71
-    .line 72
-    invoke-static {p1}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+    sget-object v4, Lcom/truecaller/premium/data/feature/PremiumFeature;->Companion:Lga2/b;
 
+    .line 72
     .line 73
+    invoke-virtual {v4}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
     .line 74
     .line 75
+    .line 76
+    invoke-static {v3}, Lga2/b;->a(Ljava/lang/String;)Lcom/truecaller/premium/data/feature/PremiumFeature;
+
+    .line 77
+    .line 78
+    .line 79
+    move-result-object v3
+
+    .line 80
+    invoke-virtual {v2, v3}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+
+    .line 81
+    .line 82
+    .line 83
+    goto :goto_0
+
+    .line 84
+    :cond_2
+    new-instance v0, Ljava/util/ArrayList;
+
+    .line 85
+    .line 86
+    invoke-direct {v0}, Ljava/util/ArrayList;-><init>()V
+
+    .line 87
+    .line 88
+    .line 89
+    invoke-virtual {v2}, Ljava/util/ArrayList;->iterator()Ljava/util/Iterator;
+
+    .line 90
+    .line 91
+    .line 92
+    move-result-object v2
+
+    .line 93
+    :cond_3
+    :goto_1
+    invoke-interface {v2}, Ljava/util/Iterator;->hasNext()Z
+
+    .line 94
+    .line 95
+    .line 96
+    move-result v3
+
+    .line 97
+    if-eqz v3, :cond_4
+
+    .line 98
+    .line 99
+    invoke-interface {v2}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    .line 100
+    .line 101
+    .line 102
+    move-result-object v3
+
+    .line 103
+    move-object v4, v3
+
+    .line 104
+    check-cast v4, Lcom/truecaller/premium/data/feature/PremiumFeature;
+
+    .line 105
+    .line 106
+    sget-object v5, Lcom/truecaller/premium/data/feature/PremiumFeature;->UNKNOWN:Lcom/truecaller/premium/data/feature/PremiumFeature;
+
+    .line 107
+    .line 108
+    if-eq v4, v5, :cond_3
+
+    .line 109
+    .line 110
+    invoke-virtual {v0, v3}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+
+    .line 111
+    .line 112
+    .line 113
+    goto :goto_1
+
+    .line 114
+    :cond_4
+    :goto_2
+    invoke-interface {v0, p1}, Ljava/util/List;->contains(Ljava/lang/Object;)Z
+
+    .line 115
+    .line 116
+    .line 117
+    move-result v0
+
+    .line 118
+    if-eqz v0, :cond_5
+
+    .line 119
+    .line 120
+    goto :goto_4
+
+    .line 121
+    :cond_5
+    if-eqz p2, :cond_6
+
+    .line 122
+    .line 123
+    iget-object p2, p0, Lga2/j;->c:Llp1/a;
+
+    .line 124
+    .line 125
+    invoke-virtual {p2}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 126
+    .line 127
+    .line 128
+    :cond_6
+    iget-object p2, p0, Lga2/j;->j:Ljava/util/List;
+
+    .line 129
+    .line 130
+    const/4 v0, 0x0
+
+    .line 131
+    const/4 v2, 0x1
+
+    .line 132
+    if-eqz p2, :cond_9
+
+    .line 133
+    .line 134
+    check-cast p2, Ljava/lang/Iterable;
+
+    .line 135
+    .line 136
+    invoke-interface {p2}, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
+
+    .line 137
+    .line 138
+    .line 139
+    move-result-object p2
+
+    .line 140
+    :cond_7
+    invoke-interface {p2}, Ljava/util/Iterator;->hasNext()Z
+
+    .line 141
+    .line 142
+    .line 143
+    move-result v3
+
+    .line 144
+    if-eqz v3, :cond_8
+
+    .line 145
+    .line 146
+    invoke-interface {p2}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    .line 147
+    .line 148
+    .line 149
+    move-result-object v3
+
+    .line 150
+    move-object v4, v3
+
+    .line 151
+    check-cast v4, Lga2/c;
+
+    .line 152
+    .line 153
+    invoke-virtual {v4}, Lga2/c;->a()Ljava/lang/String;
+
+    .line 154
+    .line 155
+    .line 156
+    move-result-object v4
+
+    .line 157
+    invoke-virtual {p1}, Lcom/truecaller/premium/data/feature/PremiumFeature;->getId()Ljava/lang/String;
+
+    .line 158
+    .line 159
+    .line 160
+    move-result-object v5
+
+    .line 161
+    invoke-static {v4, v5, v2}, Lkotlin/text/s;->q(Ljava/lang/String;Ljava/lang/String;Z)Z
+
+    .line 162
+    .line 163
+    .line 164
+    move-result v4
+
+    .line 165
+    if-eqz v4, :cond_7
+
+    .line 166
+    .line 167
+    goto :goto_3
+
+    .line 168
+    :cond_8
+    move-object v3, v0
+
+    .line 169
+    :goto_3
+    check-cast v3, Lga2/c;
+
+    .line 170
+    .line 171
+    if-eqz v3, :cond_9
+
+    .line 172
+    .line 173
+    invoke-virtual {v3}, Lga2/c;->c()Ljava/lang/String;
+
+    .line 174
+    .line 175
+    .line 176
+    move-result-object v0
+
+    .line 177
+    :cond_9
+    sget-object p1, Lcom/truecaller/premium/data/feature/PremiumFeatureStatus;->INCLUDED:Lcom/truecaller/premium/data/feature/PremiumFeatureStatus;
+
+    .line 178
+    .line 179
+    invoke-virtual {p1}, Lcom/truecaller/premium/data/feature/PremiumFeatureStatus;->getIdentifier()Ljava/lang/String;
+
+    .line 180
+    .line 181
+    .line 182
     move-result-object p1
 
-    .line 76
-    return-object p1
-.end method
+    .line 183
+    invoke-static {v0, p1, v2}, Lkotlin/text/s;->q(Ljava/lang/String;Ljava/lang/String;Z)Z
 
-.method public final c(Lcom/truecaller/premium/data/feature/PremiumFeature;Z)Z
-    .locals 1
+    .line 184
+    .line 185
+    .line 186
+    move-result p1
 
-    const/4 v0, 0x1
+    .line 187
+    if-eqz p1, :cond_a
 
-    return v0
+    .line 188
+    .line 189
+    return v2
+
+    .line 190
+    :cond_a
+    :goto_4
+    return v1
 .end method
 
 .method public final d(Lcom/truecaller/premium/data/feature/PremiumFeature;)Z
@@ -580,7 +855,7 @@
     .line 4
     .line 5
     .line 6
-    iget-object v0, p0, Lp92/k;->j:Ljava/util/List;
+    iget-object v0, p0, Lga2/j;->j:Ljava/util/List;
 
     .line 7
     .line 8
@@ -588,13 +863,13 @@
 
     .line 9
     .line 10
-    invoke-virtual {p0}, Lp92/k;->i()V
+    invoke-virtual {p0}, Lga2/j;->i()V
 
     .line 11
     .line 12
     .line 13
     :cond_0
-    iget-object v0, p0, Lp92/k;->j:Ljava/util/List;
+    iget-object v0, p0, Lga2/j;->j:Ljava/util/List;
 
     .line 14
     .line 15
@@ -641,11 +916,11 @@
     move-object v3, v2
 
     .line 35
-    check-cast v3, Lp92/c;
+    check-cast v3, Lga2/c;
 
     .line 36
     .line 37
-    invoke-virtual {v3}, Lp92/c;->a()Ljava/lang/String;
+    invoke-virtual {v3}, Lga2/c;->a()Ljava/lang/String;
 
     .line 38
     .line 39
@@ -661,7 +936,7 @@
     move-result-object v4
 
     .line 45
-    invoke-static {v3, v4}, Lkotlin/jvm/internal/Intrinsics;->b(Ljava/lang/Object;Ljava/lang/Object;)Z
+    invoke-static {v3, v4}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
 
     .line 46
     .line 47
@@ -677,7 +952,7 @@
 
     .line 52
     :cond_2
-    check-cast v1, Lp92/c;
+    check-cast v1, Lga2/c;
 
     .line 53
     .line 54
@@ -712,7 +987,7 @@
     .line 4
     .line 5
     .line 6
-    iget-object v0, p0, Lp92/k;->j:Ljava/util/List;
+    iget-object v0, p0, Lga2/j;->j:Ljava/util/List;
 
     .line 7
     .line 8
@@ -723,7 +998,7 @@
 
     .line 10
     .line 11
-    invoke-static {v0}, Li9/c;->C(Ljava/util/List;)Ljava/util/ArrayList;
+    invoke-static {v0}, Lb90/g;->u(Ljava/util/List;)Ljava/util/ArrayList;
 
     .line 12
     .line 13
@@ -778,11 +1053,11 @@
     move-object v4, v3
 
     .line 35
-    check-cast v4, Lp92/e;
+    check-cast v4, Lga2/e;
 
     .line 36
     .line 37
-    invoke-virtual {v4}, Lp92/e;->b()Lcom/truecaller/premium/data/feature/PremiumFeature;
+    invoke-virtual {v4}, Lga2/e;->b()Lcom/truecaller/premium/data/feature/PremiumFeature;
 
     .line 38
     .line 39
@@ -806,7 +1081,7 @@
     move-result-object v5
 
     .line 49
-    invoke-static {v4, v5}, Lkotlin/jvm/internal/Intrinsics;->b(Ljava/lang/Object;Ljava/lang/Object;)Z
+    invoke-static {v4, v5}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
 
     .line 50
     .line 51
@@ -822,7 +1097,7 @@
 
     .line 56
     :cond_2
-    check-cast v1, Lp92/e;
+    check-cast v1, Lga2/e;
 
     .line 57
     .line 58
@@ -839,7 +1114,7 @@
     .line 63
     .line 64
     .line 65
-    invoke-virtual {v1}, Lp92/e;->e()Z
+    invoke-virtual {v1}, Lga2/e;->e()Z
 
     .line 66
     .line 67
@@ -868,7 +1143,7 @@
     const/4 v1, 0x0
 
     .line 4
-    invoke-virtual {p0, v0, v1}, Lp92/k;->c(Lcom/truecaller/premium/data/feature/PremiumFeature;Z)Z
+    invoke-virtual {p0, v0, v1}, Lga2/j;->c(Lcom/truecaller/premium/data/feature/PremiumFeature;Z)Z
 
     .line 5
     .line 6
@@ -880,15 +1155,15 @@
 
     .line 9
     .line 10
-    iget-object v0, p0, Lp92/k;->e:Lap1/qux;
+    iget-object v0, p0, Lga2/j;->e:Lqp1/qux;
 
     .line 11
     .line 12
-    check-cast v0, Lap1/a;
+    check-cast v0, Lqp1/a;
 
     .line 13
     .line 14
-    invoke-virtual {v0}, Lap1/a;->b()Z
+    invoke-virtual {v0}, Lqp1/a;->b()Z
 
     .line 15
     .line 16
@@ -919,22 +1194,67 @@
 .end method
 
 .method public final h()Z
-    .locals 1
+    .locals 2
 
+    .line 1
+    sget-object v0, Lcom/truecaller/premium/data/feature/PremiumFeature;->PREMIUM_BADGE:Lcom/truecaller/premium/data/feature/PremiumFeature;
+
+    .line 2
+    .line 3
+    const/4 v1, 0x0
+
+    .line 4
+    invoke-virtual {p0, v0, v1}, Lga2/j;->c(Lcom/truecaller/premium/data/feature/PremiumFeature;Z)Z
+
+    .line 5
+    .line 6
+    .line 7
+    move-result v0
+
+    .line 8
+    if-eqz v0, :cond_0
+
+    .line 9
+    .line 10
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
+
+    .line 11
+    .line 12
+    check-cast v0, Ly92/s1;
+
+    .line 13
+    .line 14
+    invoke-virtual {v0}, Ly92/s1;->G()Z
+
+    .line 15
+    .line 16
+    .line 17
+    move-result v0
+
+    .line 18
+    if-eqz v0, :cond_0
+
+    .line 19
+    .line 20
     const/4 v0, 0x1
 
+    .line 21
     return v0
+
+    .line 22
+    :cond_0
+    return v1
 .end method
 
 .method public final i()V
     .locals 5
 
     .line 1
-    iget-object v0, p0, Lp92/k;->a:Lh92/s1;
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
 
     .line 2
     .line 3
-    check-cast v0, Lh92/t1;
+    check-cast v0, Ly92/s1;
 
     .line 4
     .line 5
@@ -942,7 +1262,7 @@
 
     .line 6
     .line 7
-    invoke-virtual {v0, v1}, Lo13/b;->h(Ljava/lang/String;)Ljava/lang/String;
+    invoke-virtual {v0, v1}, Li23/b;->h(Ljava/lang/String;)Ljava/lang/String;
 
     .line 8
     .line 9
@@ -954,20 +1274,20 @@
 
     .line 12
     .line 13
-    iget-object v1, p0, Lp92/k;->h:Lcom/google/gson/Gson;
+    iget-object v1, p0, Lga2/j;->h:Lcom/google/gson/Gson;
 
     .line 14
     .line 15
-    new-instance v2, Lp92/j;
+    new-instance v2, Lga2/i;
 
     .line 16
     .line 17
-    invoke-direct {v2}, Lp92/j;-><init>()V
+    invoke-direct {v2}, Lga2/i;-><init>()V
 
     .line 18
     .line 19
     .line 20
-    invoke-virtual {v2}, Lhw/bar;->getType()Ljava/lang/reflect/Type;
+    invoke-virtual {v2}, Lkw/bar;->getType()Ljava/lang/reflect/Type;
 
     .line 21
     .line 22
@@ -1010,15 +1330,15 @@
     .line 41
     .line 42
     :cond_0
-    iget-object v0, p0, Lp92/k;->a:Lh92/s1;
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
 
     .line 43
     .line 44
-    check-cast v0, Lh92/t1;
+    check-cast v0, Ly92/s1;
 
     .line 45
     .line 46
-    invoke-virtual {v0}, Lh92/t1;->G()Z
+    invoke-virtual {v0}, Ly92/s1;->G()Z
 
     .line 47
     .line 48
@@ -1030,15 +1350,15 @@
 
     .line 51
     .line 52
-    iget-object v0, p0, Lp92/k;->a:Lh92/s1;
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
 
     .line 53
     .line 54
-    check-cast v0, Lh92/t1;
+    check-cast v0, Ly92/s1;
 
     .line 55
     .line 56
-    invoke-virtual {v0}, Lh92/t1;->B()Lcom/truecaller/premium/data/tier/PremiumTierType;
+    invoke-virtual {v0}, Ly92/s1;->B()Lcom/truecaller/premium/data/tier/PremiumTierType;
 
     .line 57
     .line 58
@@ -1054,7 +1374,7 @@
 
     .line 63
     .line 64
-    invoke-static {}, Li0/qux;->x()Ljava/util/ArrayList;
+    invoke-static {}, Laq1/d;->l()Ljava/util/ArrayList;
 
     .line 65
     .line 66
@@ -1067,15 +1387,15 @@
     .line 69
     .line 70
     :cond_1
-    iget-object v0, p0, Lp92/k;->a:Lh92/s1;
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
 
     .line 71
     .line 72
-    check-cast v0, Lh92/t1;
+    check-cast v0, Ly92/s1;
 
     .line 73
     .line 74
-    invoke-virtual {v0}, Lh92/t1;->G()Z
+    invoke-virtual {v0}, Ly92/s1;->G()Z
 
     .line 75
     .line 76
@@ -1087,15 +1407,15 @@
 
     .line 79
     .line 80
-    iget-object v0, p0, Lp92/k;->a:Lh92/s1;
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
 
     .line 81
     .line 82
-    check-cast v0, Lh92/t1;
+    check-cast v0, Ly92/s1;
 
     .line 83
     .line 84
-    invoke-virtual {v0}, Lh92/t1;->B()Lcom/truecaller/premium/data/tier/PremiumTierType;
+    invoke-virtual {v0}, Ly92/s1;->B()Lcom/truecaller/premium/data/tier/PremiumTierType;
 
     .line 85
     .line 86
@@ -1120,7 +1440,7 @@
     .line 95
     .line 96
     .line 97
-    invoke-static {}, Li0/qux;->x()Ljava/util/ArrayList;
+    invoke-static {}, Laq1/d;->l()Ljava/util/ArrayList;
 
     .line 98
     .line 99
@@ -1137,7 +1457,7 @@
 
     .line 105
     .line 106
-    invoke-static {v1}, Li0/qux;->K(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lp92/e;
+    invoke-static {v1}, Laq1/d;->C(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lga2/e;
 
     .line 107
     .line 108
@@ -1154,15 +1474,15 @@
 
     .line 114
     :cond_2
-    iget-object v0, p0, Lp92/k;->a:Lh92/s1;
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
 
     .line 115
     .line 116
-    check-cast v0, Lh92/t1;
+    check-cast v0, Ly92/s1;
 
     .line 117
     .line 118
-    invoke-virtual {v0}, Lh92/t1;->G()Z
+    invoke-virtual {v0}, Ly92/s1;->G()Z
 
     .line 119
     .line 120
@@ -1174,15 +1494,15 @@
 
     .line 123
     .line 124
-    iget-object v0, p0, Lp92/k;->a:Lh92/s1;
+    iget-object v0, p0, Lga2/j;->a:Ly92/r1;
 
     .line 125
     .line 126
-    check-cast v0, Lh92/t1;
+    check-cast v0, Ly92/s1;
 
     .line 127
     .line 128
-    invoke-virtual {v0}, Lh92/t1;->B()Lcom/truecaller/premium/data/tier/PremiumTierType;
+    invoke-virtual {v0}, Ly92/s1;->B()Lcom/truecaller/premium/data/tier/PremiumTierType;
 
     .line 129
     .line 130
@@ -1216,7 +1536,7 @@
     .line 144
     .line 145
     .line 146
-    invoke-static {}, Li0/qux;->x()Ljava/util/ArrayList;
+    invoke-static {}, Laq1/d;->l()Ljava/util/ArrayList;
 
     .line 147
     .line 148
@@ -1233,7 +1553,7 @@
 
     .line 154
     .line 155
-    invoke-static {v2}, Li0/qux;->K(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lp92/e;
+    invoke-static {v2}, Laq1/d;->C(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lga2/e;
 
     .line 156
     .line 157
@@ -1255,7 +1575,7 @@
 
     .line 166
     .line 167
-    invoke-static {v1}, Li0/qux;->K(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lp92/e;
+    invoke-static {v1}, Laq1/d;->C(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lga2/e;
 
     .line 168
     .line 169
@@ -1276,7 +1596,7 @@
 
     .line 176
     .line 177
-    invoke-static {v0}, Li0/qux;->K(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lp92/e;
+    invoke-static {v0}, Laq1/d;->C(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lga2/e;
 
     .line 178
     .line 179
@@ -1288,7 +1608,7 @@
 
     .line 182
     .line 183
-    invoke-static {v1}, Li0/qux;->K(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lp92/e;
+    invoke-static {v1}, Laq1/d;->C(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lga2/e;
 
     .line 184
     .line 185
@@ -1300,7 +1620,7 @@
 
     .line 188
     .line 189
-    invoke-static {v2}, Li0/qux;->K(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lp92/e;
+    invoke-static {v2}, Laq1/d;->C(Lcom/truecaller/premium/data/feature/PremiumFeature;)Lga2/e;
 
     .line 190
     .line 191
@@ -1311,7 +1631,7 @@
     const/4 v3, 0x3
 
     .line 194
-    new-array v3, v3, [Lp92/e;
+    new-array v3, v3, [Lga2/e;
 
     .line 195
     .line 196
@@ -1336,7 +1656,7 @@
 
     .line 204
     .line 205
-    invoke-static {v3}, Lkotlin/collections/x;->j([Ljava/lang/Object;)Ljava/util/List;
+    invoke-static {v3}, Lkotlin/collections/z;->j([Ljava/lang/Object;)Ljava/util/List;
 
     .line 206
     .line 207
@@ -1345,7 +1665,7 @@
 
     .line 209
     :goto_0
-    invoke-static {v0}, Lp92/k;->a(Ljava/util/List;)Ljava/util/ArrayList;
+    invoke-static {v0}, Lga2/j;->a(Ljava/util/List;)Ljava/util/ArrayList;
 
     .line 210
     .line 211
@@ -1354,7 +1674,7 @@
 
     .line 213
     :cond_4
-    iput-object v0, p0, Lp92/k;->j:Ljava/util/List;
+    iput-object v0, p0, Lga2/j;->j:Ljava/util/List;
 
     .line 214
     .line 215

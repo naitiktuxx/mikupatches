@@ -36,14 +36,11 @@ Examples:
   # Build Bluetooth Keyboard with only ARM64 bundle and auto-install via ADB:
   python3 build.py input/blek.apkm --arch arm64-v8a -I --launch
 
-  # Apply specific patches only:
+  # Apply specific patch modules only:
   python3 build.py --only-patches pairip,pro_unlock
 
-  # Simulate build and verify patch targets without rebuilding (dry-run):
+  # Simulate build and verify patch targets without compiling (Dry-Run):
   python3 build.py --dry-run
-
-  # List all supported apps in repository:
-  python3 build.py --list-apps
 """,
     )
 

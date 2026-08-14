@@ -154,7 +154,7 @@ class Bundler:
         ver_code = detected_version_code or app_profile.target_version_code
         variant_slug = cls.get_variant_slug(app_profile, active_status)
 
-        # Determine separate output directory per app variant (e.g. dist/Truecaller/Full/)
+        # Determine separate output directory per app variant (e.g. dist/Bluetooth_Keyboard_Mouse/Full/)
         if custom_output_dir:
             app_output_dir = custom_output_dir
         else:

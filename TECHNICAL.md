@@ -31,14 +31,14 @@ mikupatches/
 
 ```
 patches/
+├── com.truecaller/
+│   ├── config.json         # Package configuration, version targets (v26.31.5), and no_res flag
+│   ├── patch_groups.json   # Patch module definitions & mappings
+│   └── base/               # Smali overrides for Truecaller
 ├── io.appground.blek/
 │   ├── config.json         # Package configuration & version targets (v6.22.0)
 │   ├── patch_groups.json   # Patch module definitions & mappings
 │   └── base/               # Smali & AndroidManifest.xml overrides for Blek
-├── com.truecaller/
-│   ├── config.json         # Package configuration & version targets (v26.30.5)
-│   ├── patch_groups.json   # Patch module definitions & mappings for Truecaller
-│   └── base/               # Smali & AndroidManifest.xml overrides for Truecaller
 └── bundle_fallback/        # Default metadata (info.json, icon.png) for standalone APKs
 ```
 
@@ -129,7 +129,7 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 |---|---|
 | `input_file` | Positional path to input `.apkm`, `.apks`, `.xapk`, `.zip`, or `.apk` file. |
 | `-i`, `--input <path>` | Explicit path to input package or directory. |
-| `-a`, `--app`, `--package <pkg>` | Explicitly specify target package name (e.g. `com.truecaller`, `io.appground.blek`). |
+| `-a`, `--app`, `--package <pkg>` | Explicitly specify target package name (e.g. `io.appground.blek`). |
 | `-f`, `--force` | Bypass version mismatch verification and force patch application. |
 | `--target-version <ver>` | Override expected target version name string. |
 
@@ -197,12 +197,18 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 | `clean_menu` | Clean Interface | Removes upgrade banners, subscription prompts, feedback dialogs, and unused menu actions. | `smali/jh0.smali`<br>`smali/m2.smali`<br>`smali/ug5.smali` |
 | `theme_default` | Default BlueGrey & System Theme | Sets default theme to BlueGrey accent and System Dark/Light theme. | `smali/b64.smali`<br>`smali/c64.smali`<br>`smali/wv3.smali`<br>`smali/io/appground/blek/MainActivity.smali` |
 
-### 2. Truecaller (`com.truecaller` v26.30.5)
+### 2. Truecaller (`com.truecaller` v26.31.5)
 
 | Patch ID | Name | Description | Key Files Modified |
 |---|---|---|---|
-| `remove_ads` | Ad-Free Experience | Neutralizes `AdsRouter.shouldShowAds()` and `hasAvailableAd()`, blocks ad provider initializations (AdMob, GAM, Facebook, InMobi, Vungle), and cleans up Ad ID permissions. | `AndroidManifest.xml`<br>`smali_classes5/r90/d.smali`<br>`smali_classes6/p92/k.smali`<br>`smali_classes8/sg3/j.smali` |
-| `gold_theme_unlock` | Unlock Gold Caller ID & Badge | Overrides `PremiumStateSettings` to GOLD tier (`isPremium=true`), unlocks metallic incoming call screen gradients (`CallerGradientConfig.isGold=true`), and activates Gold Crown avatar badge (`AvatarXConfig.isGold=true`). | `smali_classes6/h92/t1.smali`<br>`smali_classes6/p92/k.smali`<br>`smali_classes6/xc2/i.smali`<br>`smali_classes6/br1/bar.smali`<br>`smali_classes7/we2/qux.smali`<br>`smali_classes3/.../AvatarXConfig.smali` |
+| `remove_ads` | Remove Ads & Promotional Banners | Disables all ad networks, interstitial dialogs, banner slots, and enables No-Ads entitlement. | `smali_classes6/ga2/j.smali`<br>`smali_classes5/z90/c.smali`<br>`smali_classes6/com/truecaller/insights/ui/notifications/smsid/ads/AdsMsgIdConfig.smali`<br>`smali_classes5/com/truecaller/ads/mutliad/util/MultiAdRemoteConfigAutoScroll.smali`<br>`smali_classes5/com/truecaller/ads/domain/core/multiad/remoteconfig/MultiAdAutoScrollRemote.smali` |
+
+#### Architectural Details:
+1. **Entitlement Layer (`ga2/j.smali`)**: Overrides `g()Z` to return `true` (`const/4 v0, 0x1`), notifying all UI fragments (search results, contact details, after-call screen, and messaging tabs) that the `NO_ADS` feature is enabled.
+2. **Core Ad Engine Deactivation (`z90/c.smali`)**: Overrides `shouldShowAds()` and `canShowAd(config)` to return `false` (`const/4 v0, 0x0`), preventing network ad unit fetching, webview allocations, video ad loading, and telemetry.
+3. **SMS & Insights Notification Ads (`AdsMsgIdConfig.smali`)**: Neutralizes `isAdEnabled()` to return `false`.
+4. **Multi-Ad AutoScroll Remote Engine (`MultiAdRemoteConfigAutoScroll.smali`, `MultiAdAutoScrollRemote.smali`)**: Overrides `isEnabled()` to `false`.
+5. **Binary Resource Preservation (`no_res: true`)**: Truecaller uses complex split-dependent AndroidX `<bitmap>` drawables (such as voice notes `RecordView`). By configuring `"no_res": true` in `config.json`, Apktool leaves `resources.arsc` and all binary XML files 100% untouched, completely preventing XML pull parser resource corruption while allowing instant Smali patching.
 
 ---
 
@@ -236,9 +242,15 @@ Create `patches/com.example.app/config.json`:
   "target_version_name": "1.0.0",
   "target_version_code": "100",
   "main_activity": "com.example.app.MainActivity",
+  "no_res": false,
+  "supported_arches": [
+    "arm64-v8a",
+    "armeabi-v7a"
+  ],
   "apkmirror_url": "https://www.apkmirror.com/apk/example/app/"
 }
 ```
+*(Note: Set `"no_res": true` if all patches are Smali-only to preserve binary XML resources and speed up builds).*
 
 ### Step 3: Define `patch_groups.json`
 Create `patches/com.example.app/patch_groups.json` specifying patch modules, overlay files, and regex replacement rules:
