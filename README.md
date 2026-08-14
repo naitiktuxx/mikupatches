@@ -50,63 +50,9 @@ Modular multi-app patch build engine for Android applications. It automatically 
 
 ---
 
-## 💻 Operating System Compatibility
+## Docker Setup (Recommended)
 
-| Operating System | Compatibility Status | Recommended Environment |
-|---|---|---|
-| **Linux (Ubuntu, Debian, Mint)** | 100% Native | System package manager (`apt`) |
-| **Linux (Fedora, RHEL, CentOS)** | 100% Native | System package manager (`dnf`) |
-| **Linux (Arch Linux, Manjaro)** | 100% Native | Official repositories (`pacman`) |
-| **Linux (openSUSE, Alpine)** | 100% Native | System package manager (`zypper` / `apk`) |
-| **macOS (Apple Silicon & Intel)** | 100% Native | Homebrew (`brew`) |
-| **Windows via WSL / WSL2** | 100% Native (Recommended) | Ubuntu / Debian on WSL2 |
-| **Windows Native (PowerShell / CMD)** | Supported | JDK 17+, Apktool, and Android SDK on PATH |
-
----
-
-## 📦 Requirements & Installation Guide
-
-### Prerequisites
-- **Python** (3.8 or newer)
-- **Java JDK** (17 or newer, required by Apktool and apksigner)
-- **Apktool** (2.9.0 or newer)
-- **Android SDK Build-Tools** (`zipalign` and `apksigner`)
-- *Optional:* **ADB** (`android-tools`) for auto-installing onto a connected Android device
-
-#### macOS (Homebrew)
-```bash
-brew install python apktool openjdk android-commandlinetools
-```
-
-#### Ubuntu / Debian / Linux Mint / WSL2
-```bash
-sudo apt update && sudo apt install -y python3 apktool default-jdk zipalign apksigner android-tools-adb
-```
-
-#### Fedora / RHEL / CentOS
-```bash
-sudo dnf install -y python3 apktool java-17-openjdk-devel zipalign android-tools
-```
-
-#### Arch Linux / Manjaro
-```bash
-sudo pacman -S --needed python apktool java-environment-openjdk android-tools
-```
-
-#### Windows (Native via Winget / Scoop)
-```powershell
-# Using Winget:
-winget install Python.Python.3.12 Microsoft.OpenJDK.17
-
-# Using Scoop:
-scoop install python openjdk apktool adb
-```
-
----
-
-## Docker Setup
-
-If you do not want to install Java, Apktool, or Android SDK build tools on your machine, you can run the project in Docker.
+Running with Docker is the easiest method because you do not need to install Java, Apktool, or Android SDK build tools on your machine.
 
 ### Folder Mapping
 
@@ -152,7 +98,7 @@ docker run --rm -it `
 
 ---
 
-### CLI Mode (Direct Build)
+### CLI Mode (Direct Build via Docker)
 
 You can pass command line flags directly to run builds without the interactive menu:
 
@@ -166,10 +112,68 @@ docker compose run --rm mikupatches --app io.appground.blek --clone --all
 
 ---
 
-## 🛠️ Building
+## Manual Local Setup (Alternative)
+
+If you prefer running directly on your host machine without Docker, follow the setup instructions below.
+
+### Operating System Compatibility
+
+| Operating System | Compatibility Status | Recommended Environment |
+|---|---|---|
+| Linux (Ubuntu, Debian, Mint) | 100% Native | System package manager (`apt`) |
+| Linux (Fedora, RHEL, CentOS) | 100% Native | System package manager (`dnf`) |
+| Linux (Arch Linux, Manjaro) | 100% Native | Official repositories (`pacman`) |
+| Linux (openSUSE, Alpine) | 100% Native | System package manager (`zypper` / `apk`) |
+| macOS (Apple Silicon & Intel) | 100% Native | Homebrew (`brew`) |
+| Windows via WSL / WSL2 | 100% Native (Recommended) | Ubuntu / Debian on WSL2 |
+| Windows Native (PowerShell / CMD) | Supported | JDK 17+, Apktool, and Android SDK on PATH |
+
+---
+
+### Prerequisites & Installation
+
+Required tools on your system:
+- Python (3.8 or newer)
+- Java JDK (17 or newer)
+- Apktool (2.9.0 or newer)
+- Android SDK Build-Tools (`zipalign` and `apksigner`)
+- Optional: ADB (`android-tools`) for device installation
+
+#### macOS (Homebrew)
+```bash
+brew install python apktool openjdk android-commandlinetools
+```
+
+#### Ubuntu / Debian / Linux Mint / WSL2
+```bash
+sudo apt update && sudo apt install -y python3 apktool default-jdk zipalign apksigner android-tools-adb
+```
+
+#### Fedora / RHEL / CentOS
+```bash
+sudo dnf install -y python3 apktool java-17-openjdk-devel zipalign android-tools
+```
+
+#### Arch Linux / Manjaro
+```bash
+sudo pacman -S --needed python apktool java-environment-openjdk android-tools
+```
+
+#### Windows (Native via Winget / Scoop)
+```powershell
+# Using Winget:
+winget install Python.Python.3.12 Microsoft.OpenJDK.17
+
+# Using Scoop:
+scoop install python openjdk apktool adb
+```
+
+---
+
+## Building (Local Mode)
 
 ### 1. Interactive Menu Mode
-Simply launch the build script in your terminal:
+Launch the build script in your terminal:
 ```bash
 python3 build.py
 ```
