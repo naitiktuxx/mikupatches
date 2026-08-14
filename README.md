@@ -104,35 +104,67 @@ scoop install python openjdk apktool adb
 
 ---
 
-## 🐳 Docker (Zero-Install Setup)
+## 🐳 Docker Quickstart (Zero-Install Setup)
 
-If you don't want to install Java, Apktool, and Android SDK build-tools locally, you can run MikuPatches inside a pre-configured Docker container:
+Run MikuPatches inside an isolated Docker container **without needing to install Python, Java, Apktool, or Android SDK build-tools** on your system.
 
-### 1. Build the Docker Image
+```text
+  [Your PC]                                [Docker Container]
+  📂 ./input/ (put your APK here) ──mapped──►  📂 /app/input/
+                                                      │ (decompiles & patches)
+                                                      ▼
+  📂 ./dist/  (get patched APK)   ◄──mapped──  📂 /app/dist/
+```
+
+### ⚡ 3-Step Quickstart
+
+#### 1️⃣ Step 1: Put your APK in `input/`
+Copy your downloaded `.apkm` / `.apk` package into the [`input/`](input/) folder on your computer.
+
+#### 2️⃣ Step 2: Build the Docker image *(One-time setup)*
 ```bash
 docker build -t mikupatches .
 ```
 
-### 2. Run Interactively (TUI Mode)
-Place your `.apkm` / `.apk` package in the `input/` folder, then run:
-```bash
-docker run --rm -it \
-  -v "$(pwd)/input:/app/input" \
-  -v "$(pwd)/dist:/app/dist" \
-  mikupatches
-```
+#### 3️⃣ Step 3: Run the interactive patcher
 
-### 3. Run Headless / CLI Mode
+* **Option A: Using Docker Compose (Recommended)**
+  ```bash
+  docker compose run --rm mikupatches
+  ```
+
+* **Option B: Using Standard Docker Command**
+  * **macOS / Linux:**
+    ```bash
+    docker run --rm -it \
+      -v "$(pwd)/input:/app/input" \
+      -v "$(pwd)/dist:/app/dist" \
+      mikupatches
+    ```
+  * **Windows (PowerShell):**
+    ```powershell
+    docker run --rm -it `
+      -v "${PWD}/input:/app/input" `
+      -v "${PWD}/dist:/app/dist" `
+      mikupatches
+    ```
+
+---
+
+### 🤖 Non-Interactive / Automated CLI Mode
+
+You can pass any build flags directly through Docker:
+
 ```bash
 # Build Truecaller with all default patches
-docker run --rm \
-  -v "$(pwd)/input:/app/input" \
-  -v "$(pwd)/dist:/app/dist" \
-  mikupatches --app com.truecaller --all
+docker compose run --rm mikupatches --app com.truecaller --all
 
-# Or using docker compose
-docker compose run --rm mikupatches --app io.appground.blek --all
+# Build Bluetooth Keyboard & Mouse with App Clone (Dual Install)
+docker compose run --rm mikupatches --app io.appground.blek --clone --all
 ```
+
+> 💡 **Where are the output files?**  
+> All built and signed `.apk` / `.apkm` packages will instantly appear in your local [`dist/`](dist/) folder.
 
 ---
 
