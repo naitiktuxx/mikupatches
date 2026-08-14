@@ -1,4 +1,4 @@
-# MikuPatches
+# mikupatches
 
 Modular multi app patch build engine for Android applications. It automatically detects input packages, supports selective patch toggling, enables dual install app cloning, and builds signed release APKs and split bundles.
 
