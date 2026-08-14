@@ -1,6 +1,6 @@
 # mikupatches
 
-Modular multi-app patch build engine for Android applications. It automatically detects input packages, supports selective patch toggling, enables dual-install app cloning, and builds signed release APKs and split bundles.
+Modular multi app patch build engine for Android applications. It automatically detects input packages, supports selective patch toggling, enables dual-install app cloning, and builds signed release APKs and split bundles.
 
 ---
 
@@ -21,7 +21,7 @@ Modular multi-app patch build engine for Android applications. It automatically 
 
 | 💊 Patch | 📜 Description | ⚙️ Options |
 |:---|:---|:---|
-| [Remove Ads & Promotional Banners](patches/com.truecaller/patch_groups.json) | Completely removes in-app ads, disables AdsRouter engine (`shouldShowAds=false`), blocks SMS/Insights notification ads, neutralizes MultiAd autoscroll, and enables the official `NO_ADS` feature entitlement without breaking XML drawables. | |
+| [Remove Ads & Promotional Banners](patches/com.truecaller/patch_groups.json) | Completely removes in app ads, disables AdsRouter engine (`shouldShowAds=false`), blocks SMS/Insights notification ads, neutralizes MultiAd autoscroll, and enables the official `NO_ADS` feature entitlement without breaking XML drawables. | |
 | [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the official Truecaller app by renaming package name to `com.truecaller.tux` and isolating ContentProvider authorities. | • Clone suffix<br>• Custom package |
 
 </details>
@@ -39,7 +39,7 @@ Modular multi-app patch build engine for Android applications. It automatically 
 
 | 💊 Patch | 📜 Description | ⚙️ Options |
 |:---|:---|:---|
-| [Bypass License & Play Store Check](patches/io.appground.blek/base) | Neutralizes PairIP anti-piracy checks, license client verification, and Play Store redirection dialogs. | |
+| [Bypass License & Play Store Check](patches/io.appground.blek/base) | Neutralizes PairIP anti piracy checks, license client verification, and Play Store redirection dialogs. | |
 | [Unlock Pro & Premium Features](patches/io.appground.blek/base) | Unlocks all Pro features and lifetime subscription (`isPremium=true`, `isSubscribed=true`). | |
 | [Unlock Password Mode](patches/io.appground.blek/base) | Enables keyboard password visibility toggle and EndIcon controls. | |
 | [Clean Interface](patches/io.appground.blek/base) | Removes upgrade banners, subscription prompts, feedback dialogs, and unused menu actions. | |
@@ -136,7 +136,7 @@ Required tools on your system:
 - Python (3.8 or newer)
 - Java JDK (17 or newer)
 - Apktool (2.9.0 or newer)
-- Android SDK Build-Tools (`zipalign` and `apksigner`)
+- Android SDK Build Tools (`zipalign` and `apksigner`)
 - Optional: ADB (`android-tools`) for device installation
 
 #### macOS (Homebrew)
@@ -180,7 +180,7 @@ python3 build.py
 *(Or run `./build.sh` on Unix/macOS/Linux).*
 
 The interactive TUI provides guided options:
-- **`[1] (Recommended) Build App with All Patches`**: Auto-detects input file or prompts app selection, asks if you want to enable App Clone (`[y/N]`), and builds with all patches enabled.
+- **`[1] (Recommended) Build App with All Patches`**: Auto detects input file or prompts app selection, asks if you want to enable App Clone (`[y/N]`), and builds with all patches enabled.
 - **`[2] Custom Patch Selection & Build`**: Choose target app and toggle individual patch modules on or off with an interactive checkbox menu.
 - **`[3] Architecture Filter & Build`**: Filter target ABI (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) to build lightweight packages.
 - **`[4] Install Built App on Phone`**: Push patched APK directly to a connected Android phone via ADB.
@@ -192,7 +192,7 @@ The interactive TUI provides guided options:
 
 ### 2. Command Line Interface (CLI) Examples
 
-#### Build Truecaller or BLEK non-interactively:
+#### Build Truecaller or BLEK non interactively:
 ```bash
 # Truecaller (v26.31.5) with ad removal:
 python3 build.py input/truecaller.apkm -y
@@ -206,7 +206,7 @@ python3 build.py -a io.appground.blek -y
 python3 build.py input/truecaller.apkm --clone -y
 ```
 
-#### Build for a specific architecture only (e.g. ARM64) and auto-install via ADB:
+#### Build for a specific architecture only (e.g. ARM64) and auto install via ADB:
 ```bash
 python3 build.py input/truecaller.apkm --arch arm64-v8a -I --launch
 ```
@@ -217,7 +217,7 @@ python3 build.py -a com.truecaller --only-patches remove_ads -y
 python3 build.py -a io.appground.blek --only-patches pairip,pro_unlock -y
 ```
 
-#### Simulate build and verify patch targets without compiling (Dry-Run):
+#### Simulate build and verify patch targets without compiling (Dry Run):
 ```bash
 python3 build.py input/truecaller.apkm --dry-run
 ```
@@ -241,9 +241,9 @@ Place your input file into `input/` or pass its path as a CLI argument:
 ### Build Outputs (`dist/`)
 All generated release artifacts are saved in the `dist/` directory:
 - `dist/base.apk`: Standalone patched primary APK.
-- `dist/universal.apkm`: Universal multi-split bundle for bundle installers.
+- `dist/universal.apkm`: Universal multi split bundle for bundle installers.
 - `dist/universal.apks`: Alternative APKS format bundle.
-- `dist/<arch>/<arch>.apkm`: Architecture-specific bundles (e.g., `dist/arm64-v8a/arm64-v8a.apkm`).
+- `dist/<arch>/<arch>.apkm`: Architecture specific bundles (e.g., `dist/arm64-v8a/arm64-v8a.apkm`).
 
 ---
 
@@ -268,6 +268,5 @@ adb install -r dist/base.apk
 ## 📖 Further Reading
 
 - [TECHNICAL.md](TECHNICAL.md): Architecture details, modular engine breakdown, full CLI flags reference, and guide for adding new apps/patches.
-- [LEGAL.md](LEGAL.md): Non-affiliation disclaimer, redistribution notices, and educational use policies.
+- [LEGAL.md](LEGAL.md): Non affiliation disclaimer, redistribution notices, and educational use policies.
 - [LICENSE](LICENSE): GNU General Public License v3.0.
-

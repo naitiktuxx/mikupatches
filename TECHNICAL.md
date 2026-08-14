@@ -6,7 +6,7 @@ This document describes the modular architecture, Python engine design, toolchai
 
 ## 1. System Architecture & Modular Structure
 
-MikuPatches utilizes a decoupled, modular Python engine (`mikupatches/` package) with dynamic app profile discovery, multi-format archive extraction, universal app cloning, and multi-mode patching (file overlays, in-place regex/text transformations, and dynamic hooks).
+MikuPatches utilizes a decoupled, modular Python engine (`mikupatches/` package) with dynamic app profile discovery, multi format archive extraction, universal app cloning, and multi mode patching (file overlays, in place regex/text transformations, and dynamic hooks).
 
 ```
 mikupatches/
@@ -19,9 +19,9 @@ mikupatches/
 ├── apktool.py           # Apktool decompilation & recompilation wrapper with AAPT2 support
 ├── cloner.py            # Universal App Cloner & dual-installation authority patcher
 ├── patcher.py           # Multi-mode patch engine (file overlays, regex rules, dynamic hooks)
-├── signer.py            # 4-byte zipalign alignment & apksigner (v1/v2/v3/v4 schemes)
-├── bundler.py           # Universal and arch-specific split bundle packager (.apkm, .apks, .xapk)
-├── adb.py               # ADB device detection, APK install, uninstall, and auto-launch
+├── signer.py            # 4 byte zipalign alignment & apksigner (v1/v2/v3/v4 schemes)
+├── bundler.py           # Universal and arch specific split bundle packager (.apkm, .apks, .xapk)
+├── adb.py               # ADB device detection, APK install, uninstall, and auto launch
 ├── engine.py            # BuildEngine pipeline lifecycle orchestrator
 ├── cli.py               # Argument parser with categorized option groups
 └── ui/
@@ -76,18 +76,18 @@ patches/
                              [8. Package Universal & Arch Splits]
                                               │
                                               ▼
-                             [9. Optional ADB Deploy & Auto-Launch]
+                             [9. Optional ADB Deploy & Auto Launch]
 ```
 
 ### Execution Steps:
 1. **Archive Extraction (`extractor.py`)**: Unpacks `.apkm`, `.apks`, `.xapk`, `.zip`, or standalone `.apk` files into `build_staging/extracted/`.
 2. **Decompilation (`apktool.py`)**: Invokes `apktool d` to decompile `base.apk` into Smali bytecode and decoded resources.
 3. **App Discovery & Version Check (`patcher.py`)**: Reads `AndroidManifest.xml` to match against known app profiles in `patches/`. Compares `versionName` against `config.json` (bypassed with `--force`).
-4. **Patch Injection (`patcher.py`)**: Applies file overlays, regex search-and-replace rules, and dynamic hooks defined in `patch_groups.json`.
+4. **Patch Injection (`patcher.py`)**: Applies file overlays, regex search and replace rules, and dynamic hooks defined in `patch_groups.json`.
 5. **App Cloning (`cloner.py`)**: *(Optional via `--clone`)* Qualifies relative manifest components, renames root package to `<pkg>.tux`, updates custom permissions, isolates ContentProvider authorities, strips split requirements, and replaces authority references in Smali.
 6. **Recompilation (`apktool.py`)**: Recompiles the modified staging tree into an unaligned APK using Apktool (with optional AAPT2 backend).
-7. **Zipalign & Signing (`signer.py`, `keystore.py`)**: Aligns APK on 4-byte boundaries using `zipalign`, then signs with `apksigner` using `debug.keystore` (or a custom keystore) across v1, v2, v3, and v4 schemes.
-8. **Bundle Packaging (`bundler.py`)**: Generates universal `.apkm` and `.apks` bundles containing all splits, as well as architecture-specific bundles for `arm64-v8a`, `armeabi-v7a`, `x86`, and `x86_64`.
+7. **Zipalign & Signing (`signer.py`, `keystore.py`)**: Aligns APK on 4 byte boundaries using `zipalign`, then signs with `apksigner` using `debug.keystore` (or a custom keystore) across v1, v2, v3, and v4 schemes.
+8. **Bundle Packaging (`bundler.py`)**: Generates universal `.apkm` and `.apks` bundles containing all splits, as well as architecture specific bundles for `arm64-v8a`, `armeabi-v7a`, `x86`, and `x86_64`.
 9. **ADB Deployment (`adb.py`)**: *(Optional via `-I`)* Detects connected Android devices, pushes the patched `base.apk`, and optionally launches the app's main activity.
 
 ---
@@ -116,7 +116,7 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 | Flag | Description |
 |---|---|
 | `-m`, `--menu` | Open interactive main TUI menu. |
-| `-y`, `--yes` | Non-interactive mode (automatically confirm all prompts). |
+| `-y`, `--yes` | Non interactive mode (automatically confirm all prompts). |
 | `-v`, `--verbose` | Enable verbose debug output. |
 | `-q`, `--quiet` | Minimal console output. |
 | `--no-color` | Disable ANSI terminal styling (for CI or log files). |
@@ -178,7 +178,7 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 #### 7. ADB Device & Installation Options
 | Flag | Description |
 |---|---|
-| `-I`, `--install` | Auto-install built base APK onto connected ADB device. |
+| `-I`, `--install` | Auto install built base APK onto connected ADB device. |
 | `-d`, `--device <serial>` | Specific ADB device serial to target. |
 | `--launch` | Automatically launch patched app after ADB installation. |
 | `--uninstall` | Uninstall existing package before installing. |
@@ -191,8 +191,8 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 
 | Patch ID | Name | Description | Key Files Modified |
 |---|---|---|---|
-| `pairip` | Bypass License & Play Store Check | Neutralizes PairIP anti-piracy checks, license client verification, and Play Store redirection dialogs. | `AndroidManifest.xml`<br>`smali/com/pairip/licensecheck/LicenseClient.smali`<br>`smali/com/pairip/licensecheck/LicenseContentProvider.smali`<br>`smali/com/pairip/application/Application.smali`<br>`smali/eu5.smali` |
-| `pro_unlock` | Unlock Pro & Premium Features | Sets `isPremium=true` and `isSubscribed=true`, bypassing in-app billing SKU verification. | `smali/fj3.smali`<br>`smali/ez.smali`<br>`smali/uy.smali` |
+| `pairip` | Bypass License & Play Store Check | Neutralizes PairIP anti piracy checks, license client verification, and Play Store redirection dialogs. | `AndroidManifest.xml`<br>`smali/com/pairip/licensecheck/LicenseClient.smali`<br>`smali/com/pairip/licensecheck/LicenseContentProvider.smali`<br>`smali/com/pairip/application/Application.smali`<br>`smali/eu5.smali` |
+| `pro_unlock` | Unlock Pro & Premium Features | Sets `isPremium=true` and `isSubscribed=true`, bypassing in app billing SKU verification. | `smali/fj3.smali`<br>`smali/ez.smali`<br>`smali/uy.smali` |
 | `password_mode` | Unlock Password Mode | Enables password visibility toggling and EndIcon controls. | `smali/uv.smali` |
 | `clean_menu` | Clean Interface | Removes upgrade banners, subscription prompts, feedback dialogs, and unused menu actions. | `smali/jh0.smali`<br>`smali/m2.smali`<br>`smali/ug5.smali` |
 | `theme_default` | Default BlueGrey & System Theme | Sets default theme to BlueGrey accent and System Dark/Light theme. | `smali/b64.smali`<br>`smali/c64.smali`<br>`smali/wv3.smali`<br>`smali/io/appground/blek/MainActivity.smali` |
@@ -201,14 +201,14 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 
 | Patch ID | Name | Description | Key Files Modified |
 |---|---|---|---|
-| `remove_ads` | Remove Ads & Promotional Banners | Disables all ad networks, interstitial dialogs, banner slots, and enables No-Ads entitlement. | `smali_classes6/ga2/j.smali`<br>`smali_classes5/z90/c.smali`<br>`smali_classes6/com/truecaller/insights/ui/notifications/smsid/ads/AdsMsgIdConfig.smali`<br>`smali_classes5/com/truecaller/ads/mutliad/util/MultiAdRemoteConfigAutoScroll.smali`<br>`smali_classes5/com/truecaller/ads/domain/core/multiad/remoteconfig/MultiAdAutoScrollRemote.smali` |
+| `remove_ads` | Remove Ads & Promotional Banners | Disables all ad networks, interstitial dialogs, banner slots, and enables No Ads entitlement. | `smali_classes6/ga2/j.smali`<br>`smali_classes5/z90/c.smali`<br>`smali_classes6/com/truecaller/insights/ui/notifications/smsid/ads/AdsMsgIdConfig.smali`<br>`smali_classes5/com/truecaller/ads/mutliad/util/MultiAdRemoteConfigAutoScroll.smali`<br>`smali_classes5/com/truecaller/ads/domain/core/multiad/remoteconfig/MultiAdAutoScrollRemote.smali` |
 
 #### Architectural Details:
 1. **Entitlement Layer (`ga2/j.smali`)**: Overrides `g()Z` to return `true` (`const/4 v0, 0x1`), notifying all UI fragments (search results, contact details, after-call screen, and messaging tabs) that the `NO_ADS` feature is enabled.
 2. **Core Ad Engine Deactivation (`z90/c.smali`)**: Overrides `shouldShowAds()` and `canShowAd(config)` to return `false` (`const/4 v0, 0x0`), preventing network ad unit fetching, webview allocations, video ad loading, and telemetry.
 3. **SMS & Insights Notification Ads (`AdsMsgIdConfig.smali`)**: Neutralizes `isAdEnabled()` to return `false`.
-4. **Multi-Ad AutoScroll Remote Engine (`MultiAdRemoteConfigAutoScroll.smali`, `MultiAdAutoScrollRemote.smali`)**: Overrides `isEnabled()` to `false`.
-5. **Binary Resource Preservation (`no_res: true`)**: Truecaller uses complex split-dependent AndroidX `<bitmap>` drawables (such as voice notes `RecordView`). By configuring `"no_res": true` in `config.json`, Apktool leaves `resources.arsc` and all binary XML files 100% untouched, completely preventing XML pull parser resource corruption while allowing instant Smali patching.
+4. **Multi Ad AutoScroll Remote Engine (`MultiAdRemoteConfigAutoScroll.smali`, `MultiAdAutoScrollRemote.smali`)**: Overrides `isEnabled()` to `false`.
+5. **Binary Resource Preservation (`no_res: true`)**: Truecaller uses complex split dependent AndroidX `<bitmap>` drawables (such as voice notes `RecordView`). By configuring `"no_res": true` in `config.json`, Apktool leaves `resources.arsc` and all binary XML files 100% untouched, completely preventing XML pull parser resource corruption while allowing instant Smali patching.
 
 ---
 
@@ -280,7 +280,7 @@ Create `patches/com.example.app/patch_groups.json` specifying patch modules, ove
 Place modified Smali or XML files into `patches/com.example.app/base/` replicating their relative path in the decompiled APK.
 
 ### Step 5: Test & Validate
-Verify your configuration using the built-in diagnostic and dry-run tools:
+Verify your configuration using the built-in diagnostic and dry run tools:
 ```bash
 # List supported apps
 python3 build.py --list-apps
