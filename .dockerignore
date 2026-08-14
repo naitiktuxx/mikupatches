@@ -1,0 +1,36 @@
+# Version control & metadata
+.git/
+.github/
+.gitignore
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Python artifacts & caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Staging & build directories
+build_staging/
+dist/
+base/
+bundle/
+
+# Local input files (mounted at runtime)
+input/*
+!input/.gitkeep
+
+# Keystores & signatures
+*.keystore
+*.jks
+*.idsig
+
+# APK / APKM / APKS archives
+*.apk
+*.apkm
+*.apks
+*.xapk

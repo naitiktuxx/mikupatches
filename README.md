@@ -8,7 +8,7 @@ Modular multi-app patch build engine for Android applications. It automatically 
 
 > [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · `main` · 8 patches across 2 applications
 
-<details open>
+<details>
 <summary>📦 <b>Truecaller: Trusted Caller ID</b> · 2 patches</summary>
 
 <br>
@@ -26,7 +26,7 @@ Modular multi-app patch build engine for Android applications. It automatically 
 
 </details>
 
-<details open>
+<details>
 <summary>📦 <b>Bluetooth Keyboard & Mouse</b> · 6 patches</summary>
 
 <br>
@@ -100,6 +100,38 @@ winget install Python.Python.3.12 Microsoft.OpenJDK.17
 
 # Using Scoop:
 scoop install python openjdk apktool adb
+```
+
+---
+
+## 🐳 Docker (Zero-Install Setup)
+
+If you don't want to install Java, Apktool, and Android SDK build-tools locally, you can run MikuPatches inside a pre-configured Docker container:
+
+### 1. Build the Docker Image
+```bash
+docker build -t mikupatches .
+```
+
+### 2. Run Interactively (TUI Mode)
+Place your `.apkm` / `.apk` package in the `input/` folder, then run:
+```bash
+docker run --rm -it \
+  -v "$(pwd)/input:/app/input" \
+  -v "$(pwd)/dist:/app/dist" \
+  mikupatches
+```
+
+### 3. Run Headless / CLI Mode
+```bash
+# Build Truecaller with all default patches
+docker run --rm \
+  -v "$(pwd)/input:/app/input" \
+  -v "$(pwd)/dist:/app/dist" \
+  mikupatches --app com.truecaller --all
+
+# Or using docker compose
+docker compose run --rm mikupatches --app io.appground.blek --all
 ```
 
 ---
