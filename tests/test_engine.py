@@ -109,6 +109,142 @@ class TestUniversalAppCloner(unittest.TestCase):
         self.assertIn('android:name="com.example.test.MainApp"', updated)
         self.assertNotIn('com.android.vending.splits.required', updated)
 
+    def _create_mock_axml(self, strings: list, is_utf8: bool = False) -> bytes:
+        import struct
+        str_count = len(strings)
+        style_count = 0
+        flags = (1 << 8) if is_utf8 else 0
+
+        str_data = bytearray()
+        offsets = []
+        for s in strings:
+            offsets.append(len(str_data))
+            if is_utf8:
+                s_bytes = s.encode("utf-8")
+                str_data.append(len(s))
+                str_data.append(len(s_bytes))
+                str_data.extend(s_bytes)
+                str_data.append(0)
+            else:
+                s_bytes = s.encode("utf-16le")
+                str_data.extend(struct.pack("<H", len(s)))
+                str_data.extend(s_bytes)
+                str_data.extend(b"\x00\x00")
+
+        while len(str_data) % 4 != 0:
+            str_data.append(0)
+
+        strings_start = 28 + str_count * 4
+        styles_start = 0
+        sp_total_sz = strings_start + len(str_data)
+        while sp_total_sz % 4 != 0:
+            sp_total_sz += 1
+
+        sp_hdr = struct.pack("<HHI IIIII", 0x0001, 28, sp_total_sz, str_count, style_count, flags, strings_start, styles_start)
+        offsets_bytes = struct.pack(f"<{str_count}I", *offsets)
+        sp_chunk = sp_hdr + offsets_bytes + bytes(str_data)
+        while len(sp_chunk) < sp_total_sz:
+            sp_chunk += b"\x00"
+
+        root_header_sz = 8
+        root_total_sz = root_header_sz + len(sp_chunk)
+        root_hdr = struct.pack("<HHI", 0x0003, root_header_sz, root_total_sz)
+        return root_hdr + sp_chunk
+
+    def test_patch_axml_strings_utf16(self):
+        sample_strings = ["manifest", "package", "com.truecaller", "split", "config.arm64_v8a"]
+        axml_bytes = self._create_mock_axml(sample_strings, is_utf8=False)
+        patched_bytes = AppCloner.patch_axml_strings(axml_bytes, {"com.truecaller": "com.truecaller.tux"})
+        self.assertNotEqual(axml_bytes, patched_bytes)
+
+        # Parse back strings and check
+        import struct
+        sp_type, sp_hsz, sp_size = struct.unpack("<HHI", patched_bytes[8:16])
+        str_count, style_count, flags, strings_start, styles_start = struct.unpack("<IIIII", patched_bytes[16:36])
+        offsets = struct.unpack(f"<{str_count}I", patched_bytes[36 : 36+str_count*4])
+        base_str = 8 + strings_start
+        strings = []
+        for off in offsets:
+            p = base_str + off
+            u16_len = struct.unpack("<H", patched_bytes[p:p+2])[0]
+            s = patched_bytes[p+2 : p+2+u16_len*2].decode("utf-16le")
+            strings.append(s)
+
+        self.assertIn("com.truecaller.tux", strings)
+        self.assertNotIn("com.truecaller", strings)
+        self.assertIn("config.arm64_v8a", strings)
+
+    def test_patch_axml_strings_utf8(self):
+        sample_strings = ["manifest", "package", "io.appground.blek", "split", "config.en"]
+        axml_bytes = self._create_mock_axml(sample_strings, is_utf8=True)
+        patched_bytes = AppCloner.patch_axml_strings(axml_bytes, {"io.appground.blek": "io.appground.blek.tux"})
+        self.assertNotEqual(axml_bytes, patched_bytes)
+
+        import struct
+        str_count, style_count, flags, strings_start, styles_start = struct.unpack("<IIIII", patched_bytes[16:36])
+        offsets = struct.unpack(f"<{str_count}I", patched_bytes[36 : 36+str_count*4])
+        base_str = 8 + strings_start
+        strings = []
+        for off in offsets:
+            p = base_str + off
+            c_len = patched_bytes[p]
+            p += 1
+            b_len = patched_bytes[p]
+            p += 1
+            s = patched_bytes[p : p + b_len].decode("utf-8")
+            strings.append(s)
+
+        self.assertIn("io.appground.blek.tux", strings)
+        self.assertNotIn("io.appground.blek", strings)
+
+    def test_clone_split_apk_integration(self):
+        import zipfile
+        mock_split_p = os.path.join(self.temp_dir, "split_config.arm64_v8a.apk")
+        mock_out_p = os.path.join(self.temp_dir, "split_config.arm64_v8a.cloned.apk")
+
+        sample_strings = ["manifest", "package", "com.truecaller", "split", "config.arm64_v8a"]
+        axml_data = self._create_mock_axml(sample_strings, is_utf8=False)
+
+        with zipfile.ZipFile(mock_split_p, "w") as z:
+            z.writestr("AndroidManifest.xml", axml_data)
+            z.writestr("lib/arm64-v8a/libtest.so", b"\x7fELFfake")
+            z.writestr("META-INF/MANIFEST.MF", b"old signature")
+
+        success = AppCloner.clone_split_apk(
+            input_split_apk=mock_split_p,
+            output_split_apk=mock_out_p,
+            orig_pkg="com.truecaller",
+            new_pkg="com.truecaller.tux",
+        )
+        self.assertTrue(success)
+        self.assertTrue(os.path.exists(mock_out_p))
+
+        with zipfile.ZipFile(mock_out_p, "r") as z:
+            namelist = z.namelist()
+            self.assertIn("AndroidManifest.xml", namelist)
+            self.assertIn("lib/arm64-v8a/libtest.so", namelist)
+            self.assertNotIn("META-INF/MANIFEST.MF", namelist)
+
+    def test_clone_all_splits_staging(self):
+        import zipfile
+        staging_dir = os.path.join(self.temp_dir, "staging_splits")
+        os.makedirs(staging_dir, exist_ok=True)
+
+        sample_strings = ["manifest", "package", "com.example.app", "split"]
+        axml_data = self._create_mock_axml(sample_strings, is_utf8=False)
+
+        for split_name in ["split_config.arm64_v8a.apk", "split_config.xxhdpi.apk"]:
+            sp_path = os.path.join(staging_dir, split_name)
+            with zipfile.ZipFile(sp_path, "w") as z:
+                z.writestr("AndroidManifest.xml", axml_data)
+
+        cloned_count = AppCloner.clone_all_splits(
+            bundle_staging=staging_dir,
+            orig_pkg="com.example.app",
+            new_pkg="com.example.app.tux",
+        )
+        self.assertEqual(cloned_count, 2)
+
     def test_clone_naming_convention(self):
         profile_orig = AppManager.find_app_profile("io.appground.blek")
         self.assertIsNotNone(profile_orig)

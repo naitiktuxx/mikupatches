@@ -299,6 +299,19 @@ class BuildEngine:
             return BuildResult(success=False, app_profile=app_profile, error_message=str(e))
 
         # 13. Align & Sign split APKs
+        if is_clone_active and os.path.exists(bundle_staging):
+            cloned_pkg = options.clone_pkg or f"{app_profile.package_name}{options.clone_suffix}"
+            split_files = [f for f in os.listdir(bundle_staging) if f.endswith(".apk") and f != "base.apk"]
+            if split_files:
+                Console.step(f"Applying clone transformations to {len(split_files)} auxiliary split APK(s)...")
+                AppCloner.clone_all_splits(
+                    bundle_staging=bundle_staging,
+                    orig_pkg=app_profile.package_name,
+                    new_pkg=cloned_pkg,
+                    suffix=options.clone_suffix,
+                    verbose=options.verbose,
+                )
+
         Console.step("Processing split APKs...")
         staged_splits = ApkSigner.sign_all_splits(
             bundle_staging=bundle_staging,

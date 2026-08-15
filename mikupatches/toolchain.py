@@ -63,20 +63,25 @@ class Toolchain:
             names_to_try.extend([f"{binary_name}.exe", f"{binary_name}.bat", f"{binary_name}.cmd"])
 
         for sdk in sdk_candidates:
-            if not sdk or not os.path.exists(sdk):
+            if not sdk:
                 continue
-            bt_dir = os.path.join(sdk, "build-tools")
-            if os.path.exists(bt_dir):
-                for ver in sorted(os.listdir(bt_dir), reverse=True):
-                    for bname in names_to_try:
-                        cand = os.path.join(bt_dir, ver, bname)
-                        if os.path.isfile(cand) and (os.access(cand, os.X_OK) or sys.platform == "win32"):
-                            return cand
-            # Direct platform-tools check
-            for bname in names_to_try:
-                pt_cand = os.path.join(sdk, "platform-tools", bname)
-                if os.path.isfile(pt_cand) and (os.access(pt_cand, os.X_OK) or sys.platform == "win32"):
-                    return pt_cand
+            try:
+                if not os.path.exists(sdk):
+                    continue
+                bt_dir = os.path.join(sdk, "build-tools")
+                if os.path.exists(bt_dir):
+                    for ver in sorted(os.listdir(bt_dir), reverse=True):
+                        for bname in names_to_try:
+                            cand = os.path.join(bt_dir, ver, bname)
+                            if os.path.isfile(cand) and (os.access(cand, os.X_OK) or sys.platform == "win32"):
+                                return cand
+                # Direct platform-tools check
+                for bname in names_to_try:
+                    pt_cand = os.path.join(sdk, "platform-tools", bname)
+                    if os.path.isfile(pt_cand) and (os.access(pt_cand, os.X_OK) or sys.platform == "win32"):
+                        return pt_cand
+            except (PermissionError, OSError):
+                continue
 
         # 3. Check specific fallback hints
         if fallback_hints:
