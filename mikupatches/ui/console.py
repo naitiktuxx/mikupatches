@@ -17,6 +17,10 @@ class Console:
             Colors.strip_colors()
 
     @classmethod
+    def is_color_enabled(cls) -> bool:
+        return cls._color_enabled
+
+    @classmethod
     def step(cls, msg: str):
         if cls._color_enabled:
             print(f"{Colors.CYAN}{Colors.BOLD}[Step]{Colors.RESET} {msg}")

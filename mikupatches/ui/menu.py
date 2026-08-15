@@ -322,24 +322,35 @@ def prompt_download(app_profile: AppProfile, input_dir: str) -> Optional[str]:
     print(f"  Folder   : Place file inside '{os.path.basename(input_dir)}/' directory")
     print("=" * 76 + "\n")
 
+    apkmirror_url = app_profile.apkmirror_url or ""
     in_docker = Toolchain.is_docker_env()
-    osc8_link = f"\033]8;;{apkmirror_url}\033\\{Colors.CYAN}{apkmirror_url}{Colors.RESET}\033]8;;\033\\"
+    if Console.is_color_enabled() and apkmirror_url:
+        osc8_link = f"\033]8;;{apkmirror_url}\033\\{Colors.CYAN}{apkmirror_url}{Colors.RESET}\033]8;;\033\\"
+    else:
+        osc8_link = apkmirror_url
 
-    if sys.stdin.isatty():
-        print(f"{Colors.BOLD}Options:{Colors.RESET}")
-        if in_docker:
-            print(f"  [1] Show download link (save to host '{os.path.basename(input_dir)}/' folder)")
-        else:
-            print(f"  [1] Open APKMirror in browser to download")
-        print("  [2] Back to Main Menu\n")
-        try:
-            choice = input(f"{Colors.CYAN}Select option [1-2] (default 1): {Colors.RESET}").strip().lower()
-            if choice in ("2", "b", "back", "cancel", "q", "exit"):
-                Console.step("Returning to Main Menu.")
-                return None
-        except (EOFError, KeyboardInterrupt):
+    if not sys.stdin.isatty():
+        infile = Extractor.find_input_file(input_dir=input_dir, target_pkg=app_profile.package_name)
+        if infile:
+            return infile
+        if osc8_link:
+            print(f"  Download Link: {osc8_link}")
+        return None
+
+    print(f"{Colors.BOLD}Options:{Colors.RESET}")
+    if in_docker:
+        print(f"  [1] Show download link (save to host '{os.path.basename(input_dir)}/' folder)")
+    else:
+        print(f"  [1] Open APKMirror in browser to download")
+    print("  [2] Back to Main Menu\n")
+    try:
+        choice = input(f"{Colors.CYAN}Select option [1-2] (default 1): {Colors.RESET}").strip().lower()
+        if choice in ("2", "b", "back", "cancel", "q", "exit"):
             Console.step("Returning to Main Menu.")
             return None
+    except (EOFError, KeyboardInterrupt):
+        Console.step("Returning to Main Menu.")
+        return None
 
     print("-" * 76)
     if in_docker:

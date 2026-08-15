@@ -447,8 +447,23 @@ class TestHardeningAndEdgeCases(unittest.TestCase):
         finally:
             if old_val is None:
                 os.environ.pop("DOCKER_CONTAINER", None)
-            else:
-                os.environ["DOCKER_CONTAINER"] = old_val
+    def test_prompt_download_no_name_error(self):
+        from mikupatches.ui.menu import prompt_download
+        from mikupatches.models import AppProfile
+        from unittest.mock import patch
+
+        profile = AppProfile(
+            package_name="com.test.app",
+            app_title="Test App",
+            target_version_name="1.0.0",
+            target_version_code="100",
+            apkmirror_url="https://www.apkmirror.com/test",
+        )
+
+        # Test non-interactive return None without raising NameError
+        with patch("sys.stdin.isatty", return_value=False), patch("builtins.input", side_effect=EOFError):
+            res = prompt_download(profile, self.temp_dir)
+            self.assertIsNone(res)
 
 
 if __name__ == "__main__":
