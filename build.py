@@ -231,7 +231,7 @@ def scan_dist_variants(dist_dir: str) -> List[Dict[str, Any]]:
 
 
 def handle_adb_install_menu(dist_dir: str):
-    """Dynamic ADB install menu supporting multiple devices and multiple generated APKs."""
+    """Dynamic ADB install menu supporting multiple devices, unauthorized state detection, and multiple generated APKs."""
     if Toolchain.is_docker_env():
         Console.warn("ADB is disabled in Docker environment. ADB is only supported in native environments (macOS / Linux / Windows).")
         return False
@@ -239,24 +239,74 @@ def handle_adb_install_menu(dist_dir: str):
     if not Toolchain.get_adb():
         Console.warn("ADB is not installed or not found in system PATH.")
         Toolchain.print_install_guide()
-        return False
-
-    devices = AdbManager.list_devices()
-    if not devices:
-        Console.warn("No Android phone or emulator connected.")
-        print(f"  {Colors.CYAN}[*] Connect your phone via USB with USB Debugging enabled, or start an emulator.{Colors.RESET}\n")
+        if sys.stdin.isatty():
+            prompt_back_to_menu()
         return False
 
     if not os.path.exists(dist_dir):
         Console.warn(f"Output folder '{os.path.basename(dist_dir)}/' does not exist. Build an app first.")
+        if sys.stdin.isatty():
+            prompt_back_to_menu()
         return False
 
     # Scan distinct variants in dist/
     variants = scan_dist_variants(dist_dir)
-
     if not variants:
         Console.warn(f"No built packages found in '{os.path.basename(dist_dir)}/'. Build an app first.")
+        if sys.stdin.isatty():
+            prompt_back_to_menu()
         return False
+
+    # Device detection with interactive troubleshooting & retry loop
+    while True:
+        diag = AdbManager.get_device_diagnostics()
+        devices = diag["ready"]
+
+        if devices:
+            break
+
+        if not sys.stdin.isatty():
+            if diag["unauthorized"]:
+                Console.warn(f"ADB device detected ({', '.join(diag['unauthorized'])}) but UNAUTHORIZED. Allow USB debugging on device.")
+            else:
+                Console.warn("No active Android phone or emulator connected.")
+            return False
+
+        # Interactive Troubleshooting Screen
+        print("\n" + "=" * 76)
+        print(f"{Colors.YELLOW}{Colors.BOLD} [Notice] No Connected Android Devices Ready{Colors.RESET}")
+        print("------------------------------------------------------------------------")
+
+        if diag["unauthorized"]:
+            print(f"  {Colors.RED}{Colors.BOLD}[!] Device detected but UNAUTHORIZED:{Colors.RESET}")
+            for ser in diag["unauthorized"]:
+                print(f"      - Serial : {Colors.CYAN}{ser}{Colors.RESET} ({Colors.YELLOW}Unauthorized / Lockscreen{Colors.RESET})")
+            print(f"\n  {Colors.BOLD}Action Required:{Colors.RESET}")
+            print(f"  1. Unlock your phone screen.")
+            print(f"  2. Check for the {Colors.CYAN}'Allow USB debugging?'{Colors.RESET} prompt on your phone.")
+            print(f"  3. Check {Colors.BOLD}'Always allow from this computer'{Colors.RESET} and tap {Colors.GREEN}OK{Colors.RESET}.")
+        elif diag["offline"]:
+            print(f"  {Colors.YELLOW}[!] Device detected but OFFLINE ({', '.join(diag['offline'])}). Reconnect USB cable.{Colors.RESET}")
+        else:
+            print("  No active Android phones or emulators were detected by ADB.\n")
+            print(f"  {Colors.BOLD}Troubleshooting Checklist:{Colors.RESET}")
+            print(f"  1. Plug in your Android device via USB cable.")
+            print(f"  2. Open Android {Colors.BOLD}Settings -> Developer Options{Colors.RESET} and enable {Colors.CYAN}USB Debugging{Colors.RESET}.")
+            print(f"  3. Unlock phone and accept the {Colors.CYAN}'Allow USB debugging?'{Colors.RESET} prompt.")
+            print(f"  4. If using an emulator (Android Studio / Genymotion), make sure it is running.")
+
+        print("=" * 76 + "\n")
+        print(f"{Colors.BOLD}Options:{Colors.RESET}")
+        print(f"  [1] Refresh / Scan again")
+        print(f"  [2] Back to Main Menu\n")
+
+        try:
+            choice = input(f"{Colors.CYAN}Select option [1-2] (default 1): {Colors.RESET}").strip().lower()
+            if choice in ("2", "b", "back", "cancel", "q", "exit"):
+                return False
+            Console.step("Scanning for connected ADB devices...")
+        except (EOFError, KeyboardInterrupt):
+            return False
 
     # Device selection if multiple connected
     chosen_device = None

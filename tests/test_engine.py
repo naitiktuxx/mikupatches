@@ -465,6 +465,34 @@ class TestHardeningAndEdgeCases(unittest.TestCase):
             res = prompt_download(profile, self.temp_dir)
             self.assertIsNone(res)
 
+    def test_adb_device_diagnostics_states(self):
+        from mikupatches.adb import AdbManager
+        from mikupatches.toolchain import Toolchain
+        from unittest.mock import patch
+        import subprocess
+
+        mock_adb_output = """List of devices attached
+emulator-5554          device product:sdk_gphone64_arm64 model:sdk_gphone64_arm64 device:emu64a
+1234567890ABCDEF       unauthorized usb:1-1
+OFFLINE_DEVICE_99      offline
+"""
+        mock_proc = subprocess.CompletedProcess(args="adb devices -l", returncode=0, stdout=mock_adb_output, stderr="")
+
+        with patch.object(Toolchain, "is_docker_env", return_value=False), \
+             patch.object(Toolchain, "get_adb", return_value="/usr/bin/adb"), \
+             patch.object(Toolchain, "run_cmd", return_value=mock_proc):
+
+            diag = AdbManager.get_device_diagnostics()
+            self.assertEqual(len(diag["ready"]), 1)
+            self.assertEqual(diag["ready"][0][0], "emulator-5554")
+            self.assertEqual(diag["unauthorized"], ["1234567890ABCDEF"])
+            self.assertEqual(diag["offline"], ["OFFLINE_DEVICE_99"])
+
+            # list_devices should only return ready devices
+            devices = AdbManager.list_devices()
+            self.assertEqual(len(devices), 1)
+            self.assertEqual(devices[0][0], "emulator-5554")
+
 
 if __name__ == "__main__":
     unittest.main()

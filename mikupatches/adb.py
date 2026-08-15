@@ -8,7 +8,7 @@ import sys
 import shutil
 import tempfile
 import zipfile
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union, Dict, Any
 
 from mikupatches.toolchain import Toolchain
 from mikupatches.ui.console import Console
@@ -24,20 +24,33 @@ class AdbManager:
     )
 
     @classmethod
-    def list_devices(cls) -> List[Tuple[str, str]]:
-        """Returns list of (serial, model_or_type) for all connected devices/emulators."""
+    def get_device_diagnostics(cls) -> Dict[str, Any]:
+        """Returns comprehensive diagnostic info on ready, unauthorized, and offline devices."""
         if Toolchain.is_docker_env():
-            return []
+            return {
+                "ready": [],
+                "unauthorized": [],
+                "offline": [],
+                "no_permissions": [],
+            }
 
         adb_bin = Toolchain.get_adb()
         if not adb_bin:
-            return []
+            return {
+                "ready": [],
+                "unauthorized": [],
+                "offline": [],
+                "no_permissions": [],
+            }
 
         try:
             res = Toolchain.run_cmd(f'"{adb_bin}" devices -l', check=True)
             lines = res.stdout.strip().splitlines()
-            devices = []
-            # Locate device table start to avoid daemon startup logs
+            ready = []
+            unauthorized = []
+            offline = []
+            no_permissions = []
+
             start_idx = 0
             for idx, line in enumerate(lines):
                 if "List of devices attached" in line:
@@ -46,19 +59,42 @@ class AdbManager:
 
             for line in lines[start_idx:]:
                 parts = line.strip().split()
-                if len(parts) >= 2 and parts[1] == "device":
+                if len(parts) >= 2:
                     serial = parts[0]
-                    # Try to extract model:xxx
-                    model_str = "Android Device"
-                    for p in parts[2:]:
-                        if p.startswith("model:"):
-                            model_str = p.split(":", 1)[1]
-                        elif p.startswith("device:"):
-                            model_str += f" ({p.split(':', 1)[1]})"
-                    devices.append((serial, model_str))
-            return devices
+                    state = parts[1]
+                    if state == "device":
+                        model_str = "Android Device"
+                        for p in parts[2:]:
+                            if p.startswith("model:"):
+                                model_str = p.split(":", 1)[1]
+                            elif p.startswith("device:"):
+                                model_str += f" ({p.split(':', 1)[1]})"
+                        ready.append((serial, model_str))
+                    elif state == "unauthorized":
+                        unauthorized.append(serial)
+                    elif state == "offline":
+                        offline.append(serial)
+                    elif state in ("no", "no_permissions"):
+                        no_permissions.append(serial)
+
+            return {
+                "ready": ready,
+                "unauthorized": unauthorized,
+                "offline": offline,
+                "no_permissions": no_permissions,
+            }
         except Exception:
-            return []
+            return {
+                "ready": [],
+                "unauthorized": [],
+                "offline": [],
+                "no_permissions": [],
+            }
+
+    @classmethod
+    def list_devices(cls) -> List[Tuple[str, str]]:
+        """Returns list of (serial, model_or_type) for all connected devices/emulators."""
+        return cls.get_device_diagnostics()["ready"]
 
     @classmethod
     def get_device_abi(cls, device_serial: Optional[str] = None) -> Optional[str]:
