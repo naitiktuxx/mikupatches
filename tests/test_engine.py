@@ -429,6 +429,27 @@ class TestHardeningAndEdgeCases(unittest.TestCase):
         for v in variants:
             self.assertTrue(v["package_path"].endswith("universal.apkm"))
 
+    def test_docker_adb_disabled(self):
+        from mikupatches.toolchain import Toolchain
+        from mikupatches.adb import AdbManager
+
+        # Test with DOCKER_CONTAINER env set
+        old_val = os.environ.get("DOCKER_CONTAINER")
+        try:
+            os.environ["DOCKER_CONTAINER"] = "1"
+            self.assertTrue(Toolchain.is_docker_env())
+            self.assertIsNone(Toolchain.get_adb())
+            self.assertEqual(AdbManager.list_devices(), [])
+            self.assertIsNone(AdbManager.get_device_abi("dummy_serial"))
+            self.assertFalse(AdbManager.install("dummy.apk"))
+            self.assertFalse(AdbManager.uninstall("com.dummy.app"))
+            self.assertFalse(AdbManager.launch_app("com.dummy.app"))
+        finally:
+            if old_val is None:
+                os.environ.pop("DOCKER_CONTAINER", None)
+            else:
+                os.environ["DOCKER_CONTAINER"] = old_val
+
 
 if __name__ == "__main__":
     unittest.main()

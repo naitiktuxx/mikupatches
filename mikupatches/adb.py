@@ -18,9 +18,17 @@ from mikupatches.constants import Colors, ARCH_SPLIT_MAP
 class AdbManager:
     """Handles ADB operations including device detection, APK install, and app launch."""
 
+    ADB_DOCKER_WARNING = (
+        f"{Colors.YELLOW}[!] Warning: ADB is disabled in Docker environment. "
+        f"ADB device installation is only supported in native environments (macOS / Linux / Windows).{Colors.RESET}"
+    )
+
     @classmethod
     def list_devices(cls) -> List[Tuple[str, str]]:
         """Returns list of (serial, model_or_type) for all connected devices/emulators."""
+        if Toolchain.is_docker_env():
+            return []
+
         adb_bin = Toolchain.get_adb()
         if not adb_bin:
             return []
@@ -55,6 +63,8 @@ class AdbManager:
     @classmethod
     def get_device_abi(cls, device_serial: Optional[str] = None) -> Optional[str]:
         """Queries the primary CPU ABI of the connected Android device."""
+        if Toolchain.is_docker_env():
+            return None
         adb_bin = Toolchain.get_adb()
         if not adb_bin:
             return None
@@ -71,6 +81,10 @@ class AdbManager:
 
     @classmethod
     def select_device_interactively(cls) -> Optional[str]:
+        if Toolchain.is_docker_env():
+            Console.warn("ADB is disabled in Docker environment. ADB is only for native environments.")
+            return None
+
         devices = cls.list_devices()
         if not devices:
             Console.warn("No active ADB devices or emulators found.")
@@ -108,6 +122,10 @@ class AdbManager:
         verbose: bool = False,
     ) -> bool:
         """Installs standalone APK or multi-split APKM/APKS bundle onto ADB device."""
+        if Toolchain.is_docker_env():
+            Console.warn("ADB is disabled in Docker environment. ADB is only for native environments.")
+            return False
+
         adb_bin = Toolchain.get_adb()
         if not adb_bin:
             Console.warn("ADB tool not found in PATH. Skipping device install.")
@@ -222,6 +240,10 @@ class AdbManager:
 
     @classmethod
     def uninstall(cls, package_name: str, device_serial: Optional[str] = None, verbose: bool = False) -> bool:
+        if Toolchain.is_docker_env():
+            Console.warn("ADB is disabled in Docker environment. ADB is only for native environments.")
+            return False
+
         adb_bin = Toolchain.get_adb()
         if not adb_bin:
             return False
@@ -248,6 +270,10 @@ class AdbManager:
         device_serial: Optional[str] = None,
         verbose: bool = False,
     ) -> bool:
+        if Toolchain.is_docker_env():
+            Console.warn("ADB is disabled in Docker environment. ADB is only for native environments.")
+            return False
+
         adb_bin = Toolchain.get_adb()
         if not adb_bin:
             return False

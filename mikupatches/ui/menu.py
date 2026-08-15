@@ -12,6 +12,7 @@ from mikupatches.constants import Colors, SUPPORTED_ARCHITECTURES
 from mikupatches.models import AppProfile, PatchGroup
 from mikupatches.ui.console import Console
 from mikupatches.extractor import Extractor
+from mikupatches.toolchain import Toolchain
 
 
 def get_single_keypress() -> Optional[str]:
@@ -294,11 +295,14 @@ def show_arch_selection_menu() -> Optional[List[str]]:
 
 
 def show_main_menu(default_idx: int = 0, status_lines: Optional[List[str]] = None) -> Tuple[int, str]:
+    in_docker = Toolchain.is_docker_env()
+    adb_desc = "Transfer & install via ADB" if not in_docker else "Native host only (Disabled in Docker)"
+
     items = [
         ("1", "Build App (All Patches)", "Quick recommended build"),
         ("2", "Custom Patch Selection", "Choose specific patches to apply"),
         ("3", "Build for Specific Arch", "Target ARM64, ARM32, or x86"),
-        ("4", "Install App to Phone", "Transfer & install via ADB"),
+        ("4", "Install App to Phone", adb_desc),
         ("5", "Clean Output Files", "Clear dist/ folder"),
         ("6", "System Toolchain Status", "Check Java, Apktool, and zipalign"),
         ("7", "Help & Usage Guide", ""),
@@ -318,11 +322,15 @@ def prompt_download(app_profile: AppProfile, input_dir: str) -> Optional[str]:
     print(f"  Folder   : Place file inside '{os.path.basename(input_dir)}/' directory")
     print("=" * 76 + "\n")
 
-    apkmirror_url = app_profile.apkmirror_url
+    in_docker = Toolchain.is_docker_env()
+    osc8_link = f"\033]8;;{apkmirror_url}\033\\{Colors.CYAN}{apkmirror_url}{Colors.RESET}\033]8;;\033\\"
 
     if sys.stdin.isatty():
         print(f"{Colors.BOLD}Options:{Colors.RESET}")
-        print(f"  [1] Open APKMirror in browser to download")
+        if in_docker:
+            print(f"  [1] Show download link (save to host '{os.path.basename(input_dir)}/' folder)")
+        else:
+            print(f"  [1] Open APKMirror in browser to download")
         print("  [2] Back to Main Menu\n")
         try:
             choice = input(f"{Colors.CYAN}Select option [1-2] (default 1): {Colors.RESET}").strip().lower()
@@ -334,15 +342,19 @@ def prompt_download(app_profile: AppProfile, input_dir: str) -> Optional[str]:
             return None
 
     print("-" * 76)
-    print(f"{Colors.GREEN}[+] Opening download link in browser...{Colors.RESET}")
-    print(f"  Link: {Colors.CYAN}{apkmirror_url}{Colors.RESET}")
+    if in_docker:
+        print(f"{Colors.YELLOW}[Docker Environment]{Colors.RESET} {Colors.BOLD}Download package on your host machine:{Colors.RESET}")
+        print(f"  Link : {osc8_link} {Colors.DIM}(Cmd/Ctrl + Click to open){Colors.RESET}")
+        print(f"  Path : Save into {Colors.BOLD}'{os.path.basename(input_dir)}/'{Colors.RESET} directory on host")
+    else:
+        print(f"{Colors.GREEN}[+] Opening download link in browser...{Colors.RESET}")
+        print(f"  Link: {osc8_link}")
+        try:
+            webbrowser.open(apkmirror_url)
+        except Exception as e:
+            Console.warn(f"Failed to open browser automatically: {e}")
     print("-" * 76)
     print(f"\n{Colors.YELLOW}[*] Waiting for downloaded file in '{os.path.basename(input_dir)}/' folder... (Press Ctrl+C to cancel){Colors.RESET}\n")
-
-    try:
-        webbrowser.open(apkmirror_url)
-    except Exception as e:
-        Console.warn(f"Failed to open browser automatically: {e}")
 
     try:
         while True:

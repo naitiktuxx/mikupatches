@@ -6,6 +6,7 @@ FROM ubuntu:22.04
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
+    DOCKER_CONTAINER=1 \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8
 
@@ -15,7 +16,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-17-jdk-headless \
     zipalign \
     apksigner \
-    adb \
     curl \
     ca-certificates \
     git \
@@ -37,6 +37,7 @@ RUN mkdir -p /app/input /app/dist /app/build_staging
 # Copy application sources
 COPY mikupatches /app/mikupatches
 COPY patches /app/patches
+COPY tests /app/tests
 COPY build.py /app/build.py
 COPY build.sh /app/build.sh
 

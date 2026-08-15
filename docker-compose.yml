@@ -14,8 +14,8 @@ services:
       - ./dist:/app/dist
       # Optional: Mount custom patches folder for live patch editing
       - ./patches:/app/patches:ro
-      # Optional: Mount custom keystore if desired
-      - ./debug.keystore:/app/debug.keystore
+      # Optional: Mount custom keystore if desired (ensure ./debug.keystore exists before uncommenting)
+      # - ./debug.keystore:/app/debug.keystore
     # Example environment variables if using remote host ADB server:
     # environment:
     #   - ADB_SERVER_SOCKET=tcp:host.docker.internal:5037

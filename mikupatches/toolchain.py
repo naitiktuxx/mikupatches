@@ -119,7 +119,26 @@ class Toolchain:
         return cls.find_binary("keytool")
 
     @classmethod
+    def is_docker_env(cls) -> bool:
+        """Detects whether running inside a Docker container."""
+        if os.environ.get("DOCKER_CONTAINER") == "1" or os.environ.get("CONTAINER") == "docker":
+            return True
+        if os.path.exists("/.dockerenv"):
+            return True
+        try:
+            if os.path.exists("/proc/1/cgroup"):
+                with open("/proc/1/cgroup", "rt", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+                    if any(x in content for x in ("docker", "containerd", "kubepods")):
+                        return True
+        except Exception:
+            pass
+        return False
+
+    @classmethod
     def get_adb(cls) -> Optional[str]:
+        if cls.is_docker_env():
+            return None
         return cls.find_binary("adb")
 
     @classmethod
@@ -141,6 +160,7 @@ class Toolchain:
     def print_diagnostics(cls):
         Console.banner("TOOLCHAIN STATUS & SYSTEM PREREQUISITES")
 
+        in_docker = cls.is_docker_env()
         tools = [
             ("Python 3", sys.executable, True),
             ("Java JDK", cls.get_java(), True),
@@ -148,13 +168,16 @@ class Toolchain:
             ("zipalign", cls.get_zipalign(), True),
             ("apksigner", cls.get_apksigner(), True),
             ("keytool", cls.get_keytool(), True),
-            ("ADB", cls.get_adb(), False),
+            ("ADB", cls.find_binary("adb") if not in_docker else None, False),
             ("Git", shutil.which("git"), False),
         ]
 
         all_ok = True
         for name, path, required in tools:
-            if path:
+            if name == "ADB" and in_docker:
+                status = f"{Colors.YELLOW}DISABLED{Colors.RESET}"
+                details = f"{Colors.YELLOW}Docker environment - native only{Colors.RESET}"
+            elif path:
                 status = f"{Colors.GREEN}FOUND{Colors.RESET}"
                 details = f"{Colors.CYAN}{path}{Colors.RESET}"
             else:

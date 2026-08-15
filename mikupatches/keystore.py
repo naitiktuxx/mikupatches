@@ -28,10 +28,15 @@ class KeystoreManager:
         verbose: bool = False,
     ) -> str:
         if os.path.exists(keystore_path):
-            return keystore_path
+            if os.path.isdir(keystore_path):
+                keystore_path = os.path.join(keystore_path, "debug.keystore")
+                if os.path.isfile(keystore_path):
+                    return keystore_path
+            elif os.path.isfile(keystore_path):
+                return keystore_path
 
         # If custom path was specified but does not exist, abort
-        if os.path.abspath(keystore_path) != os.path.abspath(DEFAULT_KEYSTORE_PATH):
+        if os.path.abspath(keystore_path) != os.path.abspath(DEFAULT_KEYSTORE_PATH) and not os.path.isdir(keystore_path):
             raise FileNotFoundError(f"Specified custom keystore does not exist: {keystore_path}")
 
         Console.step("Generating debug keystore for APK signing...")

@@ -379,40 +379,44 @@ class BuildEngine:
             shutil.rmtree(options.staging_dir, ignore_errors=True)
 
         # 16. Optional ADB Install & Launch
-        if options.uninstall:
-            AdbManager.uninstall(effective_profile.package_name, device_serial=options.device, verbose=options.verbose)
-
-        if options.install:
-            # 1. Prefer universal.apkm or arch-specific bundle over standalone base.apk for split apps
-            univ_apkm = os.path.join(target_app_dir, "universal.apkm")
-            target_to_install = None
-
-            if os.path.exists(univ_apkm):
-                target_to_install = univ_apkm
+        if options.uninstall or options.install or options.launch:
+            if Toolchain.is_docker_env():
+                Console.warn("ADB is disabled in Docker environment. ADB operations are only supported in native environments (macOS / Linux / Windows).")
             else:
-                for root, _, files in os.walk(target_app_dir):
-                    for f in sorted(files):
-                        if f.endswith(".apkm"):
-                            target_to_install = os.path.join(root, f)
-                            break
+                if options.uninstall:
+                    AdbManager.uninstall(effective_profile.package_name, device_serial=options.device, verbose=options.verbose)
+
+                if options.install:
+                    # 1. Prefer universal.apkm or arch-specific bundle over standalone base.apk for split apps
+                    univ_apkm = os.path.join(target_app_dir, "universal.apkm")
+                    target_to_install = None
+
+                    if os.path.exists(univ_apkm):
+                        target_to_install = univ_apkm
+                    else:
+                        for root, _, files in os.walk(target_app_dir):
+                            for f in sorted(files):
+                                if f.endswith(".apkm"):
+                                    target_to_install = os.path.join(root, f)
+                                    break
+                            if target_to_install:
+                                break
+
+                    # Fallback to standalone base.apk if no bundle exists
+                    if not target_to_install:
+                        base_out = os.path.join(target_app_dir, "base.apk")
+                        if os.path.exists(base_out):
+                            target_to_install = base_out
+
                     if target_to_install:
-                        break
-
-            # Fallback to standalone base.apk if no bundle exists
-            if not target_to_install:
-                base_out = os.path.join(target_app_dir, "base.apk")
-                if os.path.exists(base_out):
-                    target_to_install = base_out
-
-            if target_to_install:
-                AdbManager.install(target_to_install, device_serial=options.device, verbose=options.verbose)
-                if options.launch:
-                    AdbManager.launch_app(
-                        package_name=effective_profile.package_name,
-                        main_activity=effective_profile.main_activity,
-                        device_serial=options.device,
-                        verbose=options.verbose,
-                    )
+                        AdbManager.install(target_to_install, device_serial=options.device, verbose=options.verbose)
+                        if options.launch:
+                            AdbManager.launch_app(
+                                package_name=effective_profile.package_name,
+                                main_activity=effective_profile.main_activity,
+                                device_serial=options.device,
+                                verbose=options.verbose,
+                            )
 
         # 17. Final Build Report
         cls.print_build_summary(effective_profile, applied_results, generated_files, target_app_dir)

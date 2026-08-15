@@ -232,6 +232,10 @@ def scan_dist_variants(dist_dir: str) -> List[Dict[str, Any]]:
 
 def handle_adb_install_menu(dist_dir: str):
     """Dynamic ADB install menu supporting multiple devices and multiple generated APKs."""
+    if Toolchain.is_docker_env():
+        Console.warn("ADB is disabled in Docker environment. ADB is only supported in native environments (macOS / Linux / Windows).")
+        return False
+
     if not Toolchain.get_adb():
         Console.warn("ADB is not installed or not found in system PATH.")
         Toolchain.print_install_guide()
@@ -482,6 +486,11 @@ def main():
 
         elif choice == '4':
             # Option 4: Install App to Phone via ADB
+            if Toolchain.is_docker_env():
+                status_lines = [
+                    f" {Colors.YELLOW}[!] Warning: ADB is disabled in Docker environment. ADB is only for native environments (macOS/Linux/Windows).{Colors.RESET}"
+                ]
+                continue
             did_install = handle_adb_install_menu(options.output_dir)
             if did_install:
                 prompt_back_to_menu()
