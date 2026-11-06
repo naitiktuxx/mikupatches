@@ -588,13 +588,8 @@
 
     :cond_2
     :goto_0
-    new-instance v4, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    const/4 v5, 0x1
-
-    invoke-direct {v4, v5, v3}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v1, v4}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+    # Login card (Type 1) removed by patch
+    nop
 
     new-instance v3, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
 
@@ -923,15 +918,8 @@
 
     :cond_e
     :goto_a
+    # VIP / Member banner (Type 2) removed by patch
     if-eqz v7, :cond_17
-
-    new-instance v9, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    const/4 v6, 0x2
-
-    invoke-direct {v9, v6, v7}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v9}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
     invoke-direct/range {p0 .. p0}, Lcom/transsion/usercenter/me/MeViewmodel;->E()Lcom/transsion/memberapi/IPremiumApi;
 

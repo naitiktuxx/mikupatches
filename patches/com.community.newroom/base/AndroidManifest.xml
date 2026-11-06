@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="35" android:compileSdkVersionCodename="15" package="com.community.newroom" platformBuildVersionCode="35" platformBuildVersionName="15">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="35" android:compileSdkVersionCodename="15" package="com.mikuplayer.tux" platformBuildVersionCode="35" platformBuildVersionName="15">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -55,7 +55,7 @@
             <action android:name="android.intent.action.VIEW" />
         </intent>
         <package android:name="com.transsnet.store" />
-        <package android:name="com.community.newroom" />
+        <package android:name="com.mikuplayer.tux" />
         <intent>
             <action android:name="com.android.vending.billing.InAppBillingService.BIND" />
         </intent>
@@ -80,8 +80,8 @@
     <meta-data android:name="tran_athena_version" android:value="3.1.1.4" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-feature android:glEsVersion="0x20000" android:required="true" />
-    <permission android:name="com.community.newroom.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="signature" />
-    <uses-permission android:name="com.community.newroom.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <permission android:name="com.mikuplayer.tux.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="signature" />
+    <uses-permission android:name="com.mikuplayer.tux.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
     <meta-data android:name="tran_http_version" android:value="1.0.53.01" />
     <meta-data android:name="tran_gslb_version" android:value="1.0.3.2" />
     <meta-data android:name="tran_coreutil_version" android:value="1.0.61.09" />
@@ -91,13 +91,13 @@
     <uses-feature android:name="android.hardware.screen.landscape" android:required="false" />
     <uses-feature android:name="android.hardware.wifi" android:required="false" />
     <meta-data android:name="tran_json_version" android:value="1.0.5.01" />
-    <application android:allowBackup="false" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:dataExtractionRules="@xml/data_extraction_rules" android:extractNativeLibs="true" android:fullBackupContent="@xml/backup_rules" android:hardwareAccelerated="true" android:icon="@mipmap/ic_launcher" android:label="@string/base_app_name" android:largeHeap="true" android:name="com.transsion.subroom.app.SubRoomApp" android:networkSecurityConfig="@xml/network_security_config" android:requestLegacyExternalStorage="true" android:supportsRtl="true" android:theme="@style/Theme.Subroom.NoActionBar" android:usesCleartextTraffic="true">
+    <application android:allowBackup="false" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:dataExtractionRules="@xml/data_extraction_rules" android:extractNativeLibs="true" android:fullBackupContent="@xml/backup_rules" android:hardwareAccelerated="true" android:icon="@mipmap/ic_launcher" android:label="Miku" android:largeHeap="true" android:name="com.transsion.subroom.app.SubRoomApp" android:networkSecurityConfig="@xml/network_security_config" android:requestLegacyExternalStorage="true" android:supportsRtl="true" android:theme="@style/Theme.Subroom.NoActionBar" android:usesCleartextTraffic="true">
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
         <activity android:launchMode="singleTask" android:name="com.transsion.subroom.activity.NotAvailableActivity" android:screenOrientation="portrait" />
         <activity android:configChanges="navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:exported="true" android:launchMode="singleTask" android:name="com.transsion.subroom.activity.MainActivity" android:screenOrientation="behind" android:theme="@style/Theme.Subroom.NoActionBarAd" android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity android:name="com.mymovie.activity.MyWebViewActivity" />
         <activity android:exported="true" android:name="com.mymovie.activity.MySearchSplashActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.AppStart.Compat" />
-        <activity android:exported="true" android:name="com.mymovie.activity.MySplashActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.AppStart.Compat">
+        <activity android:exported="true" android:label="Miku" android:name="com.mymovie.activity.MySplashActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.AppStart.Compat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -108,6 +108,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="com.mikuplayer.tux" android:scheme="oneroom" />
                 <data android:host="com.community.newroom" android:scheme="oneroom" />
             </intent-filter>
             <intent-filter>
@@ -166,7 +167,7 @@
             <meta-data android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar" android:value="com.google.firebase.components.ComponentRegistrar" />
             <meta-data android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar" android:value="com.google.firebase.components.ComponentRegistrar" />
         </service>
-        <provider android:authorities="com.community.newroom.androidx-startup" android:exported="false" android:name="androidx.startup.InitializationProvider">
+        <provider android:authorities="com.mikuplayer.tux.androidx-startup" android:exported="false" android:name="androidx.startup.InitializationProvider">
             <meta-data android:name="androidx.lifecycle.ProcessLifecycleInitializer" android:value="androidx.startup" />
             <meta-data android:name="androidx.emoji2.text.EmojiCompatInitializer" android:value="androidx.startup" />
             <meta-data android:name="androidx.profileinstaller.ProfileInstallerInitializer" android:value="androidx.startup" />
@@ -323,7 +324,7 @@
             </intent-filter>
         </service>
         <service android:name="com.transsnet.downloader.core.ForegroundService" />
-        <provider android:authorities="com.community.newroom.download.fileprovider" android:exported="false" android:grantUriPermissions="true" android:name="androidx.core.content.FileProvider">
+        <provider android:authorities="com.mikuplayer.tux.download.fileprovider" android:exported="false" android:grantUriPermissions="true" android:name="androidx.core.content.FileProvider">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/filepaths" />
         </provider>
         <activity android:exported="false" android:name="com.transsion.ninegridview.preview.GifImagePreviewActivity" android:theme="@style/Theme.AppCompat.Translucent">
@@ -352,8 +353,8 @@
         <activity android:exported="false" android:name="com.transsion.push.PushTestActivity" />
         <service android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.AccountService" />
         <service android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.AccountSyncService" />
-        <provider android:authorities="com.community.newroom.storage.account.sync" android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.AccountSyncContentProvider" />
-        <provider android:authorities="com.community.newroom.storage.contacts.sync" android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.FastCleanerProvider" />
+        <provider android:authorities="com.mikuplayer.tux.storage.account.sync" android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.AccountSyncContentProvider" />
+        <provider android:authorities="com.mikuplayer.tux.storage.contacts.sync" android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.FastCleanerProvider" />
         <meta-data android:name="miniProcess" android:value=":mini" />
         <meta-data android:name="layerHardware" android:value="false" />
         <meta-data android:name="WORKER_TYPE" android:value="webview" />
@@ -379,7 +380,7 @@
         <meta-data android:name="CONFIG_DEV_MODE" android:value="false" />
         <meta-data android:name="MINI_APP_STATIC_URL" android:value="https://api-static.byte-app.com/" />
         <meta-data android:name="com.google.android.gms.ads.INTEGRATION_MANAGER" android:value="webview" />
-        <activity android:documentLaunchMode="always" android:excludeFromRecents="true" android:exported="true" android:launchMode="standard" android:name="com.cloud.tmc.miniapp.ui.MiniSchemaFilterActivity" android:process=":mini" android:taskAffinity="com.community.newroom.miniapp.ui.MiniSchemaFilterActivity" android:theme="@style/Theme.Miniapp.NoActionBar" />
+        <activity android:documentLaunchMode="always" android:excludeFromRecents="true" android:exported="true" android:launchMode="standard" android:name="com.cloud.tmc.miniapp.ui.MiniSchemaFilterActivity" android:process=":mini" android:taskAffinity="com.mikuplayer.tux.miniapp.ui.MiniSchemaFilterActivity" android:theme="@style/Theme.Miniapp.NoActionBar" />
         <activity android:exported="false" android:multiprocess="true" android:name="com.cloud.tmc.miniapp.ui.ImagePreviewActivity" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar.PhotoTheme" />
         <activity android:exported="false" android:multiprocess="true" android:name="com.cloud.tmc.miniapp.ui.ImageSelectActivity" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar.PhotoTheme" />
         <activity android:exported="false" android:multiprocess="true" android:name="com.cloud.tmc.miniapp.ui.WebViewActivity" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar" />
@@ -388,10 +389,10 @@
         <activity android:exported="false" android:multiprocess="true" android:name="com.cloud.tmc.miniapp.ad.WebviewPersonalizationActivity" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar" />
         <activity android:name="com.cloud.tmc.miniapp.ui.AppBrandProfileActivity" android:process=":mini" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:launchMode="standard" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniAppMiniProcessActivity" android:process=":mini" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
-        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity1" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.community.newroom.miniapp.mini1" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
-        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity2" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.community.newroom.miniapp.mini2" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
-        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity3" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.community.newroom.miniapp.mini3" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
-        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity4" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.community.newroom.miniapp.mini4" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity1" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.mikuplayer.tux.miniapp.mini1" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity2" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.mikuplayer.tux.miniapp.mini2" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity3" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.mikuplayer.tux.miniapp.mini3" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity4" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.mikuplayer.tux.miniapp.mini4" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
         <service android:exported="false" android:name="com.cloud.tmc.miniapp.ipc.multiprogress.IpcMiniProcessClientService" android:process=":mini" />
         <service android:exported="true" android:name="com.cloud.tmc.miniapp.ipc.IpcMiniLauncherService" android:process=":mini" />
         <service android:exported="false" android:name="com.cloud.tmc.miniapp.ipc.multiprogress.IpcMainProcessClientService" />
@@ -415,7 +416,7 @@
         <service android:name="com.cloud.h5update.service.LocalH5UpdateJobService" android:permission="android.permission.BIND_JOB_SERVICE" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.cloud.tmc.miniutils.util.UtilsTransActivity4MainProcess" android:theme="@style/ActivityTranslucent" android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:multiprocess="true" android:name="com.cloud.tmc.miniutils.util.UtilsTransActivity" android:theme="@style/ActivityTranslucent" android:windowSoftInputMode="stateAlwaysHidden" />
-        <provider android:authorities="com.community.newroom.therouter.TheRouteContentProvider" android:exported="false" android:name="com.therouter.InnerTheRouterContentProvider" />
+        <provider android:authorities="com.mikuplayer.tux.therouter.TheRouteContentProvider" android:exported="false" android:name="com.therouter.InnerTheRouterContentProvider" />
         <activity android:exported="false" android:label="@string/places_autocomplete_label" android:name="com.google.android.libraries.places.widget.AutocompleteActivity" android:theme="@style/PlacesAutocompleteOverlay" android:windowSoftInputMode="adjustResize" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:launchMode="singleTask" android:name="com.transsion.ad.test.ad_config.TestAdMccActivity" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:launchMode="singleTask" android:name="com.transsion.ad.test.ad_example.TestViewMeasureActivity" />
@@ -450,12 +451,12 @@
         <activity android:exported="false" android:launchMode="singleTask" android:name="com.transsion.ad.bidding.splash.BiddingHisavanaSplashActivity" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:name="com.blankj.utilcode.util.UtilsTransActivity4MainProcess" android:theme="@style/ActivityTranslucent" android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:multiprocess="true" android:name="com.blankj.utilcode.util.UtilsTransActivity" android:theme="@style/ActivityTranslucent" android:windowSoftInputMode="stateAlwaysHidden" />
-        <provider android:authorities="com.community.newroom.utilcode.fileprovider" android:exported="false" android:grantUriPermissions="true" android:name="com.blankj.utilcode.util.UtilsFileProvider">
+        <provider android:authorities="com.mikuplayer.tux.utilcode.fileprovider" android:exported="false" android:grantUriPermissions="true" android:name="com.blankj.utilcode.util.UtilsFileProvider">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/util_code_provider_paths" />
         </provider>
         <service android:exported="false" android:name="com.blankj.utilcode.util.MessengerUtils$ServerService">
             <intent-filter>
-                <action android:name="com.community.newroom.messenger" />
+                <action android:name="com.mikuplayer.tux.messenger" />
             </intent-filter>
         </service>
         <meta-data android:name="tran_hisavana_version" android:value="3.6.0.2" />
@@ -528,7 +529,7 @@
         </service>
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
         <activity android:exported="false" android:name="com.google.android.gms.common.api.GoogleApiActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <provider android:authorities="com.community.newroom.firebaseinitprovider" android:directBootAware="true" android:exported="false" android:initOrder="100" android:name="com.google.firebase.provider.FirebaseInitProvider" />
+        <provider android:authorities="com.mikuplayer.tux.firebaseinitprovider" android:directBootAware="true" android:exported="false" android:initOrder="100" android:name="com.google.firebase.provider.FirebaseInitProvider" />
         <service android:directBootAware="true" android:exported="false" android:name="androidx.room.MultiInstanceInvalidationService" />
         <uses-library android:name="androidx.window.extensions" android:required="false" />
         <uses-library android:name="androidx.window.sidecar" android:required="false" />
@@ -577,7 +578,7 @@
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:launchMode="singleTask" android:name="com.transsion.shorttv._channel.ui.activity.ShortTvPlayListActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:launchMode="singleTask" android:name="com.transsion.shorttv._channel.ui.activity.ShortTvMovieFilterActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:launchMode="singleTask" android:name="com.transsion.shorttv._channel.ui.activity.ShortTvCategoryActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" />
-        <provider android:authorities="com.community.newroom.backgroundLibrary" android:exported="false" android:multiprocess="true" android:name="com.noober.background.BackgroundContentProvider" />
+        <provider android:authorities="com.mikuplayer.tux.backgroundLibrary" android:exported="false" android:multiprocess="true" android:name="com.noober.background.BackgroundContentProvider" />
         <service android:exported="false" android:name="com.tencent.tinker.lib.service.TinkerPatchService$InnerService" android:process=":patch" />
         <activity android:excludeFromRecents="true" android:exported="true" android:launchMode="singleTask" android:name="com.transsion.mpush.core.activity.SdkPushClickActivity" android:noHistory="true" android:taskAffinity="" android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>

@@ -11,7 +11,7 @@
 # static fields
 .field public static final MY_APP_ID:Ljava/lang/String; = "478455"
 
-.field private static final MY_PKG_NAME:Ljava/lang/String; = "com.community.newroom"
+.field private static final MY_PKG_NAME:Ljava/lang/String; = "com.mikuplayer.tux"
 
 .field public static sApp:Landroid/app/Application;
 
@@ -53,7 +53,7 @@
     return-object p0
 
     :cond_0
-    const-string v0, "com.community.newroom"
+    const-string v0, "com.mikuplayer.tux"
 
     const-string v1, "com.community.oneroom"
 

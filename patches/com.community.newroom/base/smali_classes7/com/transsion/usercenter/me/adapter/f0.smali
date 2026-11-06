@@ -1425,111 +1425,25 @@
 .method public F(Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;Lcom/transsion/usercenter/profile/bean/MeItemInfo;)V
     .locals 3
 
-    const-string v0, "helper"
+    if-eqz p1, :cond_0
 
-    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->h(Ljava/lang/Object;Ljava/lang/String;)V
+    iget-object v0, p1, Landroidx/recyclerview/widget/RecyclerView$b0;->itemView:Landroid/view/View;
 
-    const-string v0, "item"
+    if-eqz v0, :cond_0
 
-    invoke-static {p2, v0}, Lkotlin/jvm/internal/Intrinsics;->h(Ljava/lang/Object;Ljava/lang/String;)V
+    const/16 v1, 0x8
 
-    invoke-virtual {p2}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;->getData()Ljava/lang/Object;
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
-    move-result-object v0
+    new-instance v1, Landroidx/recyclerview/widget/RecyclerView$n;
 
-    instance-of v1, v0, Lcom/transsion/memberapi/MemberInfo;
+    const/4 v2, 0x0
 
-    if-eqz v1, :cond_0
+    invoke-direct {v1, v2, v2}, Landroidx/recyclerview/widget/RecyclerView$n;-><init>(II)V
 
-    check-cast v0, Lcom/transsion/memberapi/MemberInfo;
-
-    goto :goto_0
+    invoke-virtual {v0, v1}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
 
     :cond_0
-    const/4 v0, 0x0
-
-    :goto_0
-    if-nez v0, :cond_1
-
-    return-void
-
-    :cond_1
-    sget v1, Lcom/transsion/usercenter/R$id;->top_container:I
-
-    invoke-virtual {p1, v1}, Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;->getView(I)Landroid/view/View;
-
-    move-result-object v1
-
-    check-cast v1, Landroid/widget/LinearLayout;
-
-    iput-object v1, p0, Lcom/transsion/usercenter/me/adapter/f0;->f:Landroid/widget/LinearLayout;
-
-    sget v1, Lcom/transsion/usercenter/R$id;->radius_container:I
-
-    invoke-virtual {p1, v1}, Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;->getView(I)Landroid/view/View;
-
-    move-result-object v1
-
-    check-cast v1, Lcom/tn/lib/view/RoundedLinearLayout;
-
-    iput-object v1, p0, Lcom/transsion/usercenter/me/adapter/f0;->k:Lcom/tn/lib/view/RoundedLinearLayout;
-
-    sget v1, Lcom/transsion/usercenter/R$id;->bottom_container:I
-
-    invoke-virtual {p1, v1}, Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;->getView(I)Landroid/view/View;
-
-    move-result-object v1
-
-    check-cast v1, Landroid/widget/LinearLayout;
-
-    iput-object v1, p0, Lcom/transsion/usercenter/me/adapter/f0;->g:Landroid/widget/LinearLayout;
-
-    sget v1, Lcom/transsion/usercenter/R$id;->member_guide_banner_container:I
-
-    invoke-virtual {p1, v1}, Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;->getView(I)Landroid/view/View;
-
-    move-result-object v1
-
-    check-cast v1, Landroid/view/ViewGroup;
-
-    iput-object v1, p0, Lcom/transsion/usercenter/me/adapter/f0;->h:Landroid/view/ViewGroup;
-
-    sget v1, Lcom/transsion/usercenter/R$id;->tv_vip_guide_title:I
-
-    invoke-virtual {p1, v1}, Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;->getView(I)Landroid/view/View;
-
-    move-result-object v1
-
-    check-cast v1, Landroid/widget/TextView;
-
-    iput-object v1, p0, Lcom/transsion/usercenter/me/adapter/f0;->i:Landroid/widget/TextView;
-
-    sget v1, Lcom/transsion/usercenter/R$id;->tv_vip_guide_btn:I
-
-    invoke-virtual {p1, v1}, Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;->getView(I)Landroid/view/View;
-
-    move-result-object v1
-
-    check-cast v1, Landroid/widget/TextView;
-
-    iput-object v1, p0, Lcom/transsion/usercenter/me/adapter/f0;->j:Landroid/widget/TextView;
-
-    if-eqz v1, :cond_vip_btn_hide
-
-    const/16 v2, 0x8
-
-    invoke-virtual {v1, v2}, Landroid/view/View;->setVisibility(I)V
-
-    :cond_vip_btn_hide
-
-    invoke-direct {p0, v0, p2, p1}, Lcom/transsion/usercenter/me/adapter/f0;->B(Lcom/transsion/memberapi/MemberInfo;Lcom/transsion/usercenter/profile/bean/MeItemInfo;Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;)V
-
-    invoke-direct {p0, v0}, Lcom/transsion/usercenter/me/adapter/f0;->G(Lcom/transsion/memberapi/MemberInfo;)I
-
-    move-result p1
-
-    invoke-direct {p0, p1}, Lcom/transsion/usercenter/me/adapter/f0;->I(I)V
-
     return-void
 .end method
 

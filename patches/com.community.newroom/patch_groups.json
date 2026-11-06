@@ -44,7 +44,7 @@
     "desc": "Completely removes 'Log in to your account' card, login button, and neutralizes all login/sign-up activities",
     "default": true,
     "files": {
-      "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Remove Type 1 (login card), Type 3 (Rewards Center), and Type 6 (Messages) from Me items",
+      "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Remove Type 1 (login card), Type 2 (Premium TV Pro VIP banner), Type 3 (Rewards Center), and Type 6 (Messages) from Me items",
       "smali_classes7/com/transsion/usercenter/me/MeFragment.smali": "Disable login tooltip popup",
       "smali/com/transsnet/login/r.smali": "Neutralize login launch activities and intent triggers in ILoginApi",
       "smali_classes7/com/transsnet/login/LoginLikeActivity.smali": "Auto-finish LoginLikeActivity",
@@ -54,10 +54,11 @@
   {
     "id": "debloat_me_extras",
     "name": "Remove Floating Cash & Me Extras",
-    "desc": "Removes floating cash/chest widget, Renew VIP button, and fission rewards",
+    "desc": "Removes floating cash/chest widget, Premium TV Pro VIP banner in Me section, and fission rewards",
     "default": true,
     "files": {
-      "smali_classes7/com/transsion/usercenter/me/adapter/f0.smali": "Hide Renew button on Gold VIP card",
+      "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Remove Type 2 (Premium TV Pro VIP banner) from Me section items",
+      "smali_classes7/com/transsion/usercenter/me/adapter/f0.smali": "Permanently hide VIP member banner (zero size and GONE)",
       "smali_classes7/com/transsion/wrapperad/view/BiddingFloatingIrregularAnimationView.smali": "Disable floating irregular ad view",
       "smali_classes7/com/transsion/wrapperad/view/BiddingFloatingIrregularView.smali": "Disable floating irregular view",
       "smali_classes5/com/transsion/ad/view/native_ad/BiddingFloatingIrregularAnimationView.smali": "Disable bidding native floating ad view",
@@ -131,7 +132,72 @@
       "smali_classes7/com/transsnet/downloader/viewmodel/DownloadViewModel.smali": "Neutralize getMovieRec recommendations API network fetch",
       "smali_classes7/com/transsnet/downloader/viewmodel/LocalFileViewModel.smali": "Neutralize getOutsideLocalVideoList scanning for local videos",
       "smali_classes7/com/transsnet/downloader/viewmodel/HistoricalPlayRecordViewModel.smali": "Neutralize getOutsideLocalFileList and getTransferReceivedVideoDataList queries",
-      "smali_classes7/com/transsnet/downloader/activity/TransferActivity.smali": "Auto-finish TransferActivity on launch"
+      "smali_classes7/com/transsnet/downloader/activity/TransferActivity.smali": "Auto-finish TransferActivity on launch",
+      "smali_classes7/com/transsnet/downloader/popup/PopupManager.smali": "Remove Help button from downloading and downloaded video more/delete menu and route click directly to delete"
+    }
+  },
+  {
+    "id": "debloat_video_player_and_detail",
+    "name": "Debloat Video Player, Detail Screen & Post System",
+    "desc": "Removes TV/Help buttons, Ads skipped for Premium banner, Share button, Resources line (title, uploader, info), For You suggestions, Comments section, + Post button, and neutralizes all post/publishing activities and code",
+    "default": true,
+    "files": {
+      "smali_classes6/com/transsion/player/longvideo/intercept/PlaybackPremiumTipView.smali": "Set Ads skipped for Premium banner to GONE and zero size",
+      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Neutralize setFeedBackVisible and permanently hide TV and Help buttons",
+      "smali_classes7/ho/i.smali": "Set TV and Help top toolbar controls to GONE in video player",
+      "smali_classes5/cn/w.smali": "Hide Share button in movie detail header extension view",
+      "smali_classes6/com/transsion/moviedetail/view/HeaderExtensionFragment.smali": "Neutralize Share button click listener and share dialog trigger",
+      "smali_classes5/cn/m.smali": "Hide Resources Uploaded by uploader preview, info icon, and title",
+      "smali_classes6/com/transsion/moviedetail/fragment/ResourceDetectorFragment.smali": "Hide uploader preview text on data binding",
+      "smali_classes6/com/transsion/moviedetail/fragment/MovieDetailFragment.smali": "Hide MagicIndicator and ViewPager2 tabs (For You and Comments)",
+      "smali_classes6/com/transsion/moviedetail/fragment/ForYouFragment.smali": "Neutralize For You suggestions data loading and network triggers",
+      "smali_classes6/com/transsion/moviedetail/fragment/SubjectListFragment.smali": "Neutralize comments data loading, pagination, and retry triggers",
+      "smali_classes6/com/transsion/moviedetail/viewmodel/HotViewModel.smali": "Neutralize comments and room post network queries",
+      "smali_classes6/com/transsion/moviedetail/viewmodel/MovieDetailViewModel.smali": "Neutralize recommendations fetchRec and fetchLocalRec API calls",
+      "smali_classes7/jx/d.smali": "Hide Resources title, uploader name, info icon in stream resource detector view binding",
+      "smali_classes7/com/transsion/videodetail/VideoEpisodeFragment.smali": "Permanently hide Resources title, uploader name, info icon and neutralize click listeners in stream episode fragment",
+      "smali_classes7/jx/i.smali": "Hide MagicIndicator, ViewPager2, and tv_post button in stream detail view binding",
+      "smali_classes7/com/transsion/videodetail/StreamDetailFragment.smali": "Neutralize u1 to hide For You and Comments tabs, permanently hide tv_post button, and neutralize post launcher",
+      "smali_classes7/jx/f.smali": "Hide MagicIndicator, ViewPager2, and tv_post in music video detail view binding",
+      "smali_classes5/cn/h.smali": "Hide MagicIndicator, ViewPager2, and tv_post in movie detail view binding",
+      "smali/com/transsion/publish/j.smali": "Neutralize IPublishApi router and publishing intent launchers",
+      "smali_classes6/com/transsion/publish/ui/FilmReviewActivity.smali": "Auto-finish FilmReviewActivity (post editor screen) on launch",
+      "smali_classes6/com/transsion/publish/ui/FilmReviewFragment.smali": "Neutralize postService network request",
+      "smali_classes6/com/transsion/publish/ui/SelectImageActivity.smali": "Auto-finish SelectImageActivity on launch",
+      "smali_classes6/com/transsion/publish/ui/SelectVideoActivity.smali": "Auto-finish SelectVideoActivity on launch",
+      "smali_classes6/com/transsion/publish/ui/SelectMusicActivity.smali": "Auto-finish SelectMusicActivity on launch",
+      "smali_classes6/com/transsion/publish/ui/SelectLocationActivity.smali": "Auto-finish SelectLocationActivity on launch",
+      "smali_classes6/com/transsion/publish/ui/GalleryActivity.smali": "Auto-finish GalleryActivity on launch",
+      "smali_classes6/com/transsion/publish/ui/ClippingImageActivity.smali": "Auto-finish ClippingImageActivity on launch",
+      "smali_classes6/com/transsion/publish/ui/VideoPreviewActivity.smali": "Auto-finish VideoPreviewActivity on launch",
+      "smali_classes6/com/transsion/player/longvideo/ui/b0.smali": "Neutralize player settings button click listener"
+    }
+  },
+  {
+    "id": "branding_miku",
+    "name": "Change App Branding & Package Name (Miku)",
+    "desc": "Renames app to Miku, updates package name to com.mikuplayer.tux, and replaces launcher icons with custom Miku icons",
+    "default": true,
+    "files": {
+      "AndroidManifest.xml": "Update package to com.mikuplayer.tux and app label to Miku",
+      "res/mipmap-mdpi/ic_launcher.webp": "Miku app launcher icon (mdpi)",
+      "res/mipmap-mdpi/ic_launcher_foreground.webp": "Miku adaptive icon foreground (mdpi)",
+      "res/mipmap-mdpi/ic_launcher_background.webp": "Miku dark adaptive background (mdpi)",
+      "res/mipmap-hdpi/ic_launcher.webp": "Miku app launcher icon (hdpi)",
+      "res/mipmap-hdpi/ic_launcher_foreground.webp": "Miku adaptive icon foreground (hdpi)",
+      "res/mipmap-hdpi/ic_launcher_background.webp": "Miku dark adaptive background (hdpi)",
+      "res/mipmap-xhdpi/ic_launcher.webp": "Miku app launcher icon (xhdpi)",
+      "res/mipmap-xhdpi/ic_launcher_foreground.webp": "Miku adaptive icon foreground (xhdpi)",
+      "res/mipmap-xhdpi/ic_launcher_background.webp": "Miku dark adaptive background (xhdpi)",
+      "res/mipmap-xxhdpi/ic_launcher.webp": "Miku app launcher icon (xxhdpi)",
+      "res/mipmap-xxhdpi/ic_launcher_foreground.webp": "Miku adaptive icon foreground (xxhdpi)",
+      "res/mipmap-xxhdpi/ic_launcher_background.webp": "Miku dark adaptive background (xxhdpi)",
+      "res/mipmap-xxxhdpi/ic_launcher.webp": "Miku app launcher icon (xxxhdpi)",
+      "res/mipmap-xxxhdpi/ic_launcher_foreground.webp": "Miku adaptive icon foreground (xxxhdpi)",
+      "res/mipmap-xxxhdpi/ic_launcher_background.webp": "Miku dark adaptive background (xxxhdpi)",
+      "smali_classes7/XYXYXY/xf.smali": "Update download fileprovider authority to com.mikuplayer.tux.download.fileprovider",
+      "smali_classes7/com/mymovie/MyApp.smali": "Update package name and kept package name mapping to com.mikuplayer.tux",
+      "smali/com/transsion/al/ka/AccountUtils.smali": "Update account sync authority to com.mikuplayer.tux.account.sync"
     }
   }
 ]
