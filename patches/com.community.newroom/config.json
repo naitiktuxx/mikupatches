@@ -1,0 +1,12 @@
+{
+  "package_name": "com.community.newroom",
+  "app_title": "MovieBox",
+  "target_version_name": "4.0.02.0903.02",
+  "target_version_code": "90020128",
+  "main_activity": "com.mymovie.activity.MySplashActivity",
+  "supported_arches": [
+    "arm64-v8a",
+    "armeabi-v7a"
+  ],
+  "apkmirror_url": "https://mega.nz/file/QygA3agA#r0-814No0zey6JLFbwYLz18GqHWNm3K9MlTP8ulIY-4"
+}

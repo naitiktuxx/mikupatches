@@ -28,7 +28,8 @@ class ApktoolRunner:
         apktool_bin = Toolchain.get_apktool() or "apktool"
         cmd = f'"{apktool_bin}" d -f'
 
-        if framework_dir and os.path.exists(framework_dir):
+        if framework_dir:
+            os.makedirs(framework_dir, exist_ok=True)
             cmd += f' -p "{framework_dir}"'
         if no_src:
             cmd += " -s"
@@ -60,7 +61,8 @@ class ApktoolRunner:
         apktool_bin = Toolchain.get_apktool() or "apktool"
         cmd = f'"{apktool_bin}" b -f'
 
-        if framework_dir and os.path.exists(framework_dir):
+        if framework_dir:
+            os.makedirs(framework_dir, exist_ok=True)
             cmd += f' -p "{framework_dir}"'
         if use_aapt2:
             cmd += " --use-aapt2"

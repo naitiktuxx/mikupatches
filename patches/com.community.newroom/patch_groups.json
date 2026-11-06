@@ -1,0 +1,67 @@
+[
+  {
+    "id": "remove_ads",
+    "name": "Remove Ads & Interstitials",
+    "desc": "Disables in-app ad loading, neutralizes AdMob/Hisavana/Vungle/Mintegral/ByteDance, and eliminates interstitial delays",
+    "default": true,
+    "files": {
+      "smali_classes7/com/mymovie/ad/AdManager.smali": "Disable in-app ad loaders and bypass interstitial ad dialogs",
+      "smali_classes5/com/transsion/ad/MBAd.smali": "Disable Transsion MBAd framework and ad initialization",
+      "smali_classes7/com/mymovie/activity/MySplashActivity.smali": "Remove splash ad delay and launch directly into main screen"
+    }
+  },
+  {
+    "id": "unlock_resolution",
+    "name": "Bypass Video Resolution Ads",
+    "desc": "Unlocks high-resolution / HD video streams and skips playback interception ads without watching ads",
+    "default": true,
+    "files": {
+      "smali_classes6/com/transsion/player/longvideo/member/ResolutionAdView.smali": "Bypass rewarded ad check on resolution selection",
+      "smali_classes6/com/transsion/player/longvideo/intercept/PlaybackInterceptAdView.smali": "Bypass playback intercept ads"
+    }
+  },
+  {
+    "id": "disable_telemetry",
+    "name": "Disable Analytics & Telemetry",
+    "desc": "Disables Firebase Analytics user tracking and crash reporting",
+    "default": true,
+    "files": {
+      "smali_classes7/com/mymovie/MyApp.smali": "Neutralize Firebase Analytics initialization and reporting"
+    }
+  },
+  {
+    "id": "debloat_manifest",
+    "name": "Debloat Permissions & Services",
+    "desc": "Removes 18 intrusive permissions (location, camera, audio, calendar) and disables 26 background ad/tinker/push services",
+    "default": true,
+    "files": {
+      "AndroidManifest.xml": "Debloated AndroidManifest with removed ad activities, services, receivers, and invasive permissions"
+    }
+  },
+  {
+    "id": "remove_login_section",
+    "name": "Remove Login & Account Section",
+    "desc": "Completely removes 'Log in to your account' card, login button, and neutralizes all login/sign-up activities",
+    "default": true,
+    "files": {
+      "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Remove Type 1 (login card), Type 3 (Rewards Center), and Type 6 (Messages) from Me items",
+      "smali_classes7/com/transsion/usercenter/me/MeFragment.smali": "Disable login tooltip popup",
+      "smali/com/transsnet/login/r.smali": "Neutralize login launch activities and intent triggers in ILoginApi",
+      "smali_classes7/com/transsnet/login/LoginLikeActivity.smali": "Auto-finish LoginLikeActivity",
+      "smali_classes7/com/transsnet/login/LoginActivity.smali": "Auto-finish LoginActivity"
+    }
+  },
+  {
+    "id": "debloat_me_extras",
+    "name": "Remove Floating Cash & Me Extras",
+    "desc": "Removes floating cash/chest widget, Renew VIP button, and fission rewards",
+    "default": true,
+    "files": {
+      "smali_classes7/com/transsion/usercenter/me/adapter/f0.smali": "Hide Renew button on Gold VIP card",
+      "smali_classes7/com/transsion/wrapperad/view/BiddingFloatingIrregularAnimationView.smali": "Disable floating irregular ad view",
+      "smali_classes7/com/transsion/wrapperad/view/BiddingFloatingIrregularView.smali": "Disable floating irregular view",
+      "smali_classes5/com/transsion/ad/view/native_ad/BiddingFloatingIrregularAnimationView.smali": "Disable bidding native floating ad view",
+      "smali/com/transsion/fission/FissionProvider.smali": "Disable fission rewards and cash chest tasks"
+    }
+  }
+]

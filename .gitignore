@@ -20,6 +20,7 @@ input/*
 # Build outputs & staging
 dist/
 build_staging/
+framework/
 *.apk
 *.apkm
 *.apks
