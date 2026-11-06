@@ -60,10 +60,7 @@
             <action android:name="com.android.vending.billing.InAppBillingService.BIND" />
         </intent>
     </queries>
-    <uses-permission android:name="android.permission.FPOST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
-    <uses-permission android:name="android.permission.READ_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
@@ -71,34 +68,20 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     <uses-feature android:name="android.hardware.wifi.direct" android:required="false" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MANAGE_WIFI_NETWORK_SELECTION" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="com.sec.android.provider.badge.permission.READ" />
-    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" />
-    <uses-permission android:name="com.vivo.notification.permission.BADGE_ICON" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <meta-data android:name="tran_athena_version" android:value="3.1.1.4" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-feature android:glEsVersion="0x20000" android:required="true" />
     <permission android:name="com.community.newroom.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="signature" />
     <uses-permission android:name="com.community.newroom.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <meta-data android:name="tran_http_version" android:value="1.0.53.01" />
     <meta-data android:name="tran_gslb_version" android:value="1.0.3.2" />
     <meta-data android:name="tran_coreutil_version" android:value="1.0.61.09" />
@@ -280,7 +263,7 @@
         <activity android:exported="false" android:name="com.transsion.usercenter.message.UserRoomMessageActivity" android:screenOrientation="portrait" />
         <activity android:exported="false" android:name="com.transsion.usercenter.message.detail.MessageDetailActivity" android:screenOrientation="portrait" />
         <activity android:exported="false" android:name="com.transsion.usercenter.laboratory.LaboratoryActivity" android:screenOrientation="portrait" />
-        <activity android:exported="false" android:name="com.transsion.usercenter.profile.ProfileQRCodeActivity" android:screenOrientation="portrait" />
+        <activity android:enabled="false" android:exported="false" android:name="com.transsion.usercenter.profile.ProfileQRCodeActivity" android:screenOrientation="portrait" />
         <activity android:exported="false" android:launchMode="singleTask" android:name="com.transsion.usercenter.setting.SettingNoticeActivity" android:screenOrientation="portrait" />
         <activity android:exported="false" android:launchMode="singleTask" android:name="com.transsion.usercenter.setting.SettingWatchActivity" android:screenOrientation="portrait" />
         <activity android:name="com.transsion.usercenter.laboratory.LabMiniAppSDKTestActivity" />
@@ -367,22 +350,10 @@
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/push_small_logo" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/main" />
         <activity android:exported="false" android:name="com.transsion.push.PushTestActivity" />
-        <service android:enabled="true" android:exported="true" android:name="com.transsion.al.ka.AccountService">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/account_auth" />
-        </service>
-        <service android:enabled="true" android:exported="true" android:name="com.transsion.al.ka.AccountSyncService">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter" />
-            </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/sync_adapter" />
-        </service>
-        <provider android:authorities="com.community.newroom.storage.account.sync" android:name="com.transsion.al.ka.AccountSyncContentProvider" />
-        <provider android:authorities="com.community.newroom.storage.contacts.sync" android:enabled="true" android:exported="true" android:name="com.transsion.al.ka.FastCleanerProvider" android:syncable="true">
-            <meta-data android:name="android.content.ContactDirectory" android:value="true" />
-        </provider>
+        <service android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.AccountService" />
+        <service android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.AccountSyncService" />
+        <provider android:authorities="com.community.newroom.storage.account.sync" android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.AccountSyncContentProvider" />
+        <provider android:authorities="com.community.newroom.storage.contacts.sync" android:enabled="false" android:exported="false" android:name="com.transsion.al.ka.FastCleanerProvider" />
         <meta-data android:name="miniProcess" android:value=":mini" />
         <meta-data android:name="layerHardware" android:value="false" />
         <meta-data android:name="WORKER_TYPE" android:value="webview" />
@@ -435,7 +406,7 @@
         <activity android:exported="true" android:name="com.tn.tranpay.activity.PayActivity" android:screenOrientation="portrait" android:theme="@style/Theme.TranPay" />
         <activity android:excludeFromRecents="true" android:exported="false" android:name="com.tn.tranpay.activity.TranPayTransparentActivity" android:screenOrientation="portrait" android:theme="@style/Theme.TranPay.Transparent" />
         <activity android:exported="false" android:name="com.transsion.spwaitkiller.test.TestSpWait2Activity" />
-        <activity android:exported="true" android:name="com.transsion.spwaitkiller.test.TestSpWaitActivity" />
+        <activity android:exported="false" android:name="com.transsion.spwaitkiller.test.TestSpWaitActivity" />
         <service android:exported="false" android:name="com.cloud.h5update.service.LocalH5UpdateService">
             <intent-filter>
                 <action android:name="com.cloud.h5update.service.LocalH5UpdateService" />

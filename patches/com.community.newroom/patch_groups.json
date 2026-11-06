@@ -79,5 +79,29 @@
       "smali_classes7/com/transsion/usercenter/setting/labelsfeedback/LabelsFeedbackActivity.smali": "Auto-finish labels feedback activity",
       "smali_classes6/com/transsion/postdetail/ui/activity/PostFeedbackInputActivity.smali": "Auto-finish post feedback input activity"
     }
+  },
+  {
+    "id": "streamline_settings_privacy",
+    "name": "Streamline Settings & Enhance Privacy",
+    "desc": "Removes Check for Updates, About Us, Privacy Policy, User Agreement, and Login/Sign Up from Settings; disables Athena analytics, periodic reporting, install referrer, and push trackers",
+    "default": true,
+    "files": {
+      "smali_classes7/com/transsion/usercenter/setting/SettingActivity.smali": "Keep only Notifications, Language, Watch Options, Family Mode, and Background Download in Settings; hide Login button and device info",
+      "smali_classes7/com/transsion/usercenter/setting/SettingAboutUsActivity.smali": "Auto-finish About Us activity",
+      "smali/com/transsion/ga/AthenaAnalytics.smali": "Disable Athena Analytics data tracking, upload, and referrer task",
+      "smali/com/transsion/baselib/report/AppPeriodReport.smali": "Disable periodic background tracking and lifecycle report triggers",
+      "smali/com/transsion/baselib/report/launch/RoomInstallReferrer.smali": "Disable install referrer tracking and Google Play referrer client callbacks",
+      "smali/com/transsion/push/tracker/PushTracker.smali": "Disable push notification event tracking and upload tasks"
+    }
+  },
+  {
+    "id": "remove_scan_qr",
+    "name": "Remove Scan Option from Me Panel",
+    "desc": "Removes the Scan (QR code) icon from the top-right corner of the Me panel, neutralizes the router navigation, and auto-finishes ProfileQRCodeActivity",
+    "default": true,
+    "files": {
+      "smali_classes7/com/transsion/usercenter/me/MeFragment.smali": "Hide iv_qr_code scan icon and neutralize click action",
+      "smali_classes7/com/transsion/usercenter/profile/ProfileQRCodeActivity.smali": "Auto-finish ProfileQRCodeActivity on launch"
+    }
   }
 ]

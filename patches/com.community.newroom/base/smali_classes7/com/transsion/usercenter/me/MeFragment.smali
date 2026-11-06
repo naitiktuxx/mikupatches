@@ -931,21 +931,13 @@
 
     iget-object v3, v0, Lfw/k0;->c:Landroidx/appcompat/widget/AppCompatImageView;
 
-    const-string v1, "ivQrCode"
+    const/16 v1, 0x8
 
-    invoke-static {v3, v1}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
-
-    new-instance v6, Lcom/transsion/usercenter/me/m;
-
-    invoke-direct {v6, p0}, Lcom/transsion/usercenter/me/m;-><init>(Lcom/transsion/usercenter/me/MeFragment;)V
+    invoke-virtual {v3, v1}, Landroid/view/View;->setVisibility(I)V
 
     const/4 v7, 0x1
 
     const/4 v8, 0x0
-
-    const-wide/16 v4, 0x0
-
-    invoke-static/range {v3 .. v8}, Ljg/c;->c(Landroid/view/View;JLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 
     new-instance v1, Lcom/transsion/usercenter/me/adapter/o;
 
@@ -1028,27 +1020,7 @@
 .end method
 
 .method private static final V0(Lcom/transsion/usercenter/me/MeFragment;Landroid/view/View;)Lkotlin/Unit;
-    .locals 2
-
-    const-string v0, "it"
-
-    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->h(Ljava/lang/Object;Ljava/lang/String;)V
-
-    const-string p1, "/profile/qr_code"
-
-    invoke-static {p1}, Lcom/therouter/TheRouter;->c(Ljava/lang/String;)Lcom/therouter/router/Navigator;
-
-    move-result-object p1
-
-    invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->requireContext()Landroid/content/Context;
-
-    move-result-object p0
-
-    const/4 v0, 0x0
-
-    const/4 v1, 0x2
-
-    invoke-static {p1, p0, v0, v1, v0}, Lcom/therouter/router/Navigator;->x(Lcom/therouter/router/Navigator;Landroid/content/Context;Lbg/c;ILjava/lang/Object;)V
+    .locals 0
 
     sget-object p0, Lkotlin/Unit;->a:Lkotlin/Unit;
 
