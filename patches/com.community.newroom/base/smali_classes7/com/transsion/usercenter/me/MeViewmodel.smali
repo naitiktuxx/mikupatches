@@ -1142,57 +1142,8 @@
 
     invoke-interface {v2, v7}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
-    invoke-virtual {v5}, Lak/g;->b()Z
+    # Subscribers removed
 
-    move-result v5
-
-    if-eqz v5, :cond_1c
-
-    new-instance v5, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    new-instance v7, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
-
-    sget v8, Lcom/transsion/usercenter/R$string;->profile_my_subscribers:I
-
-    invoke-virtual {v4, v8}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v21
-
-    invoke-static {v3}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
-
-    move-result-object v22
-
-    sget v24, Lcom/tn/lib/widget/R$drawable;->ic_me_subscriptions:I
-
-    sget v25, Lcom/tn/lib/widget/R$color;->white_6:I
-
-    const/16 v31, 0x2c0
-
-    const/16 v32, 0x0
-
-    const-string v23, "subscribe_list_type"
-
-    const/16 v26, 0x1
-
-    const/16 v27, 0x0
-
-    const/16 v28, 0x0
-
-    const-string v29, "subscribe"
-
-    const/16 v30, 0x0
-
-    move-object/from16 v20, v7
-
-    invoke-direct/range {v20 .. v32}, Lcom/transsion/usercenter/profile/bean/IconItemInfo;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-
-    const/4 v3, 0x5
-
-    invoke-direct {v5, v3, v7}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v5}, Ljava/util/List;->add(Ljava/lang/Object;)Z
-
-    :cond_1c
     new-instance v3, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
 
     new-instance v5, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
@@ -1223,7 +1174,7 @@
 
     sget v24, Lcom/tn/lib/widget/R$drawable;->ic_me_my_list:I
 
-    sget v25, Lcom/tn/lib/widget/R$color;->white_6:I
+    sget v25, Lcom/transsion/baseui/R$drawable;->bg_radius_bottom_6_color_white_6p:I
 
     const/4 v6, 0x0
 
@@ -1235,7 +1186,7 @@
 
     const/16 v32, 0x0
 
-    const/16 v26, 0x1
+    const/16 v26, 0x0
 
     const/16 v28, 0x0
 
@@ -1253,181 +1204,7 @@
 
     invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
-    # Messages (Type 6) removed by patch
-    nop
-
-    new-instance v3, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    new-instance v5, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
-
-    sget v6, Lcom/transsion/usercenter/R$string;->user_tv_download_web_link:I
-
-    invoke-virtual {v4, v6}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v21
-
-    sget v24, Lcom/tn/lib/widget/R$drawable;->ic_me_tv_download_web_link:I
-
-    sget v25, Lcom/transsion/baseui/R$drawable;->bg_radius_bottom_6_color_white_6p:I
-
-    sget-object v6, Lcom/transsion/baselib/report/launch/b;->a:Lcom/transsion/baselib/report/launch/b;
-
-    invoke-virtual {v6}, Lcom/transsion/baselib/report/launch/b;->b()Lcom/tencent/mmkv/MMKV;
-
-    move-result-object v6
-
-    const-string v7, "key_tv_download_web_link_clicked"
-
-    const/4 v8, 0x0
-
-    invoke-virtual {v6, v7, v8}, Lcom/tencent/mmkv/MMKV;->getBoolean(Ljava/lang/String;Z)Z
-
-    move-result v6
-
-    const/4 v7, 0x1
-
-    xor-int/lit8 v30, v6, 0x1
-
-    const/16 v31, 0xc0
-
-    const/16 v32, 0x0
-
-    const/16 v22, 0x0
-
-    const/16 v23, 0x0
-
-    const/16 v26, 0x0
-
-    const/16 v27, 0x0
-
-    const/16 v28, 0x0
-
-    const-string v29, "tv_download_web_link"
-
-    move-object/from16 v20, v5
-
-    invoke-direct/range {v20 .. v32}, Lcom/transsion/usercenter/profile/bean/IconItemInfo;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-
-    const/4 v6, 0x5
-
-    invoke-direct {v3, v6, v5}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z
-
-    new-instance v3, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    new-instance v5, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
-
-    sget v6, Lcom/transsion/usercenter/R$string;->profile_my_room:I
-
-    invoke-virtual {v4, v6}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v21
-
-    invoke-static {v10}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
-
-    move-result-object v22
-
-    invoke-direct/range {p0 .. p0}, Lcom/transsion/usercenter/me/MeViewmodel;->F()Lcom/transsnet/loginapi/ILoginApi;
-
-    move-result-object v6
-
-    if-eqz v6, :cond_1d
-
-    invoke-interface {v6}, Lcom/transsnet/loginapi/ILoginApi;->a()Z
-
-    move-result v6
-
-    const/4 v7, 0x1
-
-    if-ne v6, v7, :cond_1d
-
-    const-string v6, "oneroom://com.community.newroom/room/list"
-
-    :goto_13
-    move-object/from16 v23, v6
-
-    goto :goto_14
-
-    :cond_1d
-    const-string v6, "oneroom://com.community.newroom/room/list?index=1"
-
-    goto :goto_13
-
-    :goto_14
-    sget v24, Lcom/tn/lib/widget/R$drawable;->ic_me_room:I
-
-    sget v25, Lcom/transsion/baseui/R$drawable;->bg_radius_top_6_color_white_6p:I
-
-    const/16 v6, 0x8
-
-    invoke-static {v6}, Ldk/a;->b(I)I
-
-    move-result v27
-
-    const/16 v31, 0x200
-
-    const/16 v32, 0x0
-
-    const/16 v26, 0x1
-
-    const/16 v28, 0x0
-
-    const-string v29, "myrooms"
-
-    const/16 v30, 0x0
-
-    move-object/from16 v20, v5
-
-    invoke-direct/range {v20 .. v32}, Lcom/transsion/usercenter/profile/bean/IconItemInfo;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-
-    const/4 v6, 0x5
-
-    invoke-direct {v3, v6, v5}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z
-
-    add-int/2addr v13, v14
-
-    add-int/2addr v13, v15
-
-    new-instance v3, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    new-instance v5, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
-
-    sget v6, Lcom/tn/lib/widget/R$string;->my_activity:I
-
-    invoke-virtual {v4, v6}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v21
-
-    invoke-static {v13}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
-
-    move-result-object v22
-
-    sget v24, Lcom/tn/lib/widget/R$drawable;->ic_mine_activity:I
-
-    sget v25, Lcom/transsion/baseui/R$drawable;->bg_radius_bottom_6_color_white_6p:I
-
-    const/16 v31, 0x260
-
-    const-string v23, "my_activity_type"
-
-    const/16 v26, 0x0
-
-    const/16 v27, 0x0
-
-    const-string v29, "my_activity"
-
-    move-object/from16 v20, v5
-
-    invoke-direct/range {v20 .. v32}, Lcom/transsion/usercenter/profile/bean/IconItemInfo;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-
-    const/4 v6, 0x5
-
-    invoke-direct {v3, v6, v5}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+    # TV Download, Web Link, Community, and My Activity removed
 
     new-instance v3, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
 
@@ -1439,7 +1216,7 @@
 
     sget v10, Lcom/tn/lib/widget/R$drawable;->ic_me_setting:I
 
-    sget v11, Lcom/transsion/baseui/R$drawable;->bg_radius_top_6_color_white_6p:I
+    sget v11, Lcom/transsion/baseui/R$drawable;->bg_radius_6_color_white_6p:I
 
     const/16 v5, 0x8
 
@@ -1457,7 +1234,7 @@
 
     const-string v9, "oneroom://com.community.newroom/profile/setting"
 
-    const/4 v12, 0x1
+    const/4 v12, 0x0
 
     const/4 v14, 0x0
 
@@ -1475,217 +1252,8 @@
 
     invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
-    sget-object v3, Lcom/transsion/baselib/kids/KidsAccountManager;->a:Lcom/transsion/baselib/kids/KidsAccountManager;
+    # Parental Pin, Study Mode, and Feedback removed
 
-    invoke-virtual {v3}, Lcom/transsion/baselib/kids/KidsAccountManager;->e()Ljava/lang/String;
-
-    move-result-object v5
-
-    if-eqz v5, :cond_20
-
-    invoke-interface {v5}, Ljava/lang/CharSequence;->length()I
-
-    move-result v6
-
-    if-nez v6, :cond_1e
-
-    goto :goto_17
-
-    :cond_1e
-    invoke-virtual {v1}, Lak/o;->j()Z
-
-    move-result v6
-
-    if-eqz v6, :cond_20
-
-    new-instance v6, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    new-instance v15, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
-
-    sget v7, Lcom/transsion/usercenter/R$string;->user_parental_pin:I
-
-    invoke-virtual {v4, v7}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v8
-
-    invoke-virtual {v3}, Lcom/transsion/baselib/kids/KidsAccountManager;->i()Z
-
-    move-result v3
-
-    if-nez v3, :cond_1f
-
-    sget v3, Lcom/transsion/usercenter/R$string;->user_parental_pin_hint:I
-
-    :goto_15
-    invoke-virtual {v4, v3}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v3
-
-    move-object v9, v3
-
-    goto :goto_16
-
-    :cond_1f
-    sget v3, Lcom/transsion/usercenter/R$string;->user_parental_pin_hint_on:I
-
-    goto :goto_15
-
-    :goto_16
-    sget v11, Lcom/tn/lib/widget/R$drawable;->ic_user_kids_settings_pin:I
-
-    sget v12, Lcom/tn/lib/widget/R$color;->white_6:I
-
-    const/16 v18, 0x2c0
-
-    const/16 v19, 0x0
-
-    const-string v10, "parental_pin_type"
-
-    const/4 v13, 0x1
-
-    const/4 v14, 0x0
-
-    const/4 v3, 0x0
-
-    const-string v16, "parental_pin"
-
-    const/16 v17, 0x0
-
-    move-object v7, v15
-
-    move-object/from16 v33, v15
-
-    move v15, v3
-
-    invoke-direct/range {v7 .. v19}, Lcom/transsion/usercenter/profile/bean/IconItemInfo;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-
-    move-object/from16 v7, v33
-
-    const/4 v3, 0x5
-
-    invoke-direct {v6, v3, v7}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v6}, Ljava/util/List;->add(Ljava/lang/Object;)Z
-
-    :cond_20
-    :goto_17
-    invoke-virtual {v1}, Lak/o;->j()Z
-
-    move-result v1
-
-    if-eqz v1, :cond_23
-
-    new-instance v1, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    new-instance v3, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
-
-    sget v6, Lcom/transsion/usercenter/R$string;->user_safe_kids:I
-
-    invoke-virtual {v4, v6}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v7
-
-    if-eqz v5, :cond_22
-
-    invoke-interface {v5}, Ljava/lang/CharSequence;->length()I
-
-    move-result v5
-
-    if-nez v5, :cond_21
-
-    goto :goto_19
-
-    :cond_21
-    sget v5, Lcom/transsion/usercenter/R$string;->user_switch_profile:I
-
-    :goto_18
-    invoke-virtual {v4, v5}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v5
-
-    move-object v8, v5
-
-    goto :goto_1a
-
-    :cond_22
-    :goto_19
-    sget v5, Lcom/transsion/usercenter/R$string;->user_create_study_profile:I
-
-    goto :goto_18
-
-    :goto_1a
-    sget v10, Lcom/tn/lib/widget/R$drawable;->ic_me_study_mode:I
-
-    sget v11, Lcom/tn/lib/widget/R$color;->white_6:I
-
-    const/16 v17, 0x2c0
-
-    const/16 v18, 0x0
-
-    const-string v9, "study_mode_type"
-
-    const/4 v12, 0x1
-
-    const/4 v13, 0x0
-
-    const/4 v14, 0x0
-
-    const-string v15, "study_mode"
-
-    const/16 v16, 0x0
-
-    move-object v6, v3
-
-    invoke-direct/range {v6 .. v18}, Lcom/transsion/usercenter/profile/bean/IconItemInfo;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-
-    const/4 v5, 0x5
-
-    invoke-direct {v1, v5, v3}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v1}, Ljava/util/List;->add(Ljava/lang/Object;)Z
-
-    :cond_23
-    new-instance v1, Lcom/transsion/usercenter/profile/bean/MeItemInfo;
-
-    new-instance v3, Lcom/transsion/usercenter/profile/bean/IconItemInfo;
-
-    sget v5, Lcom/transsion/usercenter/R$string;->user_setting_feedback:I
-
-    invoke-virtual {v4, v5}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    move-result-object v6
-
-    sget v9, Lcom/tn/lib/widget/R$drawable;->ic_me_feedback:I
-
-    sget v10, Lcom/transsion/baseui/R$drawable;->bg_radius_bottom_6_color_white_6p:I
-
-    const/16 v16, 0x2e0
-
-    const/16 v17, 0x0
-
-    const/4 v7, 0x0
-
-    const-string v8, "oneroom://com.community.newroom/profile/user_center_labels_feedback"
-
-    const/4 v11, 0x0
-
-    const/4 v12, 0x0
-
-    const/4 v13, 0x0
-
-    const-string v14, "feedback"
-
-    const/4 v15, 0x0
-
-    move-object v5, v3
-
-    invoke-direct/range {v5 .. v17}, Lcom/transsion/usercenter/profile/bean/IconItemInfo;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-
-    const/4 v4, 0x5
-
-    invoke-direct {v1, v4, v3}, Lcom/transsion/usercenter/profile/bean/MeItemInfo;-><init>(ILjava/lang/Object;)V
-
-    invoke-interface {v2, v1}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
     iget-object v1, v0, Lcom/transsion/usercenter/me/MeViewmodel;->i:Lcom/transsion/usercenter/profile/bean/MineNoticeConfig;
 

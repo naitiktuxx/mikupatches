@@ -63,5 +63,21 @@
       "smali_classes5/com/transsion/ad/view/native_ad/BiddingFloatingIrregularAnimationView.smali": "Disable bidding native floating ad view",
       "smali/com/transsion/fission/FissionProvider.smali": "Disable fission rewards and cash chest tasks"
     }
+  },
+  {
+    "id": "debloat_community_feedback_study",
+    "name": "Debloat Community, Feedback & Study Mode",
+    "desc": "Removes Community, My Activity, Study Mode, TV/Web link, feedback dialogs, and auto-finishes all community and feedback activities",
+    "default": true,
+    "files": {
+      "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Remove Community, My Activity, TV/Web Link, Study Mode, and Feedback items; restyle My List and Settings as clean cards",
+      "smali_classes7/com/transsion/usercenter/me/MeFragment.smali": "Disable My Activity bubble tooltip and launcher",
+      "smali_classes6/com/transsion/postdetail/helper/NegativeFeedbackHelper.smali": "Disable negative feedback popups",
+      "smali_classes6/com/transsion/postdetail/comment/ui/CommentListActivity.smali": "Auto-finish comment list activity",
+      "smali_classes6/com/transsion/postdetail/myactivity/MyActivityActivity.smali": "Auto-finish my activity screen",
+      "smali_classes7/com/transsion/usercenter/setting/feedback/UserSettingFeedbackActivity.smali": "Auto-finish user setting feedback activity",
+      "smali_classes7/com/transsion/usercenter/setting/labelsfeedback/LabelsFeedbackActivity.smali": "Auto-finish labels feedback activity",
+      "smali_classes6/com/transsion/postdetail/ui/activity/PostFeedbackInputActivity.smali": "Auto-finish post feedback input activity"
+    }
   }
 ]
