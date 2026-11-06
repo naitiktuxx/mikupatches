@@ -103,5 +103,17 @@
       "smali_classes7/com/transsion/usercenter/me/MeFragment.smali": "Hide iv_qr_code scan icon and neutralize click action",
       "smali_classes7/com/transsion/usercenter/profile/ProfileQRCodeActivity.smali": "Auto-finish ProfileQRCodeActivity on launch"
     }
+  },
+  {
+    "id": "remove_premium_tab_and_floating_cash",
+    "name": "Remove Premium Tab & Floating Cash Widget",
+    "desc": "Removes the Premium tab from bottom navigation (retaining only Home, Downloads, Me) and completely removes the floating cash/chest widget and its web view launcher",
+    "default": true,
+    "files": {
+      "smali_classes5/com/transsion/home/bean/AppTab.smali": "Filter out PREMIUM from bottom navigation tabs in getBottomTabs and setBottomTabs",
+      "smali_classes7/com/mymovie/widget/ImageAdView.smali": "Set floating cash widget and its parent FrameLayout to View.GONE, zero dimension, and neutralize ad loaders and draw logic",
+      "smali_classes7/com/mymovie/widget/ImageAdView$a.smali": "Neutralize floating cash onClick listener and MyWebViewActivity intent",
+      "smali_classes7/com/mymovie/widget/ImageAdView$b.smali": "Neutralize floating cash background image downloader"
+    }
   }
 ]
