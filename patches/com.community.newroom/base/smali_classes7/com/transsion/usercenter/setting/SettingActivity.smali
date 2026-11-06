@@ -1770,11 +1770,7 @@
     invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
     :cond_0
-    invoke-virtual {v1}, Lak/g;->b()Z
-
-    move-result v1
-
-    if-nez v1, :cond_2
+    goto :cond_2
 
     iget-object v1, v0, Lcom/transsion/usercenter/setting/SettingActivity;->c:Ljava/util/List;
 
