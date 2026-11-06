@@ -115,5 +115,23 @@
       "smali_classes7/com/mymovie/widget/ImageAdView$a.smali": "Neutralize floating cash onClick listener and MyWebViewActivity intent",
       "smali_classes7/com/mymovie/widget/ImageAdView$b.smali": "Neutralize floating cash background image downloader"
     }
+  },
+  {
+    "id": "debloat_downloads_tab",
+    "name": "Debloat Downloads Tab",
+    "desc": "Removes transfer/share options, local files player access/scanning, For You recommendations, and Win Big Prizes button from Downloads tab",
+    "default": true,
+    "files": {
+      "smali_classes7/com/transsnet/downloader/fragment/DownloadMainFragment.smali": "Hide transfer button and neutralize transfer navigation & lottery resume triggers",
+      "smali_classes7/com/transsnet/downloader/lottery/LotteryTipView.smali": "Set Win Big Prizes lottery widget to GONE, zero size, and neutralize user info fetch",
+      "smali_classes7/com/transsnet/downloader/fragment/DownloadTabBaseFragment.smali": "Remove Local files and Received tabs from download manager tab indicator (only MovieBox tab)",
+      "smali/com/transsnet/downloader/fragment/FileManagerFragment.smali": "Force MovieBox DownloadedListFragment and neutralize ad initialization",
+      "smali_classes7/com/transsnet/downloader/fragment/DownloadedBaseFragment.smali": "Neutralize For You recommendations footer binding and display",
+      "smali_classes7/com/transsnet/downloader/widget/DownloadPanelForYouFootView.smali": "Hide For You recommendation foot view (GONE, zero size) and neutralize callbacks",
+      "smali_classes7/com/transsnet/downloader/viewmodel/DownloadViewModel.smali": "Neutralize getMovieRec recommendations API network fetch",
+      "smali_classes7/com/transsnet/downloader/viewmodel/LocalFileViewModel.smali": "Neutralize getOutsideLocalVideoList scanning for local videos",
+      "smali_classes7/com/transsnet/downloader/viewmodel/HistoricalPlayRecordViewModel.smali": "Neutralize getOutsideLocalFileList and getTransferReceivedVideoDataList queries",
+      "smali_classes7/com/transsnet/downloader/activity/TransferActivity.smali": "Auto-finish TransferActivity on launch"
+    }
   }
 ]

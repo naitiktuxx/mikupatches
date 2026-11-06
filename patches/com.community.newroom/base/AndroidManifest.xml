@@ -314,7 +314,7 @@
         <activity android:exported="false" android:name="com.transsnet.downloader.activity.AllHistoricalPlayRecordActivity" />
         <activity android:launchMode="singleTop" android:name="com.transsnet.downloader.activity.DownloadPanelActivity" android:screenOrientation="portrait" />
         <activity android:launchMode="singleTop" android:name="com.transsnet.downloader.activity.DownloadSeriesListActivity" android:screenOrientation="portrait" />
-        <activity android:name="com.transsnet.downloader.activity.TransferActivity" />
+        <activity android:enabled="false" android:name="com.transsnet.downloader.activity.TransferActivity" />
         <activity android:launchMode="singleTop" android:name="com.transsnet.downloader.ugc.activity.UGCMyDownloadsActivity" android:screenOrientation="portrait" />
         <activity android:launchMode="singleTop" android:name="com.transsnet.downloader.ugc.activity.UGCDownloadCollectionListActivity" android:screenOrientation="portrait" />
         <service android:exported="false" android:name="com.transsnet.downloader.guard.DownloadGuardService">
