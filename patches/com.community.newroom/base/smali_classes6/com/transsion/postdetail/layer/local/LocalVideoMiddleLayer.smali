@@ -1797,8 +1797,29 @@
 .end method
 
 .method public W2()Landroid/widget/TextView;
-    .locals 1
+    .locals 2
 
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
+
+    if-eqz v0, :cond_0
+
+    invoke-virtual {v0}, Lso/b0;->b()Landroidx/constraintlayout/widget/ConstraintLayout;
+
+    move-result-object v0
+
+    if-eqz v0, :cond_0
+
+    sget v1, Lcom/transsion/postdetail/R$id;->vd_title:I
+
+    invoke-virtual {v0, v1}, Landroid/view/View;->findViewById(I)Landroid/view/View;
+
+    move-result-object v0
+
+    check-cast v0, Landroid/widget/TextView;
+
+    return-object v0
+
+    :cond_0
     const/4 v0, 0x0
 
     return-object v0
@@ -1843,8 +1864,18 @@
 .method public Z2()Landroidx/constraintlayout/widget/Group;
     .locals 1
 
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
+
+    if-eqz v0, :cond_0
+
+    iget-object v0, v0, Lso/b0;->M:Landroidx/constraintlayout/widget/Group;
+
+    goto :goto_0
+
+    :cond_0
     const/4 v0, 0x0
 
+    :goto_0
     return-object v0
 .end method
 

@@ -442,7 +442,13 @@
       "res/mipmap-xxhdpi/p_v2_premium_3.png": "Transparent dummy for VIP episode badge",
       "res/mipmap-xxhdpi/p_v2_premium.png": "Transparent dummy for VIP icon",
       "res/mipmap-xxhdpi/icon_download_premium.png": "Transparent dummy for VIP download icon",
-      "res/mipmap-xxhdpi/p_v2_premium_basic.webp": "Transparent dummy for VIP basic badge"
+      "res/mipmap-xxhdpi/p_v2_premium_basic.webp": "Transparent dummy for VIP basic badge",
+      "res/layout/long_vod_resolution_member_layout.xml": "Hide VIP badge in resolution drawer layout",
+      "res/drawable/long_vod_member_1.png": "Transparent dummy for player resolution VIP crown badge",
+      "res/drawable/long_vod_member_hd.png": "Transparent dummy for player resolution HD VIP badge",
+      "res/drawable/long_vod_resolution_member_2.png": "Transparent dummy for player resolution tip member icon",
+      "smali_classes6/com/transsion/player/longvideo/member/LongVodResolutionMemberView.smali": "Hide VIP crown badge and gold tint in player resolution selector dialog",
+      "smali_classes7/ly/f.smali": "Fix Save button alignment in downloaded items list by removing compound drawable offset"
     }
   }
 ]
