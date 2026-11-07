@@ -1080,6 +1080,9 @@
     nop
 
     :cond_18
+    # Hot Novels (Type 7) removed by patch
+    goto :cond_19
+
     if-eqz v8, :cond_19
 
     new-instance v5, Lcom/transsion/usercenter/profile/bean/MeItemInfo;

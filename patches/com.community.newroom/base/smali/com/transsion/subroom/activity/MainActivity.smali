@@ -1026,7 +1026,7 @@
 .end method
 
 .method private final G0(Ljava/util/List;)V
-    .locals 4
+    .locals 5
 
     const/4 v0, 0x0
 
@@ -1091,6 +1091,88 @@
     move-object v1, v0
 
     :cond_3
+    # Filter v1 to strip NOVEL, SHORTTV, OPERATE, and largeUiType
+    if-eqz v1, :cond_filter_v1_done
+
+    new-instance v0, Ljava/util/ArrayList;
+
+    invoke-direct {v0}, Ljava/util/ArrayList;-><init>()V
+
+    check-cast v1, Ljava/lang/Iterable;
+
+    invoke-interface {v1}, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
+
+    move-result-object v1
+
+    :goto_filter_v1
+    invoke-interface {v1}, Ljava/util/Iterator;->hasNext()Z
+
+    move-result v2
+
+    if-eqz v2, :cond_filter_v1_end
+
+    invoke-interface {v1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v2
+
+    move-object v3, v2
+
+    check-cast v3, Lcom/transsion/home/bean/BottomTabItem;
+
+    invoke-virtual {v3}, Lcom/transsion/home/bean/BottomTabItem;->isLargeUiType()Z
+
+    move-result v4
+
+    if-eqz v4, :cond_v1_not_large
+
+    goto :goto_filter_v1
+
+    :cond_v1_not_large
+    invoke-virtual {v3}, Lcom/transsion/home/bean/BottomTabItem;->getBtTabType()Ljava/lang/String;
+
+    move-result-object v3
+
+    const-string v4, "BT_NOVEL"
+
+    invoke-static {v3, v4}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
+
+    move-result v4
+
+    if-eqz v4, :cond_v1_not_novel
+
+    goto :goto_filter_v1
+
+    :cond_v1_not_novel
+    const-string v4, "BT_SHORTTV"
+
+    invoke-static {v3, v4}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
+
+    move-result v4
+
+    if-eqz v4, :cond_v1_not_shorttv
+
+    goto :goto_filter_v1
+
+    :cond_v1_not_shorttv
+    const-string v4, "BT_OPERATE"
+
+    invoke-static {v3, v4}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
+
+    move-result v4
+
+    if-eqz v4, :cond_v1_not_op
+
+    goto :goto_filter_v1
+
+    :cond_v1_not_op
+    invoke-interface {v0, v2}, Ljava/util/Collection;->add(Ljava/lang/Object;)Z
+
+    goto :goto_filter_v1
+
+    :cond_filter_v1_end
+    move-object v1, v0
+
+    :cond_filter_v1_done
     invoke-direct {p0}, Lcom/transsion/subroom/activity/MainActivity;->E1()V
 
     invoke-direct {p0, v1}, Lcom/transsion/subroom/activity/MainActivity;->e1(Ljava/util/List;)V
@@ -1239,119 +1321,11 @@
 .end method
 
 .method private final I0(Ljava/util/List;)Z
-    .locals 9
+    .locals 3
 
     const/4 v0, 0x0
 
-    if-eqz p1, :cond_0
-
-    invoke-interface {p1}, Ljava/util/List;->size()I
-
-    move-result v1
-
-    goto :goto_0
-
-    :cond_0
-    move v1, v0
-
-    :goto_0
-    const/4 v2, 0x0
-
-    if-eqz p1, :cond_6
-
-    invoke-interface {p1}, Ljava/util/List;->size()I
-
-    move-result v3
-
-    div-int/lit8 v3, v3, 0x2
-
-    check-cast p1, Ljava/lang/Iterable;
-
-    invoke-interface {p1}, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
-
-    move-result-object p1
-
-    move v5, v0
-
-    move-object v4, v2
-
-    :goto_1
-    invoke-interface {p1}, Ljava/util/Iterator;->hasNext()Z
-
-    move-result v6
-
-    if-eqz v6, :cond_5
-
-    invoke-interface {p1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
-
-    move-result-object v6
-
-    add-int/lit8 v7, v5, 0x1
-
-    if-gez v5, :cond_1
-
-    invoke-static {}, Lkotlin/collections/CollectionsKt;->u()V
-
-    :cond_1
-    check-cast v6, Lcom/transsion/home/bean/BottomTabItem;
-
-    invoke-virtual {v6}, Lcom/transsion/home/bean/BottomTabItem;->isLargeUiType()Z
-
-    move-result v8
-
-    if-eqz v8, :cond_4
-
-    if-eq v5, v3, :cond_3
-
-    invoke-virtual {v6}, Lcom/transsion/home/bean/BottomTabItem;->getIcon()Lcom/transsion/home/bean/Icon;
-
-    move-result-object v5
-
-    if-eqz v5, :cond_2
-
-    invoke-virtual {v5, v2}, Lcom/transsion/home/bean/Icon;->setDefaultBigIcon(Ljava/lang/String;)V
-
-    :cond_2
-    invoke-virtual {v6}, Lcom/transsion/home/bean/BottomTabItem;->getIcon()Lcom/transsion/home/bean/Icon;
-
-    move-result-object v5
-
-    if-eqz v5, :cond_4
-
-    invoke-virtual {v5, v2}, Lcom/transsion/home/bean/Icon;->setSelectBigIcon(Ljava/lang/String;)V
-
-    goto :goto_2
-
-    :cond_3
-    move-object v4, v6
-
-    :cond_4
-    :goto_2
-    move v5, v7
-
-    goto :goto_1
-
-    :cond_5
-    move-object v2, v4
-
-    :cond_6
-    const/4 p1, 0x1
-
-    if-eqz v2, :cond_7
-
-    rem-int/lit8 v1, v1, 0x2
-
-    if-ne v1, p1, :cond_7
-
-    move v1, p1
-
-    goto :goto_3
-
-    :cond_7
-    move v1, v0
-
-    :goto_3
-    iput-boolean v1, p0, Lcom/transsion/subroom/activity/MainActivity;->w:Z
+    iput-boolean v0, p0, Lcom/transsion/subroom/activity/MainActivity;->w:Z
 
     invoke-virtual {p0}, Lcom/transsion/baseui/activity/BaseCommonActivity;->getMViewBinding()Lg4/a;
 
@@ -1361,25 +1335,9 @@
 
     iget-object v1, v1, Lau/a;->e:Landroidx/constraintlayout/widget/Group;
 
-    const-string v3, "largeBottomBg"
+    const/16 v2, 0x8
 
-    invoke-static {v1, v3}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
-
-    iget-boolean v3, p0, Lcom/transsion/subroom/activity/MainActivity;->w:Z
-
-    const/16 v4, 0x8
-
-    if-eqz v3, :cond_8
-
-    move v3, v0
-
-    goto :goto_4
-
-    :cond_8
-    move v3, v4
-
-    :goto_4
-    invoke-virtual {v1, v3}, Landroid/view/View;->setVisibility(I)V
+    invoke-virtual {v1, v2}, Landroid/view/View;->setVisibility(I)V
 
     invoke-virtual {p0}, Lcom/transsion/baseui/activity/BaseCommonActivity;->getMViewBinding()Lg4/a;
 
@@ -1389,24 +1347,8 @@
 
     iget-object v1, v1, Lau/a;->l:Landroid/widget/ImageView;
 
-    const-string v3, "tabBg"
+    invoke-virtual {v1, v0}, Landroid/view/View;->setVisibility(I)V
 
-    invoke-static {v1, v3}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
-
-    iget-boolean v3, p0, Lcom/transsion/subroom/activity/MainActivity;->w:Z
-
-    if-nez v3, :cond_9
-
-    move v4, v0
-
-    :cond_9
-    invoke-virtual {v1, v4}, Landroid/view/View;->setVisibility(I)V
-
-    if-eqz v2, :cond_a
-
-    move v0, p1
-
-    :cond_a
     return v0
 .end method
 
@@ -1800,11 +1742,9 @@
     goto/16 :goto_3
 
     :cond_3
-    sget-object p1, Lcom/transsion/shorttv/ui/fragment/ShortTVDiscoverFragment;->I:Lcom/transsion/shorttv/ui/fragment/ShortTVDiscoverFragment$a;
+    new-instance p1, Lcom/transsion/home/fragment/home/HomeFragment;
 
-    invoke-static {p1, v2, v3, v1, v3}, Lcom/transsion/shorttv/ui/fragment/ShortTVDiscoverFragment$a;->b(Lcom/transsion/shorttv/ui/fragment/ShortTVDiscoverFragment$a;ZLandroid/os/Bundle;ILjava/lang/Object;)Lcom/transsion/shorttv/ui/fragment/ShortTVDiscoverFragment;
-
-    move-result-object p1
+    invoke-direct {p1}, Lcom/transsion/home/fragment/home/HomeFragment;-><init>()V
 
     goto/16 :goto_3
 

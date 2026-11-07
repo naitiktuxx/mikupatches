@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:textStyle="bold" android:textColor="@color/white_80" android:gravity="center" android:id="@id/card_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="40.0dp" android:layout_marginTop="16.0dp" android:layout_marginRight="40.0dp" android:layout_marginBottom="8.0dp" android:lineSpacingExtra="4.0dp" android:textAlignment="center" android:layout_marginHorizontal="40.0dp" style="@style/style_medium_text" />
+        <TextView android:textSize="0.0sp" android:textColor="@color/transparent" android:gravity="center" android:id="@id/card_detail" android:visibility="gone" android:layout_width="0.0dp" android:layout_height="0.0dp" />
+        <androidx.constraintlayout.widget.ConstraintLayout android:visibility="gone" android:layout_width="0.0dp" android:layout_height="0.0dp">
+            <com.noober.background.view.BLTextView android:id="@id/card_tip" android:visibility="gone" android:layout_width="0.0dp" android:layout_height="0.0dp" style="@style/style_regular_text" />
+            <com.transsion.baseui.widget.DrawableCenterTextView android:id="@id/iv_centerView" android:visibility="gone" android:layout_width="0.0dp" android:layout_height="0.0dp" style="@style/style_import_text" />
+            <TextView android:id="@id/numText" android:visibility="gone" android:layout_width="0.0dp" android:layout_height="0.0dp" style="@style/style_import_text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</FrameLayout>

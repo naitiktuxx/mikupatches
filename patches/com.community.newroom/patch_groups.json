@@ -369,7 +369,9 @@
       "smali_classes6/com/transsion/search_pugc/fragment/SearchSubjectFragment.smali": "Disable prefilled search keyword hint in pugc search fragment",
       "smali_classes6/com/transsion/search/fragment/hot/SearchHotFragment.smali": "Disable Everyone is searching and hot rankings data loading while preserving recent searches history",
       "smali_classes6/com/transsion/search_pugc/fragment/hot/SearchHotFragment.smali": "Disable Everyone is searching and hot rankings in pugc hot search fragment",
-      "smali_classes6/com/transsion/search/viewmodel/SearchViewModel.smali": "Neutralize network fetch for hot search keywords and rankings"
+      "smali_classes6/com/transsion/search/viewmodel/SearchViewModel.smali": "Neutralize network fetch for hot search keywords and rankings",
+      "res/layout/resources_request.xml": "Hide Give Me It button, subtitle, and badge in empty search view layout",
+      "smali_classes6/com/transsion/search/fragment/values/SearchValuesFragment.smali": "Remove resource request reporting network calls and click listeners"
     }
   },
   {
@@ -448,7 +450,26 @@
       "res/drawable/long_vod_member_hd.png": "Transparent dummy for player resolution HD VIP badge",
       "res/drawable/long_vod_resolution_member_2.png": "Transparent dummy for player resolution tip member icon",
       "smali_classes6/com/transsion/player/longvideo/member/LongVodResolutionMemberView.smali": "Hide VIP crown badge and gold tint in player resolution selector dialog",
-      "smali_classes7/ly/f.smali": "Fix Save button alignment in downloaded items list by removing compound drawable offset"
+      "smali_classes7/ly/f.smali": "Fix Save button alignment in downloaded items list by removing compound drawable offset",
+      "res/drawable-xxhdpi/icon_download_dialog_premium.webp": "Transparent dummy for download dialog premium icon",
+      "smali_classes7/com/transsnet/downloader/dialog/l.smali": "Remove VIP crown icon and change gold text to white in downloads Save to my phone popup",
+      "smali_classes7/com/transsnet/downloader/widget/PlaybackResolutionView.smali": "Hide premium icon and keep resolution text white in downloader playback view"
+    }
+  },
+  {
+    "id": "family_mode_ui_consistency_and_novelhub_removal",
+    "name": "Family Mode UI Consistency & Complete NovelHub / ShortStory Removal",
+    "desc": "Maintains strict UI consistency when Family Mode is toggled off (keeping standard 3 bottom tabs without large button or NovelHub, and removing Hot Novels card and ShortTV tabs), while allowing backend content mode unlocking and wiping NovelHub MiniApp / ShortTV logic",
+    "default": true,
+    "files": {
+      "assets/appTab.json": "Cleaned default appTab JSON removing NovelHub, ShortTV, and large center button",
+      "smali/com/transsion/home/viewmodel/preload/PreloadTrendingData.smali": "Filter out NOVEL, SHORTTV, OPERATE large buttons from bottom tabs and subtabs",
+      "smali/com/transsion/subroom/activity/MainActivity.smali": "Enforce standard 3-tab bottom bar layout, suppress large button elevation, and fallback ShortTV navigation",
+      "smali_classes5/com/transsion/home/fragment/home/v.smali": "Permanently suppress floating novel icon on Home screen",
+      "smali_classes5/com/transsion/home/fragment/tab/SubShortTvFragment.smali": "Neutralize ShortTV home subtab lazy data loading",
+      "smali_classes6/com/transsion/shorttv/ui/fragment/ShortTVDiscoverFragment.smali": "Neutralize ShortTV discover feed requests",
+      "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Permanently remove Hot Novels card (type 7) from Me tab",
+      "smali_classes7/uj/a.smali": "Wipe MiniApp and NovelHub initialization and launch backend methods"
     }
   }
 ]
