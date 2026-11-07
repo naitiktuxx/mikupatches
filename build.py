@@ -32,6 +32,7 @@ from mikupatches.ui.menu import (
     show_arch_selection_menu,
     prompt_back_to_menu,
     show_navigatable_menu,
+    ensure_terminal_sanity,
 )
 
 
@@ -572,5 +573,6 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
+        ensure_terminal_sanity()
         print(f"\n{Colors.RED}[!] Terminated (Ctrl+C).{Colors.RESET}")
         sys.exit(130)

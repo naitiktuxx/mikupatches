@@ -474,11 +474,11 @@
   },
   {
     "id": "player_preload_load_control",
-    "name": "Player: Aggressive Video Preload Buffer & Anti-Stall LoadControl",
-    "desc": "Configures ExoPlayer DefaultLoadControl to preload more video (60s maxBufferMs), restart loading early before stalls occur (50s minBufferMs), with 2.5s playback startup, 5s rebuffer cushion, and prioritized time thresholds",
+    "name": "[Experimental] Player: Instant Start & Deep Preload Buffer (Option A)",
+    "desc": "Configures ExoPlayer DefaultLoadControl for instant video startup (800ms bufferForPlayback), 120s deep preload safety buffer (120s maxBufferMs), 30s refill threshold (30s minBufferMs), 2s fast rebuffer recovery, and prioritized time thresholds",
     "default": true,
     "files": {
-      "smali_classes5/co/h.smali": "Update ORExoPlayer createPlayer LoadControl to 50s minBuffer, 60s maxBuffer, 2.5s playback, 5s rebuffer, and logcat verification"
+      "smali_classes5/co/h.smali": "Update ORExoPlayer LoadControl to 800ms playback start, 120s maxBuffer, 30s minBuffer, 2s rebuffer, and logcat verification"
     }
   },
   {
@@ -518,27 +518,59 @@
     "desc": "Blocks adult/NSFW search suggestions, autocomplete terms, and queries across both standard and UGC search backends using an extensive multi-lingual blocklist (English, Hinglish, Hindi Devanagari, regional terms, and ratings) with leetspeak normalization and allowlist exception handling",
     "default": true,
     "files": {
-      "smali/com/miku/filter/NsfwFilter.smali": "High-performance NSFW filter engine supporting leetspeak normalization, diacritics stripping, word boundary matching, and allowlist protection",
+      "smali/com/miku/filter/NsfwFilter.smali": "High-performance NSFW filter engine supporting in-memory base64 gzip decoding, leetspeak normalization, diacritics stripping, word boundary matching, and allowlist protection",
+      "smali/com/miku/filter/NsfwFilter$PhraseRule.smali": "Inner class representing phrase rules",
+      "smali/com/miku/filter/NsfwFilter$RegexRule.smali": "Inner class representing regex rules",
+      "smali/com/miku/filter/NsfwFilter$WordRule.smali": "Inner class representing word rules",
       "smali_classes6/com/transsion/search/viewmodel/SearchViewModel.smali": "Intercept incoming search suggestions in v and cancel suggestion fetches for explicit queries in p",
       "smali_classes6/com/transsion/search/fragment/suggest/SearchSuggestFragment.smali": "Filter suggestions before adapter rendering in k0 and empty suggestions on NSFW query input in n0",
       "smali_classes7/gr/c.smali": "Intercept UGC search suggestions in n and cancel suggestion fetches for explicit queries in j",
       "smali_classes6/com/transsion/search_pugc/fragment/suggest/SearchSuggestFragment.smali": "Filter UGC suggestions before adapter rendering and clear adapter on NSFW query input",
       "smali_classes7/yq/j$b.smali": "Filter raw Google Suggest response items for standard search",
       "smali_classes7/fr/c$b.smali": "Filter raw Google Suggest response items for UGC search",
-      "assets/nsfw_blocklist.json": "NSFW blocklist dataset with multi-lingual tags, genres, ratings, regex patterns, and allowlist exceptions"
+      "assets/filter_data.b64.txt": "GZIP-compressed base64-encoded filter rules dataset"
     }
   },
   {
     "id": "home_tabs_filter_and_default_anime",
     "name": "Filter Unwanted Home Tabs & Set Anime as Default",
-    "desc": "Removes unwanted tabs (Football, Trending, Cricket, TV-Channel, Education, Music, Indian, Hindi, Tamil, Telugu, Game, Buzzbox, Midnight) from the Home screen top tab bar and sets Anime as the primary default tab on app startup",
+    "desc": "Removes unwanted tabs (Football, Trending, Cricket, TV-Channel, Education, Music, Indian, Hindi, Tamil, Telugu, Game, Buzzbox, Midnight) from the Home screen top tab bar, centers the slider with evenly spaced tabs, and sets Anime as the primary default tab on app startup",
     "default": true,
     "files": {
       "smali/com/miku/filter/HomeTabFilter.smali": "Tab filtering engine that identifies blocked categories and Anime tab",
       "smali_classes5/com/transsion/home/bean/BottomTabItem.smali": "Filter subTabs in getSubTabs and setSubTabs, and return Animation as default subTabCode",
       "smali_classes5/com/transsion/home/bean/AppTab.smali": "Filter home tabs in getHomeTabs and resetHomeTabs",
       "smali_classes5/com/transsion/home/fragment/home/HomeFragment.smali": "Set Anime as default tab in initView tab selection",
+      "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager.smali": "Configure CommonNavigator in adjustMode to evenly distribute and center remaining tabs",
       "assets/appTab.json": "Update fallback appTab with defaultSubTabCode Animation and remove Trending"
     }
+  },
+  {
+    "id": "lock_family_mode_permanent",
+    "name": "Lock Family Mode (Always On) & Hide Settings Switch",
+    "desc": "Permanently locks Family Mode to ON across all movie/video content interception, neutralizes setting toggles, and completely hides the Family Mode row and notification badges from Settings and Main navigation",
+    "default": true,
+    "files": {},
+    "hooks": [
+      "lock_family_mode.py"
+    ]
+  },
+  {
+    "id": "search_remove_filter_panel_movies_only",
+    "name": "Remove Search Filter Panel & Cards, Restrict to Movies/Series",
+    "desc": "Completely removes the category filter tab bar (All, Movie/Series, Sports, Music, Education) from search results, eliminates promotional and vertical rank cards (such as Sports Game) from search suggestions and results, permanently restricts search to movies and series, and sets the search bar default placeholder to 'Search'.",
+    "default": true,
+    "files": {
+      "smali/com/miku/filter/SearchMovieFilter.smali": "Engine that filters SearchResultEntity tabs, strips promotional cards, and validates movie/series subjects",
+      "smali_classes6/com/transsion/search/fragment/result/SearchResultViewModel.smali": "Filter search result items to exclusively include movies and series",
+      "smali_classes6/com/transsion/search/fragment/result/SearchResultFragment.smali": "Limit viewpager adapter item count to single Movie/Series page",
+      "smali_classes6/com/transsion/search/fragment/result/SearchResultTabFragment.smali": "Display movie/series subfilter tabs row while preserving results list",
+      "res/layout/fragment_search_result.xml": "Collapse filter tab indicator and divider to gone/0dp with full-screen ViewPager2",
+      "res/layout/fragment_search_result_list.xml": "Center-align subfilter tabs with wrap_content and constrained width",
+      "res/layout/item_search_result_tab.xml": "Center-align tab pill texts with symmetric margins and touch targets"
+    },
+    "hooks": [
+      "patch_search_filter.py"
+    ]
   }
 ]

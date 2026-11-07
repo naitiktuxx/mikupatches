@@ -519,6 +519,10 @@
 
     move-result-object p1
 
+    invoke-static {p1}, Lcom/miku/filter/SearchMovieFilter;->filterSuggestEntities(Ljava/util/List;)Ljava/util/List;
+
+    move-result-object p1
+
     invoke-static {p1}, Lcom/miku/filter/NsfwFilter;->filterSuggestEntities(Ljava/util/List;)Ljava/util/List;
 
     move-result-object p1

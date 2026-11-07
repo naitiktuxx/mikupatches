@@ -5,6 +5,8 @@ Dynamic interactive TTY terminal menus and navigation system with simplified, cl
 import sys
 import os
 import time
+import select
+import atexit
 import webbrowser
 from typing import List, Tuple, Optional, Dict, Any
 
@@ -15,6 +17,32 @@ from mikupatches.extractor import Extractor
 from mikupatches.toolchain import Toolchain
 
 
+def ensure_terminal_sanity():
+    """Restores standard cooked terminal settings with echoing, canonical mode, and ONLCR."""
+    if sys.stdin.isatty():
+        try:
+            import termios
+            fd = sys.stdin.fileno()
+            mode = termios.tcgetattr(fd)
+            # Enable output post-processing and newline to CR-LF translation
+            mode[1] |= (termios.OPOST | getattr(termios, 'ONLCR', 2))
+            # Enable echo, canonical mode, and signals
+            mode[3] |= (termios.ECHO | termios.ICANON | termios.ISIG)
+            termios.tcsetattr(fd, termios.TCSANOW, mode)
+        except Exception:
+            pass
+
+
+# Ensure terminal sanity on any process exit
+atexit.register(ensure_terminal_sanity)
+
+
+def mprint(*args, **kwargs):
+    """Safe print for TTY interactive menus that guarantees carriage-return linefeeds."""
+    kwargs.setdefault('end', '\r\n')
+    print(*args, **kwargs)
+
+
 def get_single_keypress() -> Optional[str]:
     if not sys.stdin.isatty():
         return None
@@ -23,34 +51,45 @@ def get_single_keypress() -> Optional[str]:
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
         try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-            if ch == '\x1b':
-                ch2 = sys.stdin.read(1)
-                if ch2 == '[':
-                    ch3 = sys.stdin.read(1)
-                    if ch3 == 'A':
-                        return 'UP'
-                    elif ch3 == 'B':
-                        return 'DOWN'
-                    elif ch3 == 'C':
-                        return 'RIGHT'
-                    elif ch3 == 'D':
-                        return 'LEFT'
-            elif ch in ('\r', '\n'):
+            # Use cbreak mode so output postprocessing (ONLCR) is preserved
+            tty.setcbreak(fd, termios.TCSANOW)
+            # Read directly from fd to avoid TextIOWrapper buffer traps
+            seq = os.read(fd, 32)
+            if seq == b'\x1b':
+                # Check if rest of escape sequence follows within 50ms
+                r, _, _ = select.select([fd], [], [], 0.05)
+                if r:
+                    seq += os.read(fd, 31)
+
+            if not seq:
+                return None
+
+            if seq.startswith(b'\x1b[A') or seq.startswith(b'\x1bOA') or seq.startswith(b'\x1b[5~'):
+                return 'UP'
+            elif seq.startswith(b'\x1b[B') or seq.startswith(b'\x1bOB') or seq.startswith(b'\x1b[6~'):
+                return 'DOWN'
+            elif seq.startswith(b'\x1b[C') or seq.startswith(b'\x1bOC'):
+                return 'RIGHT'
+            elif seq.startswith(b'\x1b[D') or seq.startswith(b'\x1bOD'):
+                return 'LEFT'
+            elif seq[0:1] in (b'\r', b'\n'):
                 return 'ENTER'
-            elif ch == ' ':
+            elif seq[0:1] == b' ':
                 return 'SPACE'
-            elif ch in ('b', 'B'):
+            elif seq[0:1] in (b'b', b'B') or seq == b'\x1b':
                 return 'BACK'
-            elif ch == '\x03':
-                raise KeyboardInterrupt
-            elif ch in ('q', 'Q'):
+            elif seq[0:1] in (b'q', b'Q'):
                 return 'QUIT'
-            elif ch.isdigit():
-                return ch
+            elif seq[0:1] == b'\x03':
+                raise KeyboardInterrupt
+            elif len(seq) >= 1 and seq[0:1].isdigit():
+                return seq[0:1].decode('ascii', errors='ignore')
+            elif seq[0:1] in (b'k', b'K', b'w', b'W'):
+                return 'UP'
+            elif seq[0:1] in (b'j', b'J', b's', b'S'):
+                return 'DOWN'
         finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            termios.tcsetattr(fd, termios.TCSANOW, old_settings)
     except KeyboardInterrupt:
         raise KeyboardInterrupt
     except Exception:
@@ -67,41 +106,51 @@ def show_navigatable_menu(
     if not sys.stdin.isatty():
         return 0
 
+    ensure_terminal_sanity()
     selected_idx = default_idx
     num_items = len(items)
+    WIDTH = 76
 
     try:
         sys.stdout.write("\033[?25l")
         sys.stdout.flush()
 
         while True:
-            sys.stdout.write("\033[H\033[J")
+            # Full screen clear and cursor home to wipe any stale text completely
+            sys.stdout.write("\033[2J\033[H")
 
-            print("=" * 76)
-            print(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}")
-            print("------------------------------------------------------------------------")
-            print(" Use Arrow keys or Numbers to select, Enter to confirm, 'b' to back, 'q' to exit:")
-            print()
+            mprint("=" * WIDTH)
+            mprint(f"{Colors.CYAN}{Colors.BOLD} [#] {title}{Colors.RESET}\033[K")
+            mprint("-" * WIDTH)
+            mprint(f" {Colors.DIM}Use Arrow keys / Numbers to select, Enter to confirm, 'q' to exit{Colors.RESET}\033[K")
+            mprint("\033[K")
+
+            # Calculate max label length for aligned descriptions
+            max_label_len = max(len(label) for _, label, _ in items) if items else 0
 
             for idx, (num_key, label, desc) in enumerate(items):
+                padding = " " * (max_label_len - len(label))
                 if idx == selected_idx:
                     pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
                     prefix = f"{Colors.CYAN}{Colors.BOLD}[{num_key}]{Colors.RESET}"
-                    line_str = f" {pointer} {prefix} {Colors.BOLD}{label}{Colors.RESET}"
+                    label_str = f"{Colors.BOLD}{label}{Colors.RESET}"
                 else:
                     pointer = "  "
                     prefix = f"[{num_key}]"
-                    line_str = f" {pointer} {prefix} {label}"
+                    label_str = label
 
                 if desc:
-                    line_str += f" - {Colors.DIM}{desc}{Colors.RESET}"
-                print(line_str)
+                    line_str = f" {pointer} {prefix} {label_str}{padding}  - {Colors.DIM}{desc}{Colors.RESET}\033[K"
+                else:
+                    line_str = f" {pointer} {prefix} {label_str}\033[K"
+                mprint(line_str)
 
-            print("=" * 76)
+            mprint("\033[K")
+            mprint("=" * WIDTH)
 
             if status_lines:
                 for sline in status_lines:
-                    print(sline)
+                    mprint(sline + "\033[K")
 
             sys.stdout.flush()
 
@@ -121,7 +170,7 @@ def show_navigatable_menu(
                     return len(items) - 1
                 return selected_idx
             elif key == 'QUIT':
-                print(f"\n{Colors.RED}[!] Terminated by user.{Colors.RESET}")
+                mprint(f"\n{Colors.RED}[!] Terminated by user.{Colors.RESET}")
                 sys.exit(0)
             elif key:
                 key_str = str(key).lower()
@@ -146,8 +195,9 @@ def show_navigatable_menu(
                 except KeyboardInterrupt:
                     raise KeyboardInterrupt
     finally:
-        sys.stdout.write("\033[?25h")
+        sys.stdout.write("\033[?25h\r\n")
         sys.stdout.flush()
+        ensure_terminal_sanity()
 
 
 def show_app_selection_menu(
@@ -196,22 +246,26 @@ def show_patch_selection_menu(
     if not sys.stdin.isatty():
         return active_status
 
+    ensure_terminal_sanity()
     selected_idx = 0
     num_items = len(patch_groups)
     status_map = dict(active_status)
+    WIDTH = 76
 
     try:
         sys.stdout.write("\033[?25l")
         sys.stdout.flush()
 
         while True:
-            sys.stdout.write("\033[H\033[J")
+            # Full screen clear and cursor home to wipe stale characters
+            sys.stdout.write("\033[2J\033[H")
 
-            print("=" * 76)
-            print(f"{Colors.CYAN}{Colors.BOLD} [#] {title or 'PATCH SELECTION'}: {app_profile.app_title}{Colors.RESET}")
-            print(f"     Version: v{app_profile.target_version_name}")
-            print("------------------------------------------------------------------------")
-            print(" Use Arrow keys to navigate, Space or Numbers to toggle, Enter to build, 'b' to back:\n")
+            mprint("=" * WIDTH)
+            mprint(f"{Colors.CYAN}{Colors.BOLD} [#] {title or 'PATCH SELECTION'}: {app_profile.app_title}{Colors.RESET}\033[K")
+            mprint(f"     Version: v{app_profile.target_version_name}\033[K")
+            mprint("-" * WIDTH)
+            mprint(f" {Colors.DIM}Use Arrow keys to navigate, Space to toggle, Enter to build, 'b' to back{Colors.RESET}\033[K")
+            mprint("\033[K")
 
             for idx, group in enumerate(patch_groups):
                 gid = group.id
@@ -224,20 +278,20 @@ def show_patch_selection_menu(
                 if idx == selected_idx:
                     pointer = f"{Colors.CYAN}{Colors.BOLD}->{Colors.RESET}"
                     prefix = f"{Colors.CYAN}{Colors.BOLD}[{idx + 1}]{Colors.RESET}"
-                    line_str = f" {pointer} {prefix} {status_str} {Colors.BOLD}{group.name}{Colors.RESET}"
+                    line_str = f" {pointer} {prefix} {status_str} {Colors.BOLD}{group.name}{Colors.RESET}\033[K"
                 else:
                     pointer = "  "
                     prefix = f"[{idx + 1}]"
-                    line_str = f" {pointer} {prefix} {status_str} {group.name}"
+                    line_str = f" {pointer} {prefix} {status_str} {group.name}\033[K"
 
-                print(line_str)
-                print(f"       {Colors.DIM}{group.desc}{Colors.RESET}")
-                print()
+                mprint(line_str)
+                mprint(f"       {Colors.DIM}{group.desc}{Colors.RESET}\033[K")
+                mprint("\033[K")
 
-            print("=" * 76)
-            print(f"  - Press 'b': Back to Main Menu")
-            print(f"  - Press 'q': Exit")
-            print("=" * 76)
+            mprint("=" * WIDTH)
+            mprint(f"  - Press 'b': Back to Main Menu\033[K")
+            mprint(f"  - Press 'q': Exit\033[K")
+            mprint("=" * WIDTH)
             sys.stdout.flush()
 
             key = get_single_keypress()
@@ -249,12 +303,12 @@ def show_patch_selection_menu(
                 gid = patch_groups[selected_idx].id
                 status_map[gid] = not status_map.get(gid, True)
             elif key == 'ENTER':
-                print()
+                mprint()
                 return status_map
             elif key == 'BACK':
                 return None
             elif key == 'QUIT':
-                print(f"\n{Colors.RED}[!] Cancelled by user.{Colors.RESET}")
+                mprint(f"\n{Colors.RED}[!] Cancelled by user.{Colors.RESET}")
                 sys.exit(0)
             elif key and key.isdigit():
                 idx_val = int(key)
@@ -264,8 +318,9 @@ def show_patch_selection_menu(
             elif key is None:
                 return status_map
     finally:
-        sys.stdout.write("\033[?25h")
+        sys.stdout.write("\033[?25h\r\n")
         sys.stdout.flush()
+        ensure_terminal_sanity()
 
 
 def show_arch_selection_menu() -> Optional[List[str]]:
@@ -380,6 +435,7 @@ def prompt_download(app_profile: AppProfile, input_dir: str) -> Optional[str]:
 
 
 def prompt_back_to_menu():
+    ensure_terminal_sanity()
     print("-" * 76)
     print(f" Press {Colors.CYAN}'b'{Colors.RESET} or Enter to return to Main Menu, or {Colors.CYAN}'q'{Colors.RESET} to Exit.")
     print("-" * 76)
@@ -388,10 +444,13 @@ def prompt_back_to_menu():
     if not sys.stdin.isatty():
         return
 
-    while True:
-        key = get_single_keypress()
-        if key in ('ENTER', 'BACK'):
-            return
-        elif key == 'QUIT':
-            print(f"\n{Colors.RED}[!] Terminated by user.{Colors.RESET}")
-            sys.exit(0)
+    try:
+        while True:
+            key = get_single_keypress()
+            if key in ('ENTER', 'BACK'):
+                return
+            elif key == 'QUIT':
+                print(f"\n{Colors.RED}[!] Terminated by user.{Colors.RESET}")
+                sys.exit(0)
+    finally:
+        ensure_terminal_sanity()

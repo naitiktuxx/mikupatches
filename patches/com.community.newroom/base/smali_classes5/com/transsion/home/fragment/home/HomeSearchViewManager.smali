@@ -1099,6 +1099,10 @@
     :cond_0
     invoke-direct {v0, v1}, Lnet/lucode/hackware/magicindicator/buildins/commonnavigator/CommonNavigator;-><init>(Landroid/content/Context;)V
 
+    const/4 v1, 0x1
+
+    invoke-virtual {v0, v1}, Lnet/lucode/hackware/magicindicator/buildins/commonnavigator/CommonNavigator;->setAdjustMode(Z)V
+
     iput-object v0, p0, Lcom/transsion/home/fragment/home/HomeSearchViewManager;->h:Lnet/lucode/hackware/magicindicator/buildins/commonnavigator/CommonNavigator;
 
     new-instance v0, Lcom/transsion/home/fragment/home/HomeSearchViewManager$a;
