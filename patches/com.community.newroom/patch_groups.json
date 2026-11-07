@@ -180,21 +180,21 @@
       "smali_classes6/com/transsion/publish/ui/ClippingImageActivity.smali": "Auto-finish ClippingImageActivity on launch",
       "smali_classes6/com/transsion/publish/ui/VideoPreviewActivity.smali": "Auto-finish VideoPreviewActivity on launch",
       "smali_classes6/com/transsion/player/longvideo/ui/b0.smali": "Neutralize player settings button click listener",
-    "res/layout/fragment_resource_detector_layout.xml": "Swap dub/language block below movie name/resource card in detail screen",
-    "res/layout/fragment_episode.xml": "Swap dub/language block below movie name/resource card in episode detail screen",
-    "res/layout/fragment_subject_header.xml": "Match movie detail header area background to dark UI theme",
-    "res/layout/header_extension_layout.xml": "Match buttons container background to dark UI theme",
-    "res/layout/fragment_movie_detail_v2_layout.xml": "Make movie detail screen content fixed, unscrollable, and match dark UI theme",
-    "res/layout/fragment_video_detail.xml": "Make video detail screen content fixed, unscrollable, and match dark UI theme",
-    "res/layout/layout_local_video_land.xml": "Permanently remove Help and Setting buttons in landscape video player",
-    "res/layout/layout_local_video_portrait.xml": "Permanently remove Help button in portrait video player",
-    "res/layout/layout_local_video_middle.xml": "Make downloaded video layout unscrollable, remove tabs, remove help, match dark theme",
-    "res/layout/layout_local_video_middle_header.xml": "Remove Details and Download More buttons in downloaded video header",
-    "res/layout/layout_ugc_local_video_detail_info.xml": "Remove Details and Download More buttons in UGC downloaded video info",
-    "res/layout/fragment_local_video.xml": "Match downloaded video fragment background to dark UI theme",
-    "res/layout/long_vod_layout_top_tool.xml": "Permanently remove Help and Setting buttons in online video player top toolbar",
-    "smali_classes6/com/transsion/postdetail/layer/local/LocalVideoMiddleLayer.smali": "Remove For You and Comments tab setup in downloaded video player",
-    "smali_classes6/com/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView.smali": "Remove Details and Download More button handling in downloaded video header"
+      "res/layout/fragment_resource_detector_layout.xml": "Swap dub/language block below movie name/resource card in detail screen",
+      "res/layout/fragment_episode.xml": "Swap dub/language block below movie name/resource card in episode detail screen",
+      "res/layout/fragment_subject_header.xml": "Match movie detail header area background to dark UI theme",
+      "res/layout/header_extension_layout.xml": "Match buttons container background to dark UI theme",
+      "res/layout/fragment_movie_detail_v2_layout.xml": "Make movie detail screen content fixed, unscrollable, and match dark UI theme",
+      "res/layout/fragment_video_detail.xml": "Make video detail screen content fixed, unscrollable, and match dark UI theme",
+      "res/layout/layout_local_video_land.xml": "Permanently remove Help and Setting buttons in landscape video player",
+      "res/layout/layout_local_video_portrait.xml": "Permanently remove Help button in portrait video player",
+      "res/layout/layout_local_video_middle.xml": "Make downloaded video layout unscrollable, remove tabs, remove help, match dark theme",
+      "res/layout/layout_local_video_middle_header.xml": "Remove Details and Download More buttons in downloaded video header",
+      "res/layout/layout_ugc_local_video_detail_info.xml": "Remove Details and Download More buttons in UGC downloaded video info",
+      "res/layout/fragment_local_video.xml": "Match downloaded video fragment background to dark UI theme",
+      "res/layout/long_vod_layout_top_tool.xml": "Permanently remove Help and Setting buttons in online video player top toolbar",
+      "smali_classes6/com/transsion/postdetail/layer/local/LocalVideoMiddleLayer.smali": "Remove For You and Comments tab setup in downloaded video player",
+      "smali_classes6/com/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView.smali": "Remove Details and Download More button handling in downloaded video header"
     }
   },
   {
@@ -370,6 +370,47 @@
       "smali_classes6/com/transsion/search/fragment/hot/SearchHotFragment.smali": "Disable Everyone is searching and hot rankings data loading while preserving recent searches history",
       "smali_classes6/com/transsion/search_pugc/fragment/hot/SearchHotFragment.smali": "Disable Everyone is searching and hot rankings in pugc hot search fragment",
       "smali_classes6/com/transsion/search/viewmodel/SearchViewModel.smali": "Neutralize network fetch for hot search keywords and rankings"
+    }
+  },
+  {
+    "id": "security_strip_bloat_and_watermarks",
+    "name": "Security: Strip Deadweight Bloat & Modder Watermarks (Size Reduction)",
+    "desc": "Removes FileProvider root-path exposure, neutralizes modder SubRoomApp loader, and strips 45+ MB of redundant deadweight binaries (libfuck.so, libdexloader.so, El-a Mo-ds.so)",
+    "default": true,
+    "files": {
+      "res/xml/util_code_provider_paths.xml": "Remove root filesystem path exposure from FileProvider",
+      "smali/com/transsion/subroom/app/SubRoomApp.smali": "Neutralize static constructor to remove dependency on modder loader"
+    },
+    "hooks": [
+      "strip_bloat_libraries.py"
+    ]
+  },
+  {
+    "id": "security_neutralize_exported_ipc",
+    "name": "Security: Neutralize Exposed Activities & IPC Attack Surface",
+    "desc": "Sets android:exported=false on PayActivity, ClaimRewardActivity, UGCLocalVideoDetailActivity, and TMC MiniApp IPC services to prevent unauthorized external access without causing runtime crashes",
+    "default": true,
+    "files": {
+      "AndroidManifest.xml": "Hardened AndroidManifest with neutralized exported attributes on sensitive internal components"
+    }
+  },
+  {
+    "id": "security_neutralize_webview_risks",
+    "name": "Security: Neutralize WebView Local File Access",
+    "desc": "Disables WebView local file access (setAllowFileAccess=false) in payment and web fragments to prevent local sandbox file theft while preserving online payment and streaming capabilities",
+    "default": true,
+    "files": {
+      "smali_classes6/com/transsion/payment/lib/strategy/ui/PayWebFragment.smali": "Disable WebView setAllowFileAccess in PayWebFragment"
+    }
+  },
+  {
+    "id": "hide_player_stream_toast",
+    "name": "Hide Player Stream Server & Playback Toast",
+    "desc": "Hides the 'Analysing from [server]' stream server toast and 'Last played time' overlay toast during video playback while keeping stream resolution and playback seek logic fully intact",
+    "default": true,
+    "files": {
+      "res/layout/long_vod_layout_toast.xml": "Set toast bubble text views and layout to GONE and zero size in video player",
+      "smali_classes6/com/transsion/postdetail/layer/local/j1.smali": "Permanently suppress displaying stream server and last played time toast notifications"
     }
   }
 ]

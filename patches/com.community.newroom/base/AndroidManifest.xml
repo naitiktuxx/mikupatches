@@ -96,7 +96,7 @@
         <activity android:launchMode="singleTask" android:name="com.transsion.subroom.activity.NotAvailableActivity" android:screenOrientation="portrait" />
         <activity android:configChanges="navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:exported="true" android:launchMode="singleTask" android:name="com.transsion.subroom.activity.MainActivity" android:screenOrientation="behind" android:theme="@style/Theme.Subroom.NoActionBarAd" android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity android:name="com.mymovie.activity.MyWebViewActivity" />
-        <activity android:exported="true" android:name="com.mymovie.activity.MySearchSplashActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.AppStart.Compat" />
+        <activity android:exported="false" android:name="com.mymovie.activity.MySearchSplashActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.AppStart.Compat" />
         <activity android:exported="true" android:label="Miku" android:name="com.mymovie.activity.MySplashActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.AppStart.Compat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -183,7 +183,7 @@
                 <data android:host="member" android:path="/adtask" android:scheme="oneroom" />
             </intent-filter>
         </activity>
-        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="true" android:name="com.transsion.rewardscenter.ui.ClaimRewardActivity" android:screenOrientation="portrait" />
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:name="com.transsion.rewardscenter.ui.ClaimRewardActivity" android:screenOrientation="portrait" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:name="com.transsion.member.MemberActivity" android:screenOrientation="portrait" />
         <activity android:exported="false" android:name="com.transsion.member.history.PointsHistoryActivity" />
         <activity android:exported="false" android:name="com.transsion.commercialization.aha.AhaGameAllActivity" />
@@ -213,7 +213,7 @@
         <activity android:autoRemoveFromRecents="true" android:configChanges="keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="false" android:name="com.transsion.videodetail.StreamDetailActivity" android:screenOrientation="portrait" android:supportsPictureInPicture="true" android:taskAffinity="com.transsion.videodetail.StreamDetailActivity" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:name="com.transsion.videodetail.music.ui.MusicDetailActivity" android:screenOrientation="portrait" />
         <activity android:autoRemoveFromRecents="true" android:configChanges="keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="false" android:name="com.transsion.ugcvideodetail.activity.UGCVideoDetailActivity" android:screenOrientation="portrait" android:supportsPictureInPicture="true" android:taskAffinity="com.transsion.ugcvideodetail.fragment.UGCVideoDetailActivity" />
-        <activity android:autoRemoveFromRecents="true" android:configChanges="keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="true" android:label="@string/video_player" android:name="com.transsion.ugcvideodetail.activity.UGCLocalVideoDetailActivity" android:screenOrientation="portrait" android:supportsPictureInPicture="true" android:taskAffinity="com.transsion.ugcvideodetail.activity.UGCLocalVideoDetailActivity" />
+        <activity android:autoRemoveFromRecents="true" android:configChanges="keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="false" android:label="@string/video_player" android:name="com.transsion.ugcvideodetail.activity.UGCLocalVideoDetailActivity" android:screenOrientation="portrait" android:supportsPictureInPicture="true" android:taskAffinity="com.transsion.ugcvideodetail.activity.UGCLocalVideoDetailActivity" />
         <activity android:autoRemoveFromRecents="true" android:configChanges="keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="false" android:name="com.transsion.moviedetail.activity.MovieDetailActivity" android:screenOrientation="portrait" android:supportsPictureInPicture="true" android:taskAffinity="com.transsion.moviedetail.activity.MovieDetailActivity" />
         <activity android:exported="false" android:name="com.transsion.moviedetail.staff.MovieStaffActivity" android:screenOrientation="fullSensor" />
         <activity android:exported="false" android:name="com.transsion.moviedetail.activity.MoviePosterActivity" android:screenOrientation="portrait" />
@@ -380,7 +380,7 @@
         <meta-data android:name="CONFIG_DEV_MODE" android:value="false" />
         <meta-data android:name="MINI_APP_STATIC_URL" android:value="https://api-static.byte-app.com/" />
         <meta-data android:name="com.google.android.gms.ads.INTEGRATION_MANAGER" android:value="webview" />
-        <activity android:documentLaunchMode="always" android:excludeFromRecents="true" android:exported="true" android:launchMode="standard" android:name="com.cloud.tmc.miniapp.ui.MiniSchemaFilterActivity" android:process=":mini" android:taskAffinity="com.mikuplayer.tux.miniapp.ui.MiniSchemaFilterActivity" android:theme="@style/Theme.Miniapp.NoActionBar" />
+        <activity android:documentLaunchMode="always" android:excludeFromRecents="true" android:exported="false" android:launchMode="standard" android:name="com.cloud.tmc.miniapp.ui.MiniSchemaFilterActivity" android:process=":mini" android:taskAffinity="com.mikuplayer.tux.miniapp.ui.MiniSchemaFilterActivity" android:theme="@style/Theme.Miniapp.NoActionBar" />
         <activity android:exported="false" android:multiprocess="true" android:name="com.cloud.tmc.miniapp.ui.ImagePreviewActivity" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar.PhotoTheme" />
         <activity android:exported="false" android:multiprocess="true" android:name="com.cloud.tmc.miniapp.ui.ImageSelectActivity" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar.PhotoTheme" />
         <activity android:exported="false" android:multiprocess="true" android:name="com.cloud.tmc.miniapp.ui.WebViewActivity" android:screenOrientation="portrait" android:theme="@style/Theme.Miniapp.NoActionBar" />
@@ -394,17 +394,17 @@
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity3" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.mikuplayer.tux.miniapp.mini3" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:exported="false" android:hardwareAccelerated="true" android:label="@string/mini_app_name" android:launchMode="singleTask" android:name="com.cloud.tmc.miniapp.ui.multiprogress.MiniSubActivity4" android:process=":mini" android:screenOrientation="portrait" android:taskAffinity="com.mikuplayer.tux.miniapp.mini4" android:theme="@style/Theme.Miniapp.NoActionBar" android:windowSoftInputMode="stateHidden" />
         <service android:exported="false" android:name="com.cloud.tmc.miniapp.ipc.multiprogress.IpcMiniProcessClientService" android:process=":mini" />
-        <service android:exported="true" android:name="com.cloud.tmc.miniapp.ipc.IpcMiniLauncherService" android:process=":mini" />
+        <service android:exported="false" android:name="com.cloud.tmc.miniapp.ipc.IpcMiniLauncherService" android:process=":mini" />
         <service android:exported="false" android:name="com.cloud.tmc.miniapp.ipc.multiprogress.IpcMainProcessClientService" />
         <service android:name="com.cloud.tmc.miniapp.bluetooth.BLEService" android:process=":mini" />
-        <service android:exported="true" android:name="com.cloud.tmc.miniapp.ipc.IpcMiniPSService" android:process=":mini" />
+        <service android:exported="false" android:name="com.cloud.tmc.miniapp.ipc.IpcMiniPSService" android:process=":mini" />
         <receiver android:exported="false" android:name="com.cloud.tmc.integration.broadcast.ShortCutBroadcast" android:process=":mini">
             <intent-filter>
                 <action android:name="com.cloud.tmc.miniapp.shortcut" />
             </intent-filter>
         </receiver>
         <activity android:exported="false" android:name="com.tn.tranpay.activity.TranPayWebActivity" android:screenOrientation="portrait" android:theme="@style/Theme.TranPay" />
-        <activity android:exported="true" android:name="com.tn.tranpay.activity.PayActivity" android:screenOrientation="portrait" android:theme="@style/Theme.TranPay" />
+        <activity android:exported="false" android:name="com.tn.tranpay.activity.PayActivity" android:screenOrientation="portrait" android:theme="@style/Theme.TranPay" />
         <activity android:excludeFromRecents="true" android:exported="false" android:name="com.tn.tranpay.activity.TranPayTransparentActivity" android:screenOrientation="portrait" android:theme="@style/Theme.TranPay.Transparent" />
         <activity android:exported="false" android:name="com.transsion.spwaitkiller.test.TestSpWait2Activity" />
         <activity android:exported="false" android:name="com.transsion.spwaitkiller.test.TestSpWaitActivity" />
@@ -537,7 +537,7 @@
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.bytedance.sdk.pangle.version" android:value="7.1.1.4" />
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:launchMode="standard" android:name="com.bytedance.sdk.openadsdk.activity.TTAdActivity" android:theme="@style/tt_full_screen_new" />
-        <service android:exported="true" android:name="com.cloud.tmc.component_api_ps.ipc.service.MiniAppProtocolMainService" />
+        <service android:exported="false" android:name="com.cloud.tmc.component_api_ps.ipc.service.MiniAppProtocolMainService" />
         <service android:exported="false" android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery">
             <meta-data android:name="backend:com.google.android.datatransport.cct.CctBackendFactory" android:value="cct" />
         </service>
