@@ -10733,70 +10733,8 @@
 .end method
 
 .method private final r2(Ljava/lang/String;)V
-    .locals 9
+    .locals 0
 
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->T:Landroid/view/View;
-
-    if-nez v0, :cond_0
-
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
-
-    iget-object v0, v0, Lho/j;->y:Landroid/view/ViewStub;
-
-    invoke-virtual {v0}, Landroid/view/ViewStub;->inflate()Landroid/view/View;
-
-    move-result-object v0
-
-    iput-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->T:Landroid/view/View;
-
-    invoke-direct {p0}, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->c1()V
-
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->T:Landroid/view/View;
-
-    invoke-static {v0}, Lkotlin/jvm/internal/Intrinsics;->e(Ljava/lang/Object;)V
-
-    sget v1, Lcom/transsion/player/longvideo/R$id;->tv_toast_1:I
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->findViewById(I)Landroid/view/View;
-
-    move-result-object v0
-
-    check-cast v0, Landroid/widget/TextView;
-
-    iget-object v1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->T:Landroid/view/View;
-
-    invoke-static {v1}, Lkotlin/jvm/internal/Intrinsics;->e(Ljava/lang/Object;)V
-
-    sget v2, Lcom/transsion/player/longvideo/R$id;->tv_toast_2:I
-
-    invoke-virtual {v1, v2}, Landroid/view/View;->findViewById(I)Landroid/view/View;
-
-    move-result-object v1
-
-    check-cast v1, Landroid/widget/TextView;
-
-    new-instance v2, Lcom/transsion/postdetail/layer/local/j1;
-
-    invoke-direct {v2, v0, v1}, Lcom/transsion/postdetail/layer/local/j1;-><init>(Landroid/widget/TextView;Landroid/widget/TextView;)V
-
-    iput-object v2, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->S:Lcom/transsion/postdetail/layer/local/j1;
-
-    :cond_0
-    iget-object v3, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->S:Lcom/transsion/postdetail/layer/local/j1;
-
-    if-eqz v3, :cond_1
-
-    const/4 v7, 0x2
-
-    const/4 v8, 0x0
-
-    const-wide/16 v5, 0x0
-
-    move-object v4, p1
-
-    invoke-static/range {v3 .. v8}, Lcom/transsion/postdetail/layer/local/j1;->i(Lcom/transsion/postdetail/layer/local/j1;Ljava/lang/String;JILjava/lang/Object;)V
-
-    :cond_1
     return-void
 .end method
 

@@ -404,21 +404,45 @@
   {
     "id": "hide_player_stream_toast",
     "name": "Hide Player Stream Server & Playback Toast",
-    "desc": "Hides the 'Analysing from [server]' stream server toast and 'Last played time' overlay toast during video playback while keeping stream resolution and playback seek logic fully intact",
+    "desc": "Hides the 'Analysing from [server]' stream server toast and 'Last played time' overlay toast during video playback across all player layers and orientations while keeping stream resolution and playback seek logic fully intact",
     "default": true,
     "files": {
-      "res/layout/long_vod_layout_toast.xml": "Set toast bubble text views and layout to GONE and zero size in video player",
+      "res/layout/long_vod_layout_toast.xml": "Set toast bubble text views and layout to GONE and zero size in online video player",
+      "res/layout/layout_local_video_land.xml": "Set toast text views to GONE and zero size in landscape player",
+      "res/layout/layout_local_video_portrait.xml": "Set toast text views to GONE and zero size in portrait player",
+      "res/layout/layout_local_video_middle.xml": "Set toast text views to GONE and zero size in middle player",
+      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Neutralize r2 toast inflation and display method in online video player",
+      "smali_classes6/com/transsion/postdetail/layer/local/a0.smali": "Neutralize method i toast display handler in local player layer",
+      "smali_classes6/com/transsion/postdetail/ui/fragment/LocalVideoDetailFragment.smali": "Neutralize LayerFlag.SHOW_TOAST dispatches for stream server and playback time",
       "smali_classes6/com/transsion/postdetail/layer/local/j1.smali": "Permanently suppress displaying stream server and last played time toast notifications"
     }
   },
   {
     "id": "optimize_apk_size_arm64",
-    "name": "Performance: 64-bit ARM64 Size Optimization (~41MB Reduction)",
-    "desc": "Strips duplicate legacy 32-bit (armeabi-v7a) native libraries to reduce APK size from ~132MB down to ~91MB for modern 64-bit devices while keeping all video codecs and JNI methods intact",
+    "name": "Performance: 64-bit ARM64 & Dead Asset Size Optimization",
+    "desc": "Strips duplicate legacy 32-bit (armeabi-v7a) native libraries, offline H5 ad bundles, push banners, and modder watermarks to reduce APK size down to ~88MB for modern 64-bit devices while keeping all video codecs and JNI methods intact",
     "default": true,
     "files": {},
     "hooks": [
       "strip_redundant_arch.py"
     ]
+  },
+  {
+    "id": "remove_premium_badges_and_branding",
+    "name": "Remove Premium Branding & Badges from Buttons",
+    "desc": "Removes VIP/Premium crown badges and golden borders from buttons, episode list cards, and resolution selectors so all buttons look uniform with regular app styling",
+    "default": true,
+    "files": {
+      "res/layout/item_video_detail_episode.xml": "Remove VIP crown badge from episode cards",
+      "res/layout/adapter_resource_detector_alone_layout.xml": "Remove VIP crown badge from alone movie detector items",
+      "res/layout/adapter_resource_detector_collection_layout.xml": "Remove VIP crown badge from collection episode detector items",
+      "res/layout/view_playback_resolution_layout.xml": "Remove VIP crown badge and gold text from player resolution selector",
+      "res/drawable/bg_vip_subject_icon.xml": "Make VIP badge on movie posters transparent",
+      "res/mipmap-xxhdpi/p_v2_premium_2.png": "Transparent dummy for VIP crown badge",
+      "res/mipmap-xxhdpi/p_v2_premium_3.png": "Transparent dummy for VIP episode badge",
+      "res/mipmap-xxhdpi/p_v2_premium.png": "Transparent dummy for VIP icon",
+      "res/mipmap-xxhdpi/icon_download_premium.png": "Transparent dummy for VIP download icon",
+      "res/mipmap-xxhdpi/p_v2_premium_basic.webp": "Transparent dummy for VIP basic badge"
+    }
   }
 ]

@@ -26,6 +26,14 @@
 
     iput-object p2, p0, Lcom/transsion/postdetail/layer/local/j1;->b:Landroid/widget/TextView;
 
+    if-eqz p1, :cond_c0
+    invoke-static {p1}, Ljg/c;->g(Landroid/view/View;)V
+    :cond_c0
+
+    if-eqz p2, :cond_c1
+    invoke-static {p2}, Ljg/c;->g(Landroid/view/View;)V
+    :cond_c1
+
     const/4 p1, 0x1
 
     iput p1, p0, Lcom/transsion/postdetail/layer/local/j1;->d:I
