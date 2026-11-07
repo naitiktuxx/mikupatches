@@ -373,17 +373,13 @@
     }
   },
   {
-    "id": "security_strip_bloat_and_watermarks",
-    "name": "Security: Strip Deadweight Bloat & Modder Watermarks (Size Reduction)",
-    "desc": "Removes FileProvider root-path exposure, neutralizes modder SubRoomApp loader, and strips 45+ MB of redundant deadweight binaries (libfuck.so, libdexloader.so, El-a Mo-ds.so)",
+    "id": "security_fileprovider_hardening",
+    "name": "Security: Harden FileProvider Path Traversal",
+    "desc": "Removes dangerous root filesystem path from FileProvider in util_code_provider_paths.xml to eliminate sandbox escape risks",
     "default": true,
     "files": {
-      "res/xml/util_code_provider_paths.xml": "Remove root filesystem path exposure from FileProvider",
-      "smali/com/transsion/subroom/app/SubRoomApp.smali": "Neutralize static constructor to remove dependency on modder loader"
-    },
-    "hooks": [
-      "strip_bloat_libraries.py"
-    ]
+      "res/xml/util_code_provider_paths.xml": "Remove root filesystem path exposure from FileProvider"
+    }
   },
   {
     "id": "security_neutralize_exported_ipc",
@@ -396,11 +392,13 @@
   },
   {
     "id": "security_neutralize_webview_risks",
-    "name": "Security: Neutralize WebView Local File Access",
-    "desc": "Disables WebView local file access (setAllowFileAccess=false) in payment and web fragments to prevent local sandbox file theft while preserving online payment and streaming capabilities",
+    "name": "Security: Completely Neutralize & Disable Unused WebViews",
+    "desc": "Neutralizes WebViewActivity, CCTWebviewActivity, PayWebFragment loadUrl, and disables background TWebViewAdCacheManager pre-warming to save RAM and completely eliminate WebView attack surface without breaking native ExoPlayer streaming",
     "default": true,
     "files": {
-      "smali_classes6/com/transsion/payment/lib/strategy/ui/PayWebFragment.smali": "Disable WebView setAllowFileAccess in PayWebFragment"
+      "smali_classes6/com/transsion/payment/lib/strategy/ui/PayWebFragment.smali": "Disable setAllowFileAccess and neutralize loadUrl in PayWebFragment",
+      "smali_classes7/com/transsion/usercenter/setting/WebViewActivity.smali": "Auto-finish WebViewActivity to avoid launching in-app browser",
+      "smali_classes5/com/transsion/ad/web/cct/CCTWebviewActivity.smali": "Auto-finish CCTWebviewActivity to avoid opening ad WebViews"
     }
   },
   {
@@ -412,5 +410,15 @@
       "res/layout/long_vod_layout_toast.xml": "Set toast bubble text views and layout to GONE and zero size in video player",
       "smali_classes6/com/transsion/postdetail/layer/local/j1.smali": "Permanently suppress displaying stream server and last played time toast notifications"
     }
+  },
+  {
+    "id": "optimize_apk_size_arm64",
+    "name": "Performance: 64-bit ARM64 Size Optimization (~41MB Reduction)",
+    "desc": "Strips duplicate legacy 32-bit (armeabi-v7a) native libraries to reduce APK size from ~132MB down to ~91MB for modern 64-bit devices while keeping all video codecs and JNI methods intact",
+    "default": true,
+    "files": {},
+    "hooks": [
+      "strip_redundant_arch.py"
+    ]
   }
 ]

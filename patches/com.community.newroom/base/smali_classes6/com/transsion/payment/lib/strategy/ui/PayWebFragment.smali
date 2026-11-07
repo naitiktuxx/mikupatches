@@ -969,7 +969,7 @@
 
     if-eqz v0, :cond_5
 
-    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
+    # invoke-virtual {v0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
 
     :cond_5
     return-void
