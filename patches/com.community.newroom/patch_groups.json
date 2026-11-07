@@ -490,5 +490,17 @@
       "smali/com/transsion/api/gateway/GateWaySdk.smali": "Directly return valid gateway online secret key avoiding null meta-data reads",
       "smali/com/transsion/api/gateway/sercurity/a.smali": "Null-safe HMAC secret key fallback preventing Base64 decode NPE"
     }
+  },
+  {
+    "id": "randomize_device_identity",
+    "name": "Per-Install Randomized Device Identifiers & Privacy Isolation",
+    "desc": "Generates unique random GAID, device_id, and ANDROID_ID per app install/data clear stored in private app storage, and neutralizes hardware statvfs and cross-install .sys_id.dat tracking so guest watchlists and preferences reset cleanly upon data clear or reinstall",
+    "default": true,
+    "files": {
+      "smali/com/miku/privacy/DeviceIdentityManager.smali": "Helper managing persistent per-installation randomized device identifiers",
+      "smali/ih/b.smali": "Hook GAID, device_id, and ANDROID_ID to randomized per-install identity manager and skip Google Play Services ads identifier",
+      "smali/com/transsion/sdk/oneid/a.smali": "Redirect .sys_id.dat path from shared SD card to private internal storage",
+      "smali/com/transsion/sdk/oneid/b.smali": "Randomize filesystem UUID statvfs fingerprint and neutralize external storage sync"
+    }
   }
 ]
