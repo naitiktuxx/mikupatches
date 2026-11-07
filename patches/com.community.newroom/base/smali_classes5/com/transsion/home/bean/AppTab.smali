@@ -658,6 +658,10 @@
 
     move-result-object v0
 
+    invoke-static {v0}, Lcom/miku/filter/HomeTabFilter;->filterTabs(Ljava/util/List;)Ljava/util/List;
+
+    move-result-object v0
+
     goto :goto_0
 
     :cond_0
@@ -783,6 +787,10 @@
     iget-object v0, p0, Lcom/transsion/home/bean/AppTab;->homeTab:Lcom/transsion/home/bean/BottomTabItem;
 
     if-eqz v0, :cond_0
+
+    invoke-static {p1}, Lcom/miku/filter/HomeTabFilter;->filterTabs(Ljava/util/List;)Ljava/util/List;
+
+    move-result-object p1
 
     invoke-virtual {v0, p1}, Lcom/transsion/home/bean/BottomTabItem;->setSubTabs(Ljava/util/List;)V
 

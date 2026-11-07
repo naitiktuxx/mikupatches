@@ -421,25 +421,7 @@
     move v6, v7
 
     :cond_4
-    if-eqz v8, :cond_5
-
-    invoke-virtual {v8}, Lcom/transsion/home/bean/HomeTabItem;->getType()Ljava/lang/String;
-
-    move-result-object v10
-
-    goto :goto_3
-
-    :cond_5
-    move-object v10, v1
-
-    :goto_3
-    sget-object v11, Lcom/transsion/home/enum/HomeTabType;->TRENDING:Lcom/transsion/home/enum/HomeTabType;
-
-    invoke-virtual {v11}, Lcom/transsion/home/enum/HomeTabType;->getValue()Ljava/lang/String;
-
-    move-result-object v11
-
-    invoke-static {v10, v11}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
+    invoke-static {v8}, Lcom/miku/filter/HomeTabFilter;->isAnimeTab(Lcom/transsion/home/bean/HomeTabItem;)Z
 
     move-result v10
 

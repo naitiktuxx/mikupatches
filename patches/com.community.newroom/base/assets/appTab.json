@@ -30,20 +30,6 @@
           "appendName": false
         },
         {
-          "tabId": 1,
-          "name": "Trending",
-          "type": "TrenTab",
-          "url": "",
-          "tabCode": "Trending",
-          "nameImage": null,
-          "selectNameImage": null,
-          "displayType": "REDIRECT",
-          "isEducationTab": false,
-          "gatherTabIcon": null,
-          "gatherTabIconSelect": null,
-          "appendName": false
-        },
-        {
           "tabId": 2,
           "name": "Movie",
           "type": "OperateTab",
@@ -122,7 +108,7 @@
       },
       "displayType": "REDIRECT",
       "gradeFilter": null,
-      "defaultSubTabCode": ""
+      "defaultSubTabCode": "Animation"
     },
     {
       "name": "Downloads",

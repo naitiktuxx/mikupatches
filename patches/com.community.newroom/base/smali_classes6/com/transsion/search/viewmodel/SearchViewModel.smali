@@ -255,6 +255,16 @@
     return-void
 
     :cond_0
+    invoke-virtual {p2}, Lcom/transsion/search/bean/SearchSuggestEntity;->getItems()Ljava/util/List;
+
+    move-result-object v0
+
+    invoke-static {v0}, Lcom/miku/filter/NsfwFilter;->filterSuggestEntities(Ljava/util/List;)Ljava/util/List;
+
+    move-result-object v0
+
+    invoke-virtual {p2, v0}, Lcom/transsion/search/bean/SearchSuggestEntity;->setItems(Ljava/util/List;)V
+
     invoke-virtual {p2}, Lcom/transsion/search/bean/SearchSuggestEntity;->getKeyword()Ljava/lang/String;
 
     move-result-object v0
@@ -630,6 +640,15 @@
 
     invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->h(Ljava/lang/Object;Ljava/lang/String;)V
 
+    invoke-static {p1}, Lcom/miku/filter/NsfwFilter;->isNsfwText(Ljava/lang/String;)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_nsfw_ok
+
+    return-void
+
+    :cond_nsfw_ok
     invoke-direct {p0}, Lcom/transsion/search/viewmodel/SearchViewModel;->F()Z
 
     move-result v0
