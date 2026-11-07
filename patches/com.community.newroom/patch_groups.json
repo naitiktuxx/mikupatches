@@ -471,5 +471,24 @@
       "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Permanently remove Hot Novels card (type 7) from Me tab",
       "smali_classes7/uj/a.smali": "Wipe MiniApp and NovelHub initialization and launch backend methods"
     }
+  },
+  {
+    "id": "player_preload_load_control",
+    "name": "Player: Aggressive Video Preload Buffer & Anti-Stall LoadControl",
+    "desc": "Configures ExoPlayer DefaultLoadControl to preload more video (60s maxBufferMs), restart loading early before stalls occur (50s minBufferMs), with 2.5s playback startup, 5s rebuffer cushion, and prioritized time thresholds",
+    "default": true,
+    "files": {
+      "smali_classes5/co/h.smali": "Update ORExoPlayer createPlayer LoadControl to 50s minBuffer, 60s maxBuffer, 2.5s playback, 5s rebuffer, and logcat verification"
+    }
+  },
+  {
+    "id": "fix_api_gateway_signing_resilience",
+    "name": "API Gateway Signing Resilience & Anti-Crash Fallback",
+    "desc": "Ensures Transsion API Gateway HMAC signing always has a valid secret key and never throws NullPointerException in Base64 decode, preventing network request drops and Something went wrong errors",
+    "default": true,
+    "files": {
+      "smali/com/transsion/api/gateway/GateWaySdk.smali": "Directly return valid gateway online secret key avoiding null meta-data reads",
+      "smali/com/transsion/api/gateway/sercurity/a.smali": "Null-safe HMAC secret key fallback preventing Base64 decode NPE"
+    }
   }
 ]
