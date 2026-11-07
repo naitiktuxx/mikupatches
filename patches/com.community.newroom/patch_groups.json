@@ -185,7 +185,16 @@
     "res/layout/fragment_subject_header.xml": "Match movie detail header area background to dark UI theme",
     "res/layout/header_extension_layout.xml": "Match buttons container background to dark UI theme",
     "res/layout/fragment_movie_detail_v2_layout.xml": "Make movie detail screen content fixed, unscrollable, and match dark UI theme",
-    "res/layout/fragment_video_detail.xml": "Make video detail screen content fixed, unscrollable, and match dark UI theme"
+    "res/layout/fragment_video_detail.xml": "Make video detail screen content fixed, unscrollable, and match dark UI theme",
+    "res/layout/layout_local_video_land.xml": "Permanently remove Help and Setting buttons in landscape video player",
+    "res/layout/layout_local_video_portrait.xml": "Permanently remove Help button in portrait video player",
+    "res/layout/layout_local_video_middle.xml": "Make downloaded video layout unscrollable, remove tabs, remove help, match dark theme",
+    "res/layout/layout_local_video_middle_header.xml": "Remove Details and Download More buttons in downloaded video header",
+    "res/layout/layout_ugc_local_video_detail_info.xml": "Remove Details and Download More buttons in UGC downloaded video info",
+    "res/layout/fragment_local_video.xml": "Match downloaded video fragment background to dark UI theme",
+    "res/layout/long_vod_layout_top_tool.xml": "Permanently remove Help and Setting buttons in online video player top toolbar",
+    "smali_classes6/com/transsion/postdetail/layer/local/LocalVideoMiddleLayer.smali": "Remove For You and Comments tab setup in downloaded video player",
+    "smali_classes6/com/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView.smali": "Remove Details and Download More button handling in downloaded video header"
     }
   },
   {
@@ -343,6 +352,24 @@
       "smali_classes5/com/transsion/home/fragment/dialog/HomePreferencesEnterPopDialog.smali": "Auto-dismiss and neutralize HomePreferencesEnterPopDialog",
       "smali_classes5/com/transsion/home/fragment/dialog/HomePreferencesDialog.smali": "Auto-dismiss and neutralize HomePreferencesDialog",
       "smali_classes5/com/transsion/home/fragment/home/HomeFragment.smali": "Neutralize home preferences popup launcher in HomeFragment"
+    }
+  },
+  {
+    "id": "debloat_search_screen",
+    "name": "Debloat Search Screen & Suggestions",
+    "desc": "Removes prefilled search suggestions, mic button, 'Everyone is searching' section, and hot tabs/rankings (Hot Movies, Hot Series, etc.) while preserving search functionality and recent searches",
+    "default": true,
+    "files": {
+      "res/layout/fragment_home.xml": "Hide cycling search suggestion text switcher in home search bar",
+      "res/layout/fragment_search_subject.xml": "Permanently remove mic button in search header",
+      "res/layout/fragment_hot_search.xml": "Hide Everyone is searching, hot tabs magic indicator, and ranking viewpager while preserving recent searches",
+      "res/layout/pugc_fragment_hot_search.xml": "Hide Everyone is searching and ranking tabs in pugc hot search layout",
+      "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager.smali": "Disable cycling hot search keywords in home top search bar and stop passing prefilled hot search word",
+      "smali_classes6/com/transsion/search/fragment/SearchSubjectFragment.smali": "Disable setting prefilled search keyword hint and auto-filling search input",
+      "smali_classes6/com/transsion/search_pugc/fragment/SearchSubjectFragment.smali": "Disable prefilled search keyword hint in pugc search fragment",
+      "smali_classes6/com/transsion/search/fragment/hot/SearchHotFragment.smali": "Disable Everyone is searching and hot rankings data loading while preserving recent searches history",
+      "smali_classes6/com/transsion/search_pugc/fragment/hot/SearchHotFragment.smali": "Disable Everyone is searching and hot rankings in pugc hot search fragment",
+      "smali_classes6/com/transsion/search/viewmodel/SearchViewModel.smali": "Neutralize network fetch for hot search keywords and rankings"
     }
   }
 ]
