@@ -189,12 +189,13 @@
       "res/layout/layout_local_video_land.xml": "Permanently remove Help and Setting buttons in landscape video player",
       "res/layout/layout_local_video_portrait.xml": "Permanently remove Help button in portrait video player",
       "res/layout/layout_local_video_middle.xml": "Make downloaded video layout unscrollable, remove tabs, remove help, match dark theme",
-      "res/layout/layout_local_video_middle_header.xml": "Remove Details and Download More buttons in downloaded video header",
+      "res/layout/layout_local_video_middle_header.xml": "Remove Details/Download More buttons and hide Resources line (title, uploader, info) in downloaded video header",
       "res/layout/layout_ugc_local_video_detail_info.xml": "Remove Details and Download More buttons in UGC downloaded video info",
       "res/layout/fragment_local_video.xml": "Match downloaded video fragment background to dark UI theme",
       "res/layout/long_vod_layout_top_tool.xml": "Permanently remove Help and Setting buttons in online video player top toolbar",
       "smali_classes6/com/transsion/postdetail/layer/local/LocalVideoMiddleLayer.smali": "Remove For You and Comments tab setup in downloaded video player",
-      "smali_classes6/com/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView.smali": "Remove Details and Download More button handling in downloaded video header"
+      "smali_classes6/com/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView.smali": "Remove Details/Download More button handling and hide Resources line in downloaded video header",
+      "smali_classes7/so/c0.smali": "Hide Resources title, uploader name, info icon in downloaded video header view binding"
     }
   },
   {

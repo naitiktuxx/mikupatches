@@ -374,7 +374,7 @@
 
     invoke-static {v0, v5}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 
-    invoke-static {v0}, Ljg/c;->k(Landroid/view/View;)V
+    invoke-static {v0}, Ljg/c;->g(Landroid/view/View;)V
 
     iget-object v0, p0, Lcom/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView;->a:Lso/c0;
 
@@ -382,7 +382,7 @@
 
     invoke-static {v0, v4}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 
-    invoke-static {v0}, Ljg/c;->k(Landroid/view/View;)V
+    invoke-static {v0}, Ljg/c;->g(Landroid/view/View;)V
 
     iget-object v0, p0, Lcom/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView;->a:Lso/c0;
 
@@ -426,7 +426,7 @@
 
     invoke-static {v0, v1}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 
-    invoke-static {v0}, Ljg/c;->k(Landroid/view/View;)V
+    invoke-static {v0}, Ljg/c;->g(Landroid/view/View;)V
 
     iget-object v0, p0, Lcom/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView;->a:Lso/c0;
 
@@ -434,7 +434,7 @@
 
     invoke-static {v0, v3}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 
-    invoke-static {v0}, Ljg/c;->k(Landroid/view/View;)V
+    invoke-static {v0}, Ljg/c;->g(Landroid/view/View;)V
 
     iget-object v0, p0, Lcom/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView;->a:Lso/c0;
 
