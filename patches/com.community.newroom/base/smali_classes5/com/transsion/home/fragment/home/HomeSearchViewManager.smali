@@ -1176,6 +1176,8 @@
 
     invoke-virtual {v1, v0}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
 
+    invoke-static {v1}, Lapp/patches/ui/DockStylePatch;->applyGlassSearchBar(Landroid/view/View;)V
+
     iput-object v0, p0, Lcom/transsion/home/fragment/home/HomeSearchViewManager;->k:Landroidx/constraintlayout/widget/ConstraintLayout$b;
 
     invoke-direct {p0}, Lcom/transsion/home/fragment/home/HomeSearchViewManager;->o()V

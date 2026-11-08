@@ -566,7 +566,8 @@
       "smali_classes6/com/transsion/search/fragment/result/SearchResultTabFragment.smali": "Display movie/series subfilter tabs row while preserving results list",
       "res/layout/fragment_search_result.xml": "Collapse filter tab indicator and divider to gone/0dp with full-screen ViewPager2",
       "res/layout/fragment_search_result_list.xml": "Center-align subfilter tabs with wrap_content and constrained width",
-      "res/layout/item_search_result_tab.xml": "Center-align tab pill texts with symmetric margins and touch targets"
+      "res/layout/item_search_result_tab.xml": "Center-align tab pill texts with symmetric margins and touch targets",
+      "smali_classes3/com/github/mmin18/widget/d.smali": "RenderScript-independent fast box blur engine powering RealtimeBlurView"
     },
     "hooks": [
       "patch_search_filter.py"

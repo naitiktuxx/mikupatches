@@ -936,6 +936,31 @@
 
     invoke-direct {p0, p1}, Lcom/transsion/search/fragment/SearchSubjectFragment;->F0(Landroidx/fragment/app/Fragment;)V
 
+    invoke-virtual {p0}, Lcom/transsion/baseui/fragment/BaseFragment;->getMViewBinding()Lg4/a;
+
+    move-result-object p1
+
+    check-cast p1, Lrq/i;
+
+    if-eqz p1, :cond_search_done
+
+    iget-object p1, p1, Lrq/i;->b:Landroid/widget/EditText;
+
+    if-eqz p1, :cond_search_done
+
+    invoke-virtual {p1}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
+
+    move-result-object p1
+
+    instance-of p2, p1, Landroid/view/View;
+
+    if-eqz p2, :cond_search_done
+
+    check-cast p1, Landroid/view/View;
+
+    invoke-static {p1}, Lapp/patches/ui/DockStylePatch;->applyGlassSearchBar(Landroid/view/View;)V
+
+    :cond_search_done
     return-void
 
     :cond_0
@@ -1855,6 +1880,31 @@
 
     invoke-direct {p0, p1}, Lcom/transsion/search/fragment/SearchSubjectFragment;->F0(Landroidx/fragment/app/Fragment;)V
 
+    invoke-virtual {p0}, Lcom/transsion/baseui/fragment/BaseFragment;->getMViewBinding()Lg4/a;
+
+    move-result-object p1
+
+    check-cast p1, Lrq/i;
+
+    if-eqz p1, :cond_search_done
+
+    iget-object p1, p1, Lrq/i;->b:Landroid/widget/EditText;
+
+    if-eqz p1, :cond_search_done
+
+    invoke-virtual {p1}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
+
+    move-result-object p1
+
+    instance-of p2, p1, Landroid/view/View;
+
+    if-eqz p2, :cond_search_done
+
+    check-cast p1, Landroid/view/View;
+
+    invoke-static {p1}, Lapp/patches/ui/DockStylePatch;->applyGlassSearchBar(Landroid/view/View;)V
+
+    :cond_search_done
     return-void
 .end method
 
