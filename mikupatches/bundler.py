@@ -140,6 +140,297 @@ class Bundler:
         return "\n".join(lines) + "\n"
 
     @classmethod
+    def is_valid_png(cls, file_path: str) -> bool:
+        """Verifies if the file has valid PNG magic bytes."""
+        try:
+            with open(file_path, "rb") as f:
+                header = f.read(8)
+                return header == b"\x89PNG\r\n\x1a\n"
+        except Exception:
+            return False
+
+    @classmethod
+    def convert_image_to_png(cls, src_path: str, dst_path: str) -> bool:
+        """Converts an image (WebP, PNG, etc.) to a standard PNG format."""
+        if not os.path.isfile(src_path):
+            return False
+
+        if cls.is_valid_png(src_path):
+            if os.path.abspath(src_path) != os.path.abspath(dst_path):
+                os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+                shutil.copyfile(src_path, dst_path)
+            return True
+
+        os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+
+        # 1. PIL (Pillow)
+        try:
+            from PIL import Image
+            with Image.open(src_path) as img:
+                img.save(dst_path, "PNG")
+            if cls.is_valid_png(dst_path):
+                return True
+        except Exception:
+            pass
+
+        # 2. macOS native sips
+        if shutil.which("sips"):
+            try:
+                res = subprocess.run(
+                    ["sips", "-s", "format", "png", src_path, "--out", dst_path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+                if res.returncode == 0 and os.path.exists(dst_path) and cls.is_valid_png(dst_path):
+                    return True
+            except Exception:
+                pass
+
+        # 3. Google dwebp (libwebp)
+        if shutil.which("dwebp"):
+            try:
+                res = subprocess.run(
+                    ["dwebp", src_path, "-o", dst_path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+                if res.returncode == 0 and os.path.exists(dst_path) and cls.is_valid_png(dst_path):
+                    return True
+            except Exception:
+                pass
+
+        # 4. ffmpeg
+        if shutil.which("ffmpeg"):
+            try:
+                res = subprocess.run(
+                    ["ffmpeg", "-y", "-i", src_path, dst_path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+                if res.returncode == 0 and os.path.exists(dst_path) and cls.is_valid_png(dst_path):
+                    return True
+            except Exception:
+                pass
+
+        # 5. ImageMagick convert
+        if shutil.which("convert"):
+            try:
+                res = subprocess.run(
+                    ["convert", src_path, dst_path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+                if res.returncode == 0 and os.path.exists(dst_path) and cls.is_valid_png(dst_path):
+                    return True
+            except Exception:
+                pass
+
+        # 6. Fallback: direct copy (Android BitmapFactory handles WebP directly even if named .png)
+        try:
+            shutil.copyfile(src_path, dst_path)
+            return True
+        except Exception:
+            return False
+
+    @classmethod
+    def score_icon_candidate(cls, path: str, target_names: Optional[List[str]] = None) -> int:
+        """Scores a drawable/mipmap candidate for launcher icon suitability."""
+        basename = os.path.basename(path)
+        stem, ext = os.path.splitext(basename)
+        ext = ext.lower()
+        if ext not in (".png", ".webp"):
+            return -1
+
+        stem_lower = stem.lower()
+        score = 0
+
+        # Exact / stem match against target names parsed from AndroidManifest.xml
+        matched_target = False
+        if target_names:
+            for idx, tname in enumerate(target_names):
+                tname_lower = tname.lower()
+                if stem_lower == tname_lower:
+                    score += 1000 - (idx * 50)
+                    matched_target = True
+                    break
+
+        if not matched_target:
+            if stem_lower == "ic_launcher":
+                score += 800
+            elif stem_lower == "ic_launcher_round":
+                score += 700
+            elif stem_lower in ("app_icon", "icon", "launcher_icon"):
+                score += 600
+            elif target_names and any(t.lower() in stem_lower for t in target_names):
+                score += 400
+            elif "ic_launcher" in stem_lower:
+                score += 200
+            elif "icon" in stem_lower:
+                score += 100
+            else:
+                return -1
+
+        # Resolution / density weighting
+        lower_path = path.lower()
+        if "xxxhdpi" in lower_path:
+            score += 50
+        elif "xxhdpi" in lower_path:
+            score += 40
+        elif "xhdpi" in lower_path:
+            score += 30
+        elif "hdpi" in lower_path:
+            score += 20
+        elif "mdpi" in lower_path:
+            score += 10
+
+        # Penalize localized buckets (e.g. mipmap-fr-xxxhdpi or mipmap-ar-xxxhdpi)
+        parent_dir = os.path.basename(os.path.dirname(path))
+        dash_parts = parent_dir.split("-")
+        if len(dash_parts) > 2:
+            score -= 5
+
+        # Slight preference for PNG to avoid transcode if scores are otherwise equal
+        if ext == ".png":
+            score += 1
+
+        return score
+
+    @classmethod
+    def resolve_app_icon(
+        cls,
+        bundle_staging: str,
+        build_staging: str,
+        staged_base_apk: str,
+        app_profile: AppProfile,
+        decompiled_dir: Optional[str] = None,
+        active_status: Optional[Dict[str, bool]] = None,
+        patches_dir: str = DEFAULT_PATCHES_DIR,
+    ) -> Optional[str]:
+        """
+        Dynamically discovers, extracts, and converts the correct application launcher icon
+        for packaging into APKM bundles (.apkm).
+        """
+        if decompiled_dir is None:
+            decompiled_dir = os.path.join(build_staging, "base")
+
+        icon_dest = os.path.join(bundle_staging, "icon.png")
+
+        # 1. Determine if any active patch modifies the app launcher icon
+        has_icon_patch = False
+        if active_status is not None:
+            for group in app_profile.patch_groups:
+                if active_status.get(group.id, group.default):
+                    for patched_file in getattr(group, "files", {}).keys():
+                        p_norm = patched_file.replace("\\", "/").lower()
+                        if ("mipmap" in p_norm or "drawable" in p_norm) and ("ic_launcher" in p_norm or "icon" in p_norm):
+                            has_icon_patch = True
+                            break
+                    if has_icon_patch:
+                        break
+
+        # 2. Extract target icon names from AndroidManifest.xml
+        target_names = []
+        manifest_path = os.path.join(decompiled_dir, "AndroidManifest.xml")
+        if os.path.isfile(manifest_path):
+            try:
+                with open(manifest_path, "r", encoding="utf-8", errors="ignore") as f:
+                    manifest_xml = f.read()
+                # Application icon
+                m_app = re.search(r'<application[^>]+android:icon=["\']@(?:mipmap|drawable)/([^"\']+)["\']', manifest_xml)
+                if m_app:
+                    target_names.append(m_app.group(1).strip())
+                # Activity or alias icon
+                m_act = re.search(r'<activity(?:-alias)?[^>]+android:icon=["\']@(?:mipmap|drawable)/([^"\']+)["\']', manifest_xml)
+                if m_act and m_act.group(1).strip() not in target_names:
+                    target_names.append(m_act.group(1).strip())
+                # Round icon
+                m_round = re.search(r'<application[^>]+android:roundIcon=["\']@(?:mipmap|drawable)/([^"\']+)["\']', manifest_xml)
+                if m_round and m_round.group(1).strip() not in target_names:
+                    target_names.append(m_round.group(1).strip())
+            except Exception:
+                pass
+
+        # Standard fallbacks
+        for fallback in ("ic_launcher", "ic_launcher_round", "app_icon", "icon"):
+            if fallback not in target_names:
+                target_names.append(fallback)
+
+        # 3. If an icon patch is active, or if decompiled resources exist:
+        # Search decompiled_dir for the best matching launcher icon image
+        res_dir = os.path.join(decompiled_dir, "res")
+        if os.path.isdir(res_dir):
+            best_candidate = None
+            best_score = -1
+            for root, _, files in os.walk(res_dir):
+                for f in files:
+                    if f.lower().endswith((".png", ".webp")):
+                        full_p = os.path.join(root, f)
+                        rel_p = os.path.relpath(full_p, decompiled_dir)
+                        score = cls.score_icon_candidate(rel_p, target_names)
+                        if score > best_score:
+                            best_score = score
+                            best_candidate = full_p
+
+            if best_candidate and best_score > 0:
+                if has_icon_patch or best_score >= 800:
+                    if cls.convert_image_to_png(best_candidate, icon_dest):
+                        return icon_dest
+
+        # 4. Check if a custom icon exists in the app's patch directory
+        patch_dir_candidates = []
+        if app_profile.profile_dir and os.path.isdir(app_profile.profile_dir):
+            patch_dir_candidates.append(os.path.join(app_profile.profile_dir, "icon.png"))
+        orig_pkg_patch_dir = os.path.join(patches_dir, app_profile.package_name.replace(".tux", ""))
+        if os.path.isdir(orig_pkg_patch_dir):
+            patch_dir_candidates.append(os.path.join(orig_pkg_patch_dir, "icon.png"))
+
+        for cand in patch_dir_candidates:
+            if os.path.isfile(cand):
+                cls.convert_image_to_png(cand, icon_dest)
+                return icon_dest
+
+        # 5. Search staged_base_apk directly (zip archive) - handles no_res apps or when decompiled_dir had no res
+        if staged_base_apk and os.path.isfile(staged_base_apk):
+            try:
+                with zipfile.ZipFile(staged_base_apk, "r") as zf:
+                    apk_files = zf.namelist()
+                    best_apk_entry = None
+                    best_apk_score = -1
+                    for entry in apk_files:
+                        if entry.lower().startswith("res/") and entry.lower().endswith((".png", ".webp")):
+                            score = cls.score_icon_candidate(entry, target_names)
+                            if score > best_apk_score:
+                                best_apk_score = score
+                                best_apk_entry = entry
+
+                    if best_apk_entry and best_apk_score > 0:
+                        tmp_extract = os.path.join(build_staging, "extracted_app_icon" + os.path.splitext(best_apk_entry)[1])
+                        with open(tmp_extract, "wb") as f_out:
+                            f_out.write(zf.read(best_apk_entry))
+                        if cls.convert_image_to_png(tmp_extract, icon_dest):
+                            return icon_dest
+            except Exception:
+                pass
+
+        # 6. Check if original input bundle had a valid icon.png that wasn't the fallback
+        if os.path.isfile(icon_dest):
+            fallback_png = os.path.join(patches_dir, "bundle_fallback", "icon.png")
+            if not os.path.exists(fallback_png) or os.path.getsize(icon_dest) != os.path.getsize(fallback_png):
+                return icon_dest
+
+        # 7. Ultimate fallback: copy generic bundle_fallback/icon.png
+        fallback_png = os.path.join(patches_dir, "bundle_fallback", "icon.png")
+        if os.path.isfile(fallback_png):
+            shutil.copyfile(fallback_png, icon_dest)
+            return icon_dest
+
+        return icon_dest if os.path.exists(icon_dest) else None
+
+    @classmethod
     def assemble_bundles(
         cls,
         staged_base_apk: str,
@@ -220,7 +511,15 @@ class Bundler:
 
         # Dynamic info.json resolution & generation
         info_json_path = os.path.join(bundle_staging, "info.json")
-        icon_path = os.path.join(bundle_staging, "icon.png")
+
+        # Dynamic app launcher icon resolution & conversion for APKM bundles
+        icon_path = cls.resolve_app_icon(
+            bundle_staging=bundle_staging,
+            build_staging=build_staging,
+            staged_base_apk=staged_base_apk,
+            app_profile=app_profile,
+            active_status=active_status,
+        )
 
         if os.path.exists(info_json_path):
             try:
@@ -254,6 +553,18 @@ class Bundler:
         with open(app_info_path, "w", encoding="utf-8") as f:
             json.dump(base_info, f, indent=4)
 
+        # Save resolved app icon.png in app output directory
+        if icon_path and os.path.exists(icon_path):
+            app_icon_path = os.path.join(app_output_dir, "icon.png")
+            if os.path.abspath(icon_path) != os.path.abspath(app_icon_path):
+                shutil.copyfile(icon_path, app_icon_path)
+            generated_files.append({
+                "path": app_icon_path,
+                "rel_path": os.path.relpath(app_icon_path, options.output_dir),
+                "size": os.path.getsize(app_icon_path),
+                "type": "Application Icon",
+            })
+
         # 2. Output Universal APKM & APKS
         if build_all or "apkm" in formats:
             univ_apkm_name = f"{options.output_name}.apkm" if options.output_name else "universal.apkm"
@@ -261,7 +572,7 @@ class Bundler:
             univ_apkm_files = [(staged_base_apk, "base.apk")]
             if os.path.exists(info_json_path):
                 univ_apkm_files.append((info_json_path, "info.json"))
-            if os.path.exists(icon_path):
+            if icon_path and os.path.exists(icon_path):
                 univ_apkm_files.append((icon_path, "icon.png"))
             univ_apkm_files.extend([(path, fname) for fname, path in staged_splits.items()])
 
@@ -344,7 +655,7 @@ class Bundler:
                 arch_apkm_files = [(staged_base_apk, "base.apk")]
                 if os.path.exists(arch_info_path):
                     arch_apkm_files.append((arch_info_path, "info.json"))
-                if os.path.exists(icon_path):
+                if icon_path and os.path.exists(icon_path):
                     arch_apkm_files.append((icon_path, "icon.png"))
                 arch_apkm_files.extend([(path, fname) for fname, path in arch_specific_splits.items()])
 
