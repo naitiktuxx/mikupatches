@@ -30,7 +30,7 @@
         <com.tn.lib.widget.TnTextView
             android:id="@id/tv_tab"
             android:textSize="@dimen/text_size_10"
-            android:textColor="@color/text_01"
+            android:textColor="@color/white"
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:layout_width="wrap_content"

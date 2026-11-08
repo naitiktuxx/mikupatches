@@ -43,7 +43,7 @@
         }
     .end annotation
 
-    .line 85
+    .line 86
     iput-object p1, p0, Lcom/miku/stream/DownloadCdnStreamHelper$1;->val$fSubjectId:Ljava/lang/String;
 
     iput p2, p0, Lcom/miku/stream/DownloadCdnStreamHelper$1;->val$fSe:I
@@ -65,7 +65,7 @@
         }
     .end annotation
 
-    .line 85
+    .line 86
     invoke-virtual {p0}, Lcom/miku/stream/DownloadCdnStreamHelper$1;->call()Ljava/lang/String;
 
     move-result-object v0
@@ -81,7 +81,7 @@
         }
     .end annotation
 
-    .line 88
+    .line 89
     iget-object v0, p0, Lcom/miku/stream/DownloadCdnStreamHelper$1;->val$fSubjectId:Ljava/lang/String;
 
     iget v1, p0, Lcom/miku/stream/DownloadCdnStreamHelper$1;->val$fSe:I

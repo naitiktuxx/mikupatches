@@ -4,7 +4,7 @@
 
 
 # static fields
-.field private static final DEFAULT_HOST:Ljava/lang/String; = "https://api4sg.aoneroom.com"
+.field private static final DEFAULT_HOST:Ljava/lang/String; = "https://api6.aoneroom.com"
 
 .field private static final RESOURCE_PATH:Ljava/lang/String; = "/wefeed-mobile-bff/subject-api/resource"
 
@@ -15,7 +15,7 @@
 .method private constructor <init>()V
     .locals 0
 
-    .line 29
+    .line 30
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
     return-void
@@ -29,7 +29,7 @@
         }
     .end annotation
 
-    .line 24
+    .line 25
     invoke-static {p0, p1, p2}, Lcom/miku/stream/DownloadCdnStreamHelper;->fetchResourceJson(Ljava/lang/String;II)Ljava/lang/String;
 
     move-result-object p0
@@ -51,10 +51,10 @@
         }
     .end annotation
 
-    .line 193
+    .line 217
     const-class v1, Ljava/lang/String;
 
-    .line 194
+    .line 218
     const/4 v2, 0x0
 
     const-string v3, "MikuStreamCdn"
@@ -76,7 +76,7 @@
 
     if-nez v0, :cond_1
 
-    .line 196
+    .line 220
     :try_start_1
     const-string v0, "com.transsnet.downloader.manager.DownloadEsHelper"
 
@@ -84,7 +84,7 @@
 
     move-result-object v0
 
-    .line 197
+    .line 221
     const-string v6, "m"
 
     invoke-virtual {v0, v6}, Ljava/lang/Class;->getField(Ljava/lang/String;)Ljava/lang/reflect/Field;
@@ -95,7 +95,7 @@
 
     move-result-object v0
 
-    .line 198
+    .line 222
     invoke-virtual {v0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 
     move-result-object v6
@@ -116,7 +116,7 @@
     :try_end_1
     .catchall {:try_start_1 .. :try_end_1} :catchall_2
 
-    .line 200
+    .line 224
     const/4 v7, 0x2
 
     :try_start_2
@@ -144,7 +144,7 @@
 
     move-result-object v0
 
-    .line 201
+    .line 225
     invoke-static {p3}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
 
     move-result-object v8
@@ -169,7 +169,7 @@
     :try_end_2
     .catchall {:try_start_2 .. :try_end_2} :catchall_0
 
-    .line 202
+    .line 226
     move-object p2, v0
 
     goto :goto_0
@@ -177,11 +177,11 @@
     :catchall_0
     move-exception v0
 
-    .line 203
+    .line 227
     :goto_0
     if-nez p2, :cond_0
 
-    .line 205
+    .line 229
     :try_start_3
     invoke-virtual {v6}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 
@@ -201,7 +201,7 @@
 
     move-result-object v0
 
-    .line 206
+    .line 230
     invoke-static/range {p4 .. p4}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
 
     move-result-object v1
@@ -220,7 +220,7 @@
     :try_end_3
     .catchall {:try_start_3 .. :try_end_3} :catchall_1
 
-    .line 207
+    .line 231
     move-object p2, p1
 
     goto :goto_1
@@ -228,7 +228,7 @@
     :catchall_1
     move-exception v0
 
-    .line 209
+    .line 233
     :cond_0
     :goto_1
     goto :goto_2
@@ -238,18 +238,18 @@
 
     goto :goto_1
 
-    .line 212
+    .line 236
     :cond_1
     :goto_2
     if-eqz p2, :cond_7
 
-    .line 213
+    .line 237
     :try_start_4
     invoke-virtual {p2}, Lcom/transsion/baselib/db/download/DownloadBean;->getPath()Ljava/lang/String;
 
     move-result-object p1
 
-    .line 214
+    .line 238
     if-eqz p1, :cond_7
 
     invoke-virtual {p1}, Ljava/lang/String;->isEmpty()Z
@@ -264,12 +264,12 @@
 
     if-eqz v0, :cond_7
 
-    .line 215
+    .line 239
     new-instance v0, Ljava/io/File;
 
     invoke-direct {v0, p1}, Ljava/io/File;-><init>(Ljava/lang/String;)V
 
-    .line 216
+    .line 240
     invoke-virtual {v0}, Ljava/io/File;->exists()Z
 
     move-result v1
@@ -286,87 +286,100 @@
 
     if-lez v8, :cond_7
 
-    .line 217
+    .line 241
     invoke-virtual {p2}, Lcom/transsion/baselib/db/download/DownloadBean;->getResolution()I
 
     move-result p2
 
-    .line 218
+    .line 242
     if-lez p2, :cond_2
 
     invoke-static {p2}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
 
     move-result-object v2
 
-    .line 219
+    .line 243
     :cond_2
-    nop
-
-    .line 220
-    invoke-interface {p0}, Ljava/util/List;->iterator()Ljava/util/Iterator;
+    invoke-static {v2}, Lcom/miku/stream/DownloadCdnStreamHelper;->normRes(Ljava/lang/String;)Ljava/lang/String;
 
     move-result-object p2
 
-    :goto_3
-    invoke-interface {p2}, Ljava/util/Iterator;->hasNext()Z
+    .line 244
+    nop
 
-    move-result v0
-    :try_end_4
-    .catchall {:try_start_4 .. :try_end_4} :catchall_3
-
-    const-string v1, "DEFAULT"
-
-    if-eqz v0, :cond_5
-
-    :try_start_5
-    invoke-interface {p2}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+    .line 245
+    invoke-interface {p0}, Ljava/util/List;->iterator()Ljava/util/Iterator;
 
     move-result-object v0
 
-    check-cast v0, Lcom/transsion/videodetail/bean/VideoDetailStream;
+    :goto_3
+    invoke-interface {v0}, Ljava/util/Iterator;->hasNext()Z
 
-    .line 221
-    if-nez v0, :cond_3
+    move-result v1
+    :try_end_4
+    .catchall {:try_start_4 .. :try_end_4} :catchall_3
+
+    const-string v2, "DEFAULT"
+
+    if-eqz v1, :cond_5
+
+    :try_start_5
+    invoke-interface {v0}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v1
+
+    check-cast v1, Lcom/transsion/videodetail/bean/VideoDetailStream;
+
+    .line 246
+    if-nez v1, :cond_3
 
     goto :goto_3
 
-    .line 222
+    .line 247
     :cond_3
-    if-eqz v2, :cond_4
+    invoke-virtual {p2}, Ljava/lang/String;->isEmpty()Z
 
-    invoke-virtual {v0}, Lcom/transsion/videodetail/bean/VideoDetailStream;->getResolutions()Ljava/lang/String;
+    move-result v6
+
+    if-nez v6, :cond_4
+
+    invoke-virtual {v1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->getResolutions()Ljava/lang/String;
 
     move-result-object v6
 
-    invoke-virtual {v2, v6}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+    invoke-static {v6}, Lcom/miku/stream/DownloadCdnStreamHelper;->normRes(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v6
+
+    invoke-virtual {p2, v6}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
     move-result v6
 
     if-eqz v6, :cond_4
 
-    .line 223
-    invoke-virtual {v0, p1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setUrl(Ljava/lang/String;)V
+    .line 248
+    invoke-virtual {v1, p1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setUrl(Ljava/lang/String;)V
 
-    .line 224
-    invoke-virtual {v0, v1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
+    .line 249
+    invoke-virtual {v1, v2}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
 
-    .line 225
+    .line 250
     nop
 
-    .line 226
+    .line 251
     const/4 p2, 0x1
 
     goto :goto_4
 
-    .line 228
+    .line 253
     :cond_4
     goto :goto_3
 
-    .line 220
+    .line 245
     :cond_5
     const/4 p2, 0x0
 
-    .line 229
+    .line 254
     :goto_4
     if-nez p2, :cond_6
 
@@ -376,7 +389,7 @@
 
     if-nez p2, :cond_6
 
-    .line 230
+    .line 255
     invoke-interface {p0, v5}, Ljava/util/List;->get(I)Ljava/lang/Object;
 
     move-result-object p2
@@ -385,16 +398,16 @@
 
     invoke-virtual {p2, p1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setUrl(Ljava/lang/String;)V
 
-    .line 231
+    .line 256
     invoke-interface {p0, v5}, Ljava/util/List;->get(I)Ljava/lang/Object;
 
     move-result-object p0
 
     check-cast p0, Lcom/transsion/videodetail/bean/VideoDetailStream;
 
-    invoke-virtual {p0, v1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
+    invoke-virtual {p0, v2}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
 
-    .line 233
+    .line 258
     :cond_6
     new-instance p0, Ljava/lang/StringBuilder;
 
@@ -418,16 +431,16 @@
     :try_end_5
     .catchall {:try_start_5 .. :try_end_5} :catchall_3
 
-    .line 234
+    .line 259
     return v4
 
-    .line 238
+    .line 263
     :catchall_3
     move-exception v0
 
     move-object p0, v0
 
-    .line 239
+    .line 264
     new-instance p1, Ljava/lang/StringBuilder;
 
     invoke-direct {p1}, Ljava/lang/StringBuilder;-><init>()V
@@ -454,11 +467,11 @@
 
     goto :goto_5
 
-    .line 240
+    .line 265
     :cond_7
     nop
 
-    .line 241
+    .line 266
     :goto_5
     return v5
 .end method
@@ -471,10 +484,10 @@
         }
     .end annotation
 
-    .line 245
+    .line 270
     const-string v0, "a"
 
-    .line 247
+    .line 272
     const/4 v1, 0x0
 
     const/4 v2, 0x0
@@ -486,7 +499,7 @@
 
     move-result-object v3
 
-    .line 248
+    .line 273
     invoke-virtual {v3, v0}, Ljava/lang/Class;->getField(Ljava/lang/String;)Ljava/lang/reflect/Field;
 
     move-result-object v3
@@ -495,7 +508,7 @@
 
     move-result-object v3
 
-    .line 249
+    .line 274
     invoke-virtual {v3}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 
     move-result-object v4
@@ -516,7 +529,7 @@
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    .line 250
+    .line 275
     goto :goto_0
 
     :catchall_0
@@ -524,7 +537,7 @@
 
     move-object v3, v2
 
-    .line 252
+    .line 277
     :goto_0
     if-eqz v3, :cond_0
 
@@ -534,11 +547,11 @@
 
     if-eqz v4, :cond_1
 
-    .line 253
+    .line 278
     :cond_0
-    const-string v3, "https://api4sg.aoneroom.com"
+    const-string v3, "https://api6.aoneroom.com"
 
-    .line 255
+    .line 280
     :cond_1
     const-string v4, "/"
 
@@ -548,7 +561,7 @@
 
     if-eqz v4, :cond_2
 
-    .line 256
+    .line 281
     invoke-virtual {v3}, Ljava/lang/String;->length()I
 
     move-result v4
@@ -559,7 +572,7 @@
 
     move-result-object v3
 
-    .line 259
+    .line 284
     :cond_2
     new-instance v4, Ljava/lang/StringBuilder;
 
@@ -625,7 +638,7 @@
 
     move-result-object p0
 
-    .line 266
+    .line 291
     new-instance p1, Ljava/lang/StringBuilder;
 
     invoke-direct {p1}, Ljava/lang/StringBuilder;-><init>()V
@@ -648,10 +661,10 @@
 
     invoke-static {p2, p1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 268
+    .line 293
     nop
 
-    .line 270
+    .line 295
     :try_start_1
     const-string p1, "zg.c"
 
@@ -659,7 +672,7 @@
 
     move-result-object p1
 
-    .line 271
+    .line 296
     const-string v3, "e"
 
     invoke-virtual {p1, v3}, Ljava/lang/Class;->getField(Ljava/lang/String;)Ljava/lang/reflect/Field;
@@ -670,7 +683,7 @@
 
     move-result-object p1
 
-    .line 272
+    .line 297
     invoke-virtual {p1}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 
     move-result-object v3
@@ -687,7 +700,7 @@
 
     move-result-object p1
 
-    .line 273
+    .line 298
     invoke-virtual {p1}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 
     move-result-object v0
@@ -710,7 +723,7 @@
     :try_end_1
     .catchall {:try_start_1 .. :try_end_1} :catchall_1
 
-    .line 274
+    .line 299
     goto :goto_1
 
     :catchall_1
@@ -718,18 +731,18 @@
 
     move-object p1, v2
 
-    .line 276
+    .line 301
     :goto_1
     if-nez p1, :cond_3
 
-    .line 277
+    .line 302
     new-instance p1, Lokhttp3/OkHttpClient$Builder;
 
     invoke-direct {p1}, Lokhttp3/OkHttpClient$Builder;-><init>()V
 
     sget-object v0, Ljava/util/concurrent/TimeUnit;->SECONDS:Ljava/util/concurrent/TimeUnit;
 
-    .line 278
+    .line 303
     const-wide/16 v3, 0x3
 
     invoke-virtual {p1, v3, v4, v0}, Lokhttp3/OkHttpClient$Builder;->connectTimeout(JLjava/util/concurrent/TimeUnit;)Lokhttp3/OkHttpClient$Builder;
@@ -738,38 +751,38 @@
 
     sget-object v0, Ljava/util/concurrent/TimeUnit;->SECONDS:Ljava/util/concurrent/TimeUnit;
 
-    .line 279
+    .line 304
     invoke-virtual {p1, v3, v4, v0}, Lokhttp3/OkHttpClient$Builder;->readTimeout(JLjava/util/concurrent/TimeUnit;)Lokhttp3/OkHttpClient$Builder;
 
     move-result-object p1
 
-    .line 280
+    .line 305
     invoke-virtual {p1}, Lokhttp3/OkHttpClient$Builder;->build()Lokhttp3/OkHttpClient;
 
     move-result-object p1
 
-    .line 283
+    .line 308
     :cond_3
     new-instance v0, Lokhttp3/Request$Builder;
 
     invoke-direct {v0}, Lokhttp3/Request$Builder;-><init>()V
 
-    .line 284
+    .line 309
     invoke-virtual {v0, p0}, Lokhttp3/Request$Builder;->url(Ljava/lang/String;)Lokhttp3/Request$Builder;
 
     move-result-object v0
 
-    .line 285
+    .line 310
     invoke-virtual {v0}, Lokhttp3/Request$Builder;->get()Lokhttp3/Request$Builder;
 
     move-result-object v0
 
-    .line 286
+    .line 311
     invoke-virtual {v0}, Lokhttp3/Request$Builder;->build()Lokhttp3/Request;
 
     move-result-object v0
 
-    .line 288
+    .line 313
     invoke-virtual {p1, v0}, Lokhttp3/OkHttpClient;->newCall(Lokhttp3/Request;)Lokhttp3/Call;
 
     move-result-object p1
@@ -778,21 +791,21 @@
 
     move-result-object p1
 
-    .line 290
+    .line 315
     :try_start_2
     invoke-virtual {p1}, Lokhttp3/Response;->isSuccessful()Z
 
     move-result v0
 
-    if-eqz v0, :cond_5
+    if-eqz v0, :cond_6
 
     invoke-virtual {p1}, Lokhttp3/Response;->body()Lokhttp3/ResponseBody;
 
     move-result-object v0
 
-    if-eqz v0, :cond_5
+    if-eqz v0, :cond_6
 
-    .line 291
+    .line 316
     invoke-virtual {p1}, Lokhttp3/Response;->body()Lokhttp3/ResponseBody;
 
     move-result-object p0
@@ -801,7 +814,7 @@
 
     move-result-object p0
 
-    .line 292
+    .line 317
     new-instance v0, Ljava/lang/StringBuilder;
 
     invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
@@ -816,10 +829,63 @@
 
     invoke-virtual {p0}, Ljava/lang/String;->length()I
 
-    move-result v1
+    move-result v2
+
+    goto :goto_2
 
     :cond_4
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+    const/4 v2, 0x0
+
+    :goto_2
+    invoke-virtual {v0, v2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-static {p2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 318
+    if-eqz p0, :cond_5
+
+    .line 319
+    nop
+
+    :goto_3
+    invoke-virtual {p0}, Ljava/lang/String;->length()I
+
+    move-result v0
+
+    if-ge v1, v0, :cond_5
+
+    .line 320
+    new-instance v0, Ljava/lang/StringBuilder;
+
+    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v2, ">>> JSON PART: "
+
+    invoke-virtual {v0, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {p0}, Ljava/lang/String;->length()I
+
+    move-result v2
+
+    add-int/lit16 v3, v1, 0x7d0
+
+    invoke-static {v2, v3}, Ljava/lang/Math;->min(II)I
+
+    move-result v2
+
+    invoke-virtual {p0, v1, v2}, Ljava/lang/String;->substring(II)Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
     move-result-object v0
 
@@ -831,17 +897,23 @@
     :try_end_2
     .catchall {:try_start_2 .. :try_end_2} :catchall_2
 
-    .line 293
+    .line 319
+    move v1, v3
+
+    goto :goto_3
+
+    .line 323
+    :cond_5
     nop
 
-    .line 298
+    .line 328
     invoke-virtual {p1}, Lokhttp3/Response;->close()V
 
-    .line 293
+    .line 323
     return-object p0
 
-    .line 295
-    :cond_5
+    .line 325
+    :cond_6
     :try_start_3
     new-instance v0, Ljava/lang/StringBuilder;
 
@@ -879,29 +951,78 @@
     :try_end_3
     .catchall {:try_start_3 .. :try_end_3} :catchall_2
 
-    .line 298
+    .line 328
     invoke-virtual {p1}, Lokhttp3/Response;->close()V
 
-    .line 299
+    .line 329
     nop
 
-    .line 300
+    .line 330
     return-object v2
 
-    .line 298
+    .line 328
     :catchall_2
     move-exception p0
 
     invoke-virtual {p1}, Lokhttp3/Response;->close()V
 
-    .line 299
+    .line 329
     throw p0
+.end method
+
+.method private static normRes(Ljava/lang/String;)Ljava/lang/String;
+    .locals 2
+
+    .line 202
+    if-nez p0, :cond_0
+
+    const-string p0, ""
+
+    return-object p0
+
+    .line 203
+    :cond_0
+    invoke-virtual {p0}, Ljava/lang/String;->trim()Ljava/lang/String;
+
+    move-result-object p0
+
+    sget-object v0, Ljava/util/Locale;->ROOT:Ljava/util/Locale;
+
+    invoke-virtual {p0, v0}, Ljava/lang/String;->toUpperCase(Ljava/util/Locale;)Ljava/lang/String;
+
+    move-result-object p0
+
+    .line 204
+    const-string v0, "P"
+
+    invoke-virtual {p0, v0}, Ljava/lang/String;->endsWith(Ljava/lang/String;)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_1
+
+    .line 205
+    invoke-virtual {p0}, Ljava/lang/String;->length()I
+
+    move-result v0
+
+    add-int/lit8 v0, v0, -0x1
+
+    const/4 v1, 0x0
+
+    invoke-virtual {p0, v1, v0}, Ljava/lang/String;->substring(II)Ljava/lang/String;
+
+    move-result-object p0
+
+    .line 207
+    :cond_1
+    return-object p0
 .end method
 
 .method public static resolveDownloadCdnStream(Lcom/transsion/videodetail/bean/VideoDetailStreamList;Lcom/transsion/videodetail/bean/VideoDetailMediaSource;II)V
     .locals 2
 
-    .line 36
+    .line 37
     const/4 v0, 0x0
 
     if-eqz p1, :cond_0
@@ -915,7 +1036,7 @@
     :cond_0
     move-object v1, v0
 
-    .line 37
+    .line 38
     :goto_0
     if-eqz p1, :cond_1
 
@@ -923,30 +1044,30 @@
 
     move-result-object v0
 
-    .line 38
+    .line 39
     :cond_1
     invoke-static {p0, v1, v0, p2, p3}, Lcom/miku/stream/DownloadCdnStreamHelper;->resolveStreamListInternal(Lcom/transsion/videodetail/bean/VideoDetailStreamList;Ljava/lang/String;Lcom/transsion/baselib/db/download/DownloadBean;II)V
 
-    .line 39
+    .line 40
     return-void
 .end method
 
 .method public static resolveStreamList(Lcom/transsion/videodetail/bean/VideoDetailStreamList;Ljava/lang/String;II)V
     .locals 1
 
-    .line 46
+    .line 47
     const/4 v0, 0x0
 
     invoke-static {p0, p1, v0, p2, p3}, Lcom/miku/stream/DownloadCdnStreamHelper;->resolveStreamListInternal(Lcom/transsion/videodetail/bean/VideoDetailStreamList;Ljava/lang/String;Lcom/transsion/baselib/db/download/DownloadBean;II)V
 
-    .line 47
+    .line 48
     return-void
 .end method
 
 .method public static resolveStreamListInternal(Lcom/transsion/videodetail/bean/VideoDetailStreamList;Ljava/lang/String;Lcom/transsion/baselib/db/download/DownloadBean;II)V
     .locals 11
 
-    .line 56
+    .line 57
     const-string v0, "resolution"
 
     const-string v1, ""
@@ -955,23 +1076,23 @@
 
     if-nez p0, :cond_0
 
-    .line 57
+    .line 58
     :try_start_0
     const-string p0, "resolveStreamList: streamList is null, skipping"
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 58
+    .line 59
     return-void
 
-    .line 60
+    .line 61
     :cond_0
     invoke-virtual {p0}, Lcom/transsion/videodetail/bean/VideoDetailStreamList;->getStreams()Ljava/util/List;
 
     move-result-object p0
 
-    .line 61
-    if-eqz p0, :cond_1a
+    .line 62
+    if-eqz p0, :cond_1c
 
     invoke-interface {p0}, Ljava/util/List;->isEmpty()Z
 
@@ -979,9 +1100,9 @@
 
     if-eqz v3, :cond_1
 
-    goto/16 :goto_9
+    goto/16 :goto_8
 
-    .line 66
+    .line 67
     :cond_1
     new-instance v3, Ljava/lang/StringBuilder;
 
@@ -1037,19 +1158,19 @@
 
     invoke-static {v2, v3}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 69
+    .line 70
     invoke-static {p0, p1, p2, p3, p4}, Lcom/miku/stream/DownloadCdnStreamHelper;->checkAndApplyLocalDownload(Ljava/util/List;Ljava/lang/String;Lcom/transsion/baselib/db/download/DownloadBean;II)Z
 
     move-result p2
 
     if-eqz p2, :cond_2
 
-    .line 70
+    .line 71
     return-void
 
-    .line 74
+    .line 75
     :cond_2
-    if-eqz p1, :cond_19
+    if-eqz p1, :cond_1b
 
     invoke-virtual {p1}, Ljava/lang/String;->isEmpty()Z
 
@@ -1057,24 +1178,24 @@
 
     if-eqz p2, :cond_3
 
-    goto/16 :goto_8
-
-    .line 80
-    :cond_3
-    nop
+    goto/16 :goto_7
 
     .line 81
+    :cond_3
     nop
 
     .line 82
     nop
 
-    .line 84
+    .line 83
+    nop
+
+    .line 85
     invoke-static {}, Ljava/util/concurrent/Executors;->newSingleThreadExecutor()Ljava/util/concurrent/ExecutorService;
 
     move-result-object p2
 
-    .line 85
+    .line 86
     new-instance v3, Lcom/miku/stream/DownloadCdnStreamHelper$1;
 
     invoke-direct {v3, p1, p3, p4}, Lcom/miku/stream/DownloadCdnStreamHelper$1;-><init>(Ljava/lang/String;II)V
@@ -1085,10 +1206,10 @@
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_2
 
-    .line 92
+    .line 93
     nop
 
-    .line 94
+    .line 95
     const/4 v3, 0x0
 
     :try_start_1
@@ -1104,20 +1225,20 @@
     :try_end_1
     .catchall {:try_start_1 .. :try_end_1} :catchall_0
 
-    .line 98
+    .line 99
     :try_start_2
     invoke-interface {p2}, Ljava/util/concurrent/ExecutorService;->shutdown()V
     :try_end_2
     .catchall {:try_start_2 .. :try_end_2} :catchall_2
 
-    .line 99
+    .line 100
     goto :goto_0
 
-    .line 95
+    .line 96
     :catchall_0
     move-exception p1
 
-    .line 96
+    .line 97
     :try_start_3
     new-instance v4, Ljava/lang/StringBuilder;
 
@@ -1145,16 +1266,16 @@
     :try_end_3
     .catchall {:try_start_3 .. :try_end_3} :catchall_1
 
-    .line 98
+    .line 99
     :try_start_4
     invoke-interface {p2}, Ljava/util/concurrent/ExecutorService;->shutdown()V
 
-    .line 99
+    .line 100
     move-object p1, v3
 
-    .line 101
+    .line 102
     :goto_0
-    if-eqz p1, :cond_18
+    if-eqz p1, :cond_1a
 
     invoke-virtual {p1}, Ljava/lang/String;->isEmpty()Z
 
@@ -1162,391 +1283,518 @@
 
     if-eqz p2, :cond_4
 
-    goto/16 :goto_7
+    goto/16 :goto_6
 
-    .line 107
+    .line 108
     :cond_4
     new-instance p2, Lorg/json/JSONObject;
 
     invoke-direct {p2, p1}, Lorg/json/JSONObject;-><init>(Ljava/lang/String;)V
 
-    .line 108
-    const-string p1, "data"
-
-    invoke-virtual {p2, p1}, Lorg/json/JSONObject;->optJSONObject(Ljava/lang/String;)Lorg/json/JSONObject;
-
-    move-result-object p1
-
     .line 109
-    if-nez p1, :cond_5
+    const-string v4, "data"
+
+    invoke-virtual {p2, v4}, Lorg/json/JSONObject;->optJSONObject(Ljava/lang/String;)Lorg/json/JSONObject;
+
+    move-result-object p2
 
     .line 110
-    const-string p0, "No data object in CDN response"
+    if-nez p2, :cond_5
+
+    .line 111
+    new-instance p0, Ljava/lang/StringBuilder;
+
+    invoke-direct {p0}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string p2, "No data object in CDN response: "
+
+    invoke-virtual {p0, p2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object p0
+
+    invoke-virtual {p0, p1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object p0
+
+    invoke-virtual {p0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object p0
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 111
+    .line 112
     return-void
 
-    .line 113
+    .line 116
     :cond_5
-    const-string p2, "items"
+    const-string v4, "list"
 
-    invoke-virtual {p1, p2}, Lorg/json/JSONObject;->optJSONArray(Ljava/lang/String;)Lorg/json/JSONArray;
+    invoke-virtual {p2, v4}, Lorg/json/JSONObject;->optJSONArray(Ljava/lang/String;)Lorg/json/JSONArray;
 
-    move-result-object p1
+    move-result-object v4
 
-    .line 114
-    if-eqz p1, :cond_17
+    .line 117
+    if-nez v4, :cond_6
 
-    invoke-virtual {p1}, Lorg/json/JSONArray;->length()I
+    .line 118
+    const-string v4, "items"
+
+    invoke-virtual {p2, v4}, Lorg/json/JSONObject;->optJSONArray(Ljava/lang/String;)Lorg/json/JSONArray;
+
+    move-result-object v4
+
+    .line 120
+    :cond_6
+    if-eqz v4, :cond_19
+
+    invoke-virtual {v4}, Lorg/json/JSONArray;->length()I
 
     move-result p2
 
-    if-nez p2, :cond_6
+    if-nez p2, :cond_7
 
-    goto/16 :goto_6
+    goto/16 :goto_5
 
-    .line 119
-    :cond_6
-    new-instance p2, Ljava/util/HashMap;
+    .line 125
+    :cond_7
+    new-instance p1, Ljava/lang/StringBuilder;
 
-    invoke-direct {p2}, Ljava/util/HashMap;-><init>()V
+    invoke-direct {p1}, Ljava/lang/StringBuilder;-><init>()V
 
-    .line 120
+    const-string p2, ">>> Found "
+
+    invoke-virtual {p1, p2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object p1
+
+    invoke-virtual {v4}, Lorg/json/JSONArray;->length()I
+
+    move-result p2
+
+    invoke-virtual {p1, p2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object p1
+
+    const-string p2, " items in download resource response"
+
+    invoke-virtual {p1, p2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object p1
+
+    invoke-virtual {p1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object p1
+
+    invoke-static {v2, p1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 127
+    new-instance p1, Ljava/util/HashMap;
+
+    invoke-direct {p1}, Ljava/util/HashMap;-><init>()V
+
+    .line 128
     nop
 
-    .line 122
-    const/4 v4, 0x0
-
-    move-object v6, v3
+    .line 130
+    const/4 p2, 0x0
 
     const/4 v5, 0x0
 
     :goto_1
-    invoke-virtual {p1}, Lorg/json/JSONArray;->length()I
+    invoke-virtual {v4}, Lorg/json/JSONArray;->length()I
 
-    move-result v7
+    move-result v6
 
-    if-ge v5, v7, :cond_f
+    const/4 v7, 0x1
 
-    .line 123
-    invoke-virtual {p1, v5}, Lorg/json/JSONArray;->optJSONObject(I)Lorg/json/JSONObject;
+    if-ge v5, v6, :cond_11
 
-    move-result-object v7
+    .line 131
+    invoke-virtual {v4, v5}, Lorg/json/JSONArray;->optJSONObject(I)Lorg/json/JSONObject;
 
-    .line 124
-    if-nez v7, :cond_7
+    move-result-object v6
 
-    goto :goto_3
+    .line 132
+    if-nez v6, :cond_8
 
-    .line 126
-    :cond_7
+    goto/16 :goto_3
+
+    .line 134
+    :cond_8
+    new-instance v8, Ljava/lang/StringBuilder;
+
+    invoke-direct {v8}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v9, ">>> ITEM["
+
+    invoke-virtual {v8, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v8
+
+    invoke-virtual {v8, v5}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object v8
+
+    const-string v9, "]: "
+
+    invoke-virtual {v8, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v8
+
+    invoke-virtual {v6}, Lorg/json/JSONObject;->toString()Ljava/lang/String;
+
+    move-result-object v9
+
+    invoke-virtual {v8, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v8
+
+    invoke-virtual {v8}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v8
+
+    invoke-static {v2, v8}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 136
     const-string v8, "se"
 
     const/4 v9, -0x1
 
-    invoke-virtual {v7, v8, v9}, Lorg/json/JSONObject;->optInt(Ljava/lang/String;I)I
+    invoke-virtual {v6, v8, v9}, Lorg/json/JSONObject;->optInt(Ljava/lang/String;I)I
 
     move-result v8
 
-    .line 127
+    .line 137
     const-string v10, "ep"
 
-    invoke-virtual {v7, v10, v9}, Lorg/json/JSONObject;->optInt(Ljava/lang/String;I)I
+    invoke-virtual {v6, v10, v9}, Lorg/json/JSONObject;->optInt(Ljava/lang/String;I)I
 
     move-result v9
 
-    .line 128
-    if-ltz v8, :cond_8
+    .line 140
+    if-le p4, v7, :cond_9
 
-    if-ltz p3, :cond_8
-
-    if-eq v8, p3, :cond_8
-
-    goto :goto_3
-
-    .line 129
-    :cond_8
-    if-ltz v9, :cond_9
-
-    if-ltz p4, :cond_9
+    if-lez v9, :cond_9
 
     if-eq v9, p4, :cond_9
 
-    goto :goto_3
+    goto/16 :goto_3
 
-    .line 131
+    .line 141
     :cond_9
-    const-string v8, "url"
+    if-le p3, v7, :cond_a
 
-    invoke-virtual {v7, v8, v1}, Lorg/json/JSONObject;->optString(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+    if-lez v8, :cond_a
 
-    move-result-object v8
-
-    .line 132
-    invoke-virtual {v8}, Ljava/lang/String;->isEmpty()Z
-
-    move-result v9
-
-    if-eqz v9, :cond_a
-
-    .line 133
-    const-string v8, "sourceUrl"
-
-    invoke-virtual {v7, v8, v1}, Lorg/json/JSONObject;->optString(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-
-    move-result-object v8
-
-    .line 135
-    :cond_a
-    invoke-virtual {v8}, Ljava/lang/String;->isEmpty()Z
-
-    move-result v9
-
-    if-nez v9, :cond_e
-
-    const-string v9, "http"
-
-    invoke-virtual {v8, v9}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
-
-    move-result v9
-
-    if-nez v9, :cond_b
+    if-eq v8, p3, :cond_a
 
     goto :goto_3
 
-    .line 137
-    :cond_b
-    invoke-virtual {v7, v0, v4}, Lorg/json/JSONObject;->optInt(Ljava/lang/String;I)I
+    .line 143
+    :cond_a
+    const-string v7, "url"
 
-    move-result v9
-
-    .line 138
-    if-lez v9, :cond_c
-
-    invoke-static {v9}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
+    invoke-virtual {v6, v7, v1}, Lorg/json/JSONObject;->optString(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 
     move-result-object v7
+
+    .line 144
+    invoke-virtual {v7}, Ljava/lang/String;->isEmpty()Z
+
+    move-result v8
+
+    if-eqz v8, :cond_b
+
+    .line 145
+    const-string v7, "sourceUrl"
+
+    invoke-virtual {v6, v7, v1}, Lorg/json/JSONObject;->optString(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v7
+
+    .line 147
+    :cond_b
+    invoke-virtual {v7}, Ljava/lang/String;->isEmpty()Z
+
+    move-result v8
+
+    if-nez v8, :cond_10
+
+    const-string v8, "http"
+
+    invoke-virtual {v7, v8}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
+
+    move-result v8
+
+    if-nez v8, :cond_c
+
+    goto :goto_3
+
+    .line 149
+    :cond_c
+    invoke-virtual {v6, v0, p2}, Lorg/json/JSONObject;->optInt(Ljava/lang/String;I)I
+
+    move-result v8
+
+    .line 150
+    if-lez v8, :cond_d
+
+    invoke-static {v8}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
+
+    move-result-object v6
 
     goto :goto_2
 
-    :cond_c
-    invoke-virtual {v7, v0, v1}, Lorg/json/JSONObject;->optString(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-
-    move-result-object v7
-
-    .line 140
-    :goto_2
-    invoke-virtual {v7}, Ljava/lang/String;->isEmpty()Z
-
-    move-result v9
-
-    if-nez v9, :cond_d
-
-    const-string v9, "0"
-
-    invoke-virtual {v9, v7}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-
-    move-result v9
-
-    if-nez v9, :cond_d
-
-    .line 141
-    invoke-interface {p2, v7, v8}, Ljava/util/Map;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-
-    .line 143
     :cond_d
-    if-nez v6, :cond_e
+    invoke-virtual {v6, v0, v1}, Lorg/json/JSONObject;->optString(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 
-    .line 144
-    move-object v6, v8
+    move-result-object v6
 
-    .line 122
+    .line 151
+    :goto_2
+    invoke-static {v6}, Lcom/miku/stream/DownloadCdnStreamHelper;->normRes(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v6
+
+    .line 153
+    invoke-virtual {v6}, Ljava/lang/String;->isEmpty()Z
+
+    move-result v8
+
+    if-nez v8, :cond_e
+
+    const-string v8, "0"
+
+    invoke-virtual {v8, v6}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v8
+
+    if-nez v8, :cond_e
+
+    .line 154
+    invoke-interface {p1, v6, v7}, Ljava/util/Map;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+
+    .line 156
     :cond_e
+    if-nez v3, :cond_f
+
+    .line 157
+    move-object v3, v7
+
+    .line 159
+    :cond_f
+    new-instance v8, Ljava/lang/StringBuilder;
+
+    invoke-direct {v8}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v9, ">>> Available Download CDN ["
+
+    invoke-virtual {v8, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v8
+
+    invoke-virtual {v8, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v6
+
+    const-string v8, "p]: "
+
+    invoke-virtual {v6, v8}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v6
+
+    invoke-virtual {v6, v7}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v6
+
+    invoke-virtual {v6}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v6
+
+    invoke-static {v2, v6}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 130
+    :cond_10
     :goto_3
     add-int/lit8 v5, v5, 0x1
 
-    goto :goto_1
+    goto/16 :goto_1
 
-    .line 148
-    :cond_f
-    invoke-interface {p2}, Ljava/util/Map;->isEmpty()Z
+    .line 162
+    :cond_11
+    invoke-interface {p1}, Ljava/util/Map;->isEmpty()Z
 
-    move-result p1
+    move-result p3
 
-    if-eqz p1, :cond_10
+    if-eqz p3, :cond_12
 
-    if-nez v6, :cond_10
+    if-nez v3, :cond_12
 
-    .line 149
+    .line 163
     const-string p0, "No valid HTTP download URLs found in items"
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 150
+    .line 164
     return-void
 
-    .line 154
-    :cond_10
+    .line 168
+    :cond_12
     nop
 
-    .line 155
+    .line 169
     invoke-interface {p0}, Ljava/util/List;->iterator()Ljava/util/Iterator;
 
-    move-result-object p1
+    move-result-object p3
 
-    const/4 p3, 0x0
+    const/4 p4, 0x0
 
     :goto_4
-    invoke-interface {p1}, Ljava/util/Iterator;->hasNext()Z
+    invoke-interface {p3}, Ljava/util/Iterator;->hasNext()Z
 
-    move-result p4
+    move-result v0
     :try_end_4
     .catchall {:try_start_4 .. :try_end_4} :catchall_2
 
-    const-string v0, "DEFAULT"
+    const-string v1, "DEFAULT"
 
-    if-eqz p4, :cond_15
+    if-eqz v0, :cond_17
 
     :try_start_5
-    invoke-interface {p1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+    invoke-interface {p3}, Ljava/util/Iterator;->next()Ljava/lang/Object;
 
-    move-result-object p4
+    move-result-object v0
 
-    check-cast p4, Lcom/transsion/videodetail/bean/VideoDetailStream;
+    check-cast v0, Lcom/transsion/videodetail/bean/VideoDetailStream;
 
-    .line 156
-    if-nez p4, :cond_11
+    .line 170
+    if-nez v0, :cond_13
 
     goto :goto_4
 
-    .line 157
-    :cond_11
-    invoke-virtual {p4}, Lcom/transsion/videodetail/bean/VideoDetailStream;->getResolutions()Ljava/lang/String;
+    .line 171
+    :cond_13
+    invoke-virtual {v0}, Lcom/transsion/videodetail/bean/VideoDetailStream;->getResolutions()Ljava/lang/String;
 
-    move-result-object v1
+    move-result-object v4
 
-    .line 158
-    nop
-
-    .line 159
-    if-eqz v1, :cond_12
-
-    .line 160
-    invoke-virtual {v1}, Ljava/lang/String;->trim()Ljava/lang/String;
+    .line 172
+    invoke-static {v4}, Lcom/miku/stream/DownloadCdnStreamHelper;->normRes(Ljava/lang/String;)Ljava/lang/String;
 
     move-result-object v5
 
-    invoke-interface {p2, v5}, Ljava/util/Map;->get(Ljava/lang/Object;)Ljava/lang/Object;
+    .line 173
+    invoke-interface {p1, v5}, Ljava/util/Map;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
     move-result-object v5
 
     check-cast v5, Ljava/lang/String;
 
-    goto :goto_5
+    .line 174
+    if-nez v5, :cond_14
 
-    .line 159
-    :cond_12
+    if-eqz v4, :cond_14
+
+    .line 175
+    invoke-virtual {v4}, Ljava/lang/String;->trim()Ljava/lang/String;
+
+    move-result-object v5
+
+    invoke-interface {p1, v5}, Ljava/util/Map;->get(Ljava/lang/Object;)Ljava/lang/Object;
+
+    move-result-object v5
+
+    check-cast v5, Ljava/lang/String;
+
+    .line 177
+    :cond_14
+    if-nez v5, :cond_15
+
+    .line 178
     move-object v5, v3
 
-    .line 162
-    :goto_5
-    const/4 v7, 0x1
-
-    if-nez v5, :cond_13
-
-    invoke-interface {p0}, Ljava/util/List;->size()I
-
-    move-result v8
-
-    if-ne v8, v7, :cond_13
-
-    .line 163
-    move-object v5, v6
-
-    .line 166
-    :cond_13
-    if-eqz v5, :cond_14
+    .line 181
+    :cond_15
+    if-eqz v5, :cond_16
 
     invoke-virtual {v5}, Ljava/lang/String;->isEmpty()Z
 
-    move-result v8
+    move-result v6
 
-    if-nez v8, :cond_14
+    if-nez v6, :cond_16
 
-    .line 167
-    invoke-virtual {p4, v5}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setUrl(Ljava/lang/String;)V
+    .line 182
+    invoke-virtual {v0, v5}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setUrl(Ljava/lang/String;)V
 
-    .line 168
-    invoke-virtual {p4, v0}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
+    .line 183
+    invoke-virtual {v0, v1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
 
-    .line 169
+    .line 184
     nop
 
-    .line 170
-    new-instance p3, Ljava/lang/StringBuilder;
+    .line 185
+    new-instance p4, Ljava/lang/StringBuilder;
 
-    invoke-direct {p3}, Ljava/lang/StringBuilder;-><init>()V
+    invoke-direct {p4}, Ljava/lang/StringBuilder;-><init>()V
 
-    const-string p4, ">>> ROUTED STREAM ["
+    const-string v0, ">>> ROUTED STREAM ["
 
-    invoke-virtual {p3, p4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {p4, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    move-result-object p3
+    move-result-object p4
 
-    invoke-virtual {p3, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {p4, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    move-result-object p3
+    move-result-object p4
 
-    const-string p4, "p] -> DOWNLOAD CDN: "
+    const-string v0, "p] -> DOWNLOAD CDN: "
 
-    invoke-virtual {p3, p4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {p4, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    move-result-object p3
+    move-result-object p4
 
-    invoke-virtual {p3, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {p4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    move-result-object p3
+    move-result-object p4
 
-    invoke-virtual {p3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    invoke-virtual {p4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 
-    move-result-object p3
+    move-result-object p4
 
-    invoke-static {v2, p3}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+    invoke-static {v2, p4}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    const/4 p3, 0x1
+    const/4 p4, 0x1
 
-    .line 172
-    :cond_14
+    .line 187
+    :cond_16
     goto :goto_4
 
-    .line 174
-    :cond_15
-    if-nez p3, :cond_16
+    .line 189
+    :cond_17
+    if-nez p4, :cond_18
 
-    if-eqz v6, :cond_16
+    if-eqz v3, :cond_18
 
     invoke-interface {p0}, Ljava/util/List;->isEmpty()Z
 
     move-result p1
 
-    if-nez p1, :cond_16
+    if-nez p1, :cond_18
 
-    .line 175
-    invoke-interface {p0, v4}, Ljava/util/List;->get(I)Ljava/lang/Object;
+    .line 190
+    invoke-interface {p0, p2}, Ljava/util/List;->get(I)Ljava/lang/Object;
 
     move-result-object p0
 
     check-cast p0, Lcom/transsion/videodetail/bean/VideoDetailStream;
 
-    .line 176
-    invoke-virtual {p0, v6}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setUrl(Ljava/lang/String;)V
+    .line 191
+    invoke-virtual {p0, v3}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setUrl(Ljava/lang/String;)V
 
-    .line 177
-    invoke-virtual {p0, v0}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
+    .line 192
+    invoke-virtual {p0, v1}, Lcom/transsion/videodetail/bean/VideoDetailStream;->setFormat(Ljava/lang/String;)V
 
-    .line 178
+    .line 193
     new-instance p0, Ljava/lang/StringBuilder;
 
     invoke-direct {p0}, Ljava/lang/StringBuilder;-><init>()V
@@ -1557,7 +1805,7 @@
 
     move-result-object p0
 
-    invoke-virtual {p0, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {p0, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
     move-result-object p0
 
@@ -1567,71 +1815,87 @@
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 183
-    :cond_16
-    goto :goto_a
+    .line 198
+    :cond_18
+    goto :goto_9
 
-    .line 115
-    :cond_17
-    :goto_6
-    const-string p0, "No items in CDN response"
+    .line 121
+    :cond_19
+    :goto_5
+    new-instance p0, Ljava/lang/StringBuilder;
+
+    invoke-direct {p0}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string p2, "No items or list in CDN response: "
+
+    invoke-virtual {p0, p2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object p0
+
+    invoke-virtual {p0, p1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object p0
+
+    invoke-virtual {p0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object p0
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 116
+    .line 122
     return-void
 
-    .line 102
-    :cond_18
-    :goto_7
+    .line 103
+    :cond_1a
+    :goto_6
     const-string p0, "Empty CDN response, keeping original streams"
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 103
+    .line 104
     return-void
 
-    .line 98
+    .line 99
     :catchall_1
     move-exception p0
 
     invoke-interface {p2}, Ljava/util/concurrent/ExecutorService;->shutdown()V
 
-    .line 99
+    .line 100
     throw p0
 
-    .line 75
-    :cond_19
-    :goto_8
+    .line 76
+    :cond_1b
+    :goto_7
     const-string p0, "resolveStreamList: no subjectId available, skipping CDN fetch"
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 76
+    .line 77
     return-void
 
-    .line 62
-    :cond_1a
-    :goto_9
+    .line 63
+    :cond_1c
+    :goto_8
     const-string p0, "resolveStreamList: streams empty, skipping"
 
     invoke-static {v2, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
     :try_end_5
     .catchall {:try_start_5 .. :try_end_5} :catchall_2
 
-    .line 63
+    .line 64
     return-void
 
-    .line 180
+    .line 195
     :catchall_2
     move-exception p0
 
-    .line 182
+    .line 197
     const-string p1, "Error in resolveStreamList, falling back to original streams"
 
     invoke-static {v2, p1, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
 
-    .line 184
-    :goto_a
+    .line 199
+    :goto_9
     return-void
 .end method

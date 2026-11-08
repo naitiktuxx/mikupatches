@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetLeft="8.0dp"
-    android:insetRight="8.0dp"
-    android:insetTop="3.0dp"
-    android:insetBottom="3.0dp">
+    android:insetLeft="6.0dp"
+    android:insetRight="6.0dp"
+    android:insetTop="2.0dp"
+    android:insetBottom="2.0dp">
     <shape android:shape="rectangle">
         <corners android:radius="24.0dp" />
         <gradient
             android:type="linear"
             android:angle="270"
-            android:startColor="#59E50914"
-            android:centerColor="#38E50914"
-            android:endColor="#1FE50914" />
+            android:startColor="#59FFFFFF"
+            android:centerColor="#33FFFFFF"
+            android:endColor="#1FFFFFFF" />
         <stroke
             android:width="1.2dp"
-            android:color="#99FF4D58" />
+            android:color="#99FFFFFF" />
     </shape>
 </inset>

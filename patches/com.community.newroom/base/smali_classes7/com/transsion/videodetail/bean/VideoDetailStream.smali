@@ -86,7 +86,7 @@
 
 .field private final id:Ljava/lang/String;
 
-.field private final resolutions:Ljava/lang/String;
+.field private resolutions:Ljava/lang/String;
 
 .field private final signCookie:Ljava/lang/String;
 
@@ -745,6 +745,18 @@
     invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->h(Ljava/lang/Object;Ljava/lang/String;)V
 
     iput-object p1, p0, Lcom/transsion/videodetail/bean/VideoDetailStream;->format:Ljava/lang/String;
+
+    return-void
+.end method
+
+.method public final setResolutions(Ljava/lang/String;)V
+    .locals 1
+
+    const-string v0, "<set-?>"
+
+    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->h(Ljava/lang/Object;Ljava/lang/String;)V
+
+    iput-object p1, p0, Lcom/transsion/videodetail/bean/VideoDetailStream;->resolutions:Ljava/lang/String;
 
     return-void
 .end method

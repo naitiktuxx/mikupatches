@@ -102,7 +102,7 @@
         app:tabPaddingEnd="0.0dp"
         app:tabIndicator="@drawable/bg_dock_sliding_pill"
         app:tabIndicatorGravity="center"
-        app:tabIndicatorHeight="48.0dp"
+        app:tabIndicatorHeight="52.0dp"
         app:tabIndicatorFullWidth="true"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorAnimationDuration="280"
