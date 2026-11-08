@@ -9014,6 +9014,16 @@
 
     invoke-direct {p0}, Lcom/transsion/videodetail/StreamDetailFragment;->S1()V
 
+    invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getContext()Landroid/content/Context;
+
+    move-result-object v0
+
+    if-eqz v0, :cond_miku_clean
+
+    invoke-static {v0}, Lcom/miku/stream/StreamCacheHelper;->clearStreamCacheAsync(Landroid/content/Context;)V
+
+    :cond_miku_clean
+
     const/4 v0, 0x0
 
     invoke-virtual {p0, v0}, Lcom/transsion/baseui/fragment/PageStatusFragment;->setMViewBinding(Lg4/a;)V

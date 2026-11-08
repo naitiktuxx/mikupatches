@@ -821,19 +821,19 @@
 
     invoke-direct {v1}, Landroidx/media3/exoplayer/m$b;-><init>()V
 
-    const/16 v2, 0x9c4
+    const/16 v2, 0x7d0
 
-    const/16 v3, 0x1388
+    const/16 v3, 0xfa0
 
-    const v5, 0xc350
+    const v5, 0xea60
 
-    const v0, 0x1d4c0
+    const v0, 0x2bf20
 
     invoke-virtual {v1, v5, v0, v2, v3}, Landroidx/media3/exoplayer/m$b;->b(IIII)Landroidx/media3/exoplayer/m$b;
 
     move-result-object v0
 
-    const/4 v1, -0x1
+    const v1, 0x6400000
 
     invoke-virtual {v0, v1}, Landroidx/media3/exoplayer/m$b;->d(I)Landroidx/media3/exoplayer/m$b;
 
@@ -853,7 +853,7 @@
 
     const-string v1, "MikuBuffer"
 
-    const-string v2, "Optimized LoadControl Applied: minBufferMs=50000, maxBufferMs=120000, bufferForPlaybackMs=2500, bufferForPlaybackAfterRebufferMs=5000, targetBufferBytes=-1, prioritizeTimeOverSizeThresholds=true"
+    const-string v2, "Aggressive Stream LoadControl Applied: minBufferMs=60000, maxBufferMs=180000, bufferForPlaybackMs=2000, bufferForPlaybackAfterRebufferMs=4000, targetBufferBytes=104857600 (100MB), prioritizeTimeOverSizeThresholds=true"
 
     invoke-static {v1, v2}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
 
@@ -3441,6 +3441,13 @@
 
     :cond_4
     :goto_1
+    iget-object v0, p0, Lco/h;->a:Landroid/content/Context;
+
+    if-eqz v0, :cond_miku_cache_clean
+
+    invoke-static {v0}, Lcom/miku/stream/StreamCacheHelper;->clearStreamCacheAsync(Landroid/content/Context;)V
+
+    :cond_miku_cache_clean
     iget-object v0, p0, Lco/h;->H:Ljava/util/concurrent/CopyOnWriteArrayList;
 
     invoke-interface {v0}, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;
