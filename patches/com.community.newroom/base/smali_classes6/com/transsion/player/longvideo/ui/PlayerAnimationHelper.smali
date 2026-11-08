@@ -1102,7 +1102,7 @@
 .end method
 
 .method public static isVerticalPauseClashingWithLoading(Landroid/view/View;)Z
-    .locals 6
+    .locals 3
 
     .line 55
     const/4 v0, 0x0
@@ -1119,6 +1119,10 @@
     move-result v1
 
     const v2, 0x7f0a062f
+
+    if-eq v1, v2, :cond_check_parent
+
+    const v2, 0x7f0a1109
 
     if-eq v1, v2, :cond_check_parent
 
@@ -1188,129 +1192,29 @@
 
     invoke-virtual {v1, v2}, Landroid/view/ViewGroup;->findViewById(I)Landroid/view/View;
 
-    move-result-object v2
+    move-result-object v1
 
-    if-eqz v2, :cond_check_tv
+    if-eqz v1, :cond_end
 
-    invoke-virtual {v2}, Landroid/view/View;->getVisibility()I
+    invoke-virtual {v1}, Landroid/view/View;->getVisibility()I
 
-    move-result v2
-
-    if-nez v2, :cond_check_tv
-
-    const/4 p0, 0x1
-
-    return p0
-
-    :cond_check_tv
-    const v2, 0x7f0a0f36
-
-    invoke-virtual {v1, v2}, Landroid/view/ViewGroup;->findViewById(I)Landroid/view/View;
-
-    move-result-object v2
-
-    if-eqz v2, :cond_check_children
-
-    invoke-virtual {v2}, Landroid/view/View;->getVisibility()I
-
-    move-result v2
-
-    if-nez v2, :cond_check_children
-
-    const/4 p0, 0x1
-
-    return p0
-
-    :cond_check_children
-    const/4 v2, 0x0
-
-    :goto_0
-    invoke-virtual {v1}, Landroid/view/ViewGroup;->getChildCount()I
-
-    move-result v3
-
-    if-ge v2, v3, :cond_end
-
-    invoke-virtual {v1, v2}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
-
-    move-result-object v3
-
-    if-eqz v3, :cond_next_child
-
-    invoke-virtual {v3}, Landroid/view/View;->getVisibility()I
-
-    move-result v4
-
-    if-nez v4, :cond_next_child
-
-    instance-of v4, v3, Landroid/widget/ProgressBar;
-
-    if-eqz v4, :cond_check_child_name
-
-    const/4 p0, 0x1
-
-    return p0
-
-    :cond_check_child_name
-    invoke-virtual {v3}, Landroid/view/View;->getId()I
-
-    move-result v3
-
-    const/4 v4, -0x1
-
-    if-eq v3, v4, :cond_next_child
-
-    invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
-
-    move-result-object v4
+    move-result v1
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    if-eqz v4, :cond_next_child
+    if-nez v1, :cond_end
 
-    :try_start_1
-    invoke-virtual {v4, v3}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
-
-    move-result-object v3
-
-    if-eqz v3, :cond_next_child
-
-    const-string v4, "loading"
-
-    invoke-virtual {v3, v4}, Ljava/lang/String;->contains(Ljava/lang/CharSequence;)Z
-
-    move-result v4
-
-    if-nez v4, :cond_found_loading
-
-    const-string v4, "Loading"
-
-    invoke-virtual {v3, v4}, Ljava/lang/String;->contains(Ljava/lang/CharSequence;)Z
-
-    move-result v3
-    :try_end_1
-    .catchall {:try_start_1 .. :try_end_1} :catch_child
-
-    if-eqz v3, :cond_next_child
-
-    :cond_found_loading
     const/4 p0, 0x1
 
     return p0
 
-    :catch_child
-    :cond_next_child
-    add-int/lit8 v2, v2, 0x1
-
-    goto :goto_0
-
     :cond_end
-    goto :goto_1
+    goto :goto_0
 
     :catchall_0
     move-exception p0
 
-    :goto_1
+    :goto_0
     return v0
 .end method
 
