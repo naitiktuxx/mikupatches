@@ -629,6 +629,107 @@ OFFLINE_DEVICE_99      offline
             self.assertEqual(len(devices), 1)
             self.assertEqual(devices[0][0], "emulator-5554")
 
+    def test_bundler_is_valid_png(self):
+        png_path = os.path.join(self.temp_dir, "valid.png")
+        with open(png_path, "wb") as f:
+            f.write(b"\x89PNG\r\n\x1a\n" + b"\x00" * 20)
+        self.assertTrue(Bundler.is_valid_png(png_path))
+
+        fake_path = os.path.join(self.temp_dir, "fake.png")
+        with open(fake_path, "wb") as f:
+            f.write(b"NOT A PNG")
+        self.assertFalse(Bundler.is_valid_png(fake_path))
+
+    def test_bundler_score_icon_candidate(self):
+        # xxxhdpi ic_launcher should beat xxhdpi
+        score_xxx = Bundler.score_icon_candidate("res/mipmap-xxxhdpi/ic_launcher.png", ["ic_launcher"])
+        score_xx = Bundler.score_icon_candidate("res/mipmap-xxhdpi/ic_launcher.png", ["ic_launcher"])
+        self.assertGreater(score_xxx, score_xx)
+
+        # Default bucket should beat localized bucket
+        score_default = Bundler.score_icon_candidate("res/mipmap-xxxhdpi/ic_launcher.webp", ["ic_launcher"])
+        score_localized = Bundler.score_icon_candidate("res/mipmap-fr-xxxhdpi/ic_launcher.webp", ["ic_launcher"])
+        self.assertGreater(score_default, score_localized)
+
+        # Matched target name should beat generic icon
+        score_target = Bundler.score_icon_candidate("res/mipmap-xxxhdpi/custom_icon.png", ["custom_icon"])
+        score_other = Bundler.score_icon_candidate("res/mipmap-xxxhdpi/other_img.png", ["custom_icon"])
+        self.assertGreater(score_target, 0)
+        self.assertEqual(score_other, -1)
+
+    def test_bundler_resolve_app_icon_from_decompiled(self):
+        bundle_staging = os.path.join(self.temp_dir, "b_staging")
+        build_staging = os.path.join(self.temp_dir, "build_staging")
+        decompiled_dir = os.path.join(build_staging, "base")
+        res_dir = os.path.join(decompiled_dir, "res", "mipmap-xxxhdpi")
+        os.makedirs(res_dir, exist_ok=True)
+        os.makedirs(bundle_staging, exist_ok=True)
+
+        manifest_path = os.path.join(decompiled_dir, "AndroidManifest.xml")
+        with open(manifest_path, "w") as f:
+            f.write('<manifest><application android:icon="@mipmap/my_launcher" /></manifest>')
+
+        png_icon = os.path.join(res_dir, "my_launcher.png")
+        with open(png_icon, "wb") as f:
+            f.write(b"\x89PNG\r\n\x1a\n" + b"\x00" * 50)
+
+        profile = AppProfile(
+            package_name="com.test.app",
+            app_title="Test App",
+            target_version_name="1.0.0",
+            target_version_code="100",
+            apkmirror_url="",
+            main_activity="",
+            supported_arches=["arm64-v8a"],
+            patch_groups=[],
+            profile_dir="",
+        )
+
+        resolved = Bundler.resolve_app_icon(
+            bundle_staging=bundle_staging,
+            build_staging=build_staging,
+            staged_base_apk="",
+            app_profile=profile,
+            decompiled_dir=decompiled_dir,
+        )
+        self.assertIsNotNone(resolved)
+        self.assertTrue(os.path.isfile(resolved))
+        self.assertTrue(Bundler.is_valid_png(resolved))
+
+    def test_bundler_resolve_app_icon_from_apk_zip(self):
+        import zipfile
+        bundle_staging = os.path.join(self.temp_dir, "b_staging_zip")
+        build_staging = os.path.join(self.temp_dir, "build_staging_zip")
+        os.makedirs(bundle_staging, exist_ok=True)
+        os.makedirs(build_staging, exist_ok=True)
+
+        fake_apk = os.path.join(build_staging, "staged_base.apk")
+        with zipfile.ZipFile(fake_apk, "w") as zf:
+            zf.writestr("res/mipmap-xxxhdpi/ic_launcher.png", b"\x89PNG\r\n\x1a\n" + b"REAL_ICON_DATA")
+
+        profile = AppProfile(
+            package_name="com.zip.app",
+            app_title="Zip App",
+            target_version_name="2.0.0",
+            target_version_code="200",
+            apkmirror_url="",
+            main_activity="",
+            supported_arches=["arm64-v8a"],
+            patch_groups=[],
+            profile_dir="",
+        )
+
+        resolved = Bundler.resolve_app_icon(
+            bundle_staging=bundle_staging,
+            build_staging=build_staging,
+            staged_base_apk=fake_apk,
+            app_profile=profile,
+            decompiled_dir=os.path.join(build_staging, "nonexistent_dir"),
+        )
+        self.assertIsNotNone(resolved)
+        self.assertTrue(os.path.isfile(resolved))
+        self.assertTrue(Bundler.is_valid_png(resolved))
+
 
 if __name__ == "__main__":
     unittest.main()
