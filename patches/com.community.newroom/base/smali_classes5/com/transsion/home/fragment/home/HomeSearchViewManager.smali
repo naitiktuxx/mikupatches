@@ -940,6 +940,8 @@
 
     invoke-virtual {v0, v1}, Landroid/view/View;->setOnClickListener(Landroid/view/View$OnClickListener;)V
 
+    invoke-static {v0}, Lcom/miku/animation/BounceAnimationHelper;->attachTouchBounce(Landroid/view/View;)V
+
     iget-object v0, p0, Lcom/transsion/home/fragment/home/HomeSearchViewManager;->a:Lgl/r;
 
     iget-object v0, v0, Lgl/r;->q:Lcom/tn/lib/widget/TnTextView;
@@ -949,6 +951,8 @@
     invoke-direct {v1, p0}, Lcom/transsion/home/fragment/home/y;-><init>(Lcom/transsion/home/fragment/home/HomeSearchViewManager;)V
 
     invoke-virtual {v0, v1}, Landroid/view/View;->setOnClickListener(Landroid/view/View$OnClickListener;)V
+
+    invoke-static {v0}, Lcom/miku/animation/BounceAnimationHelper;->attachTouchBounce(Landroid/view/View;)V
 
     iget-object v0, p0, Lcom/transsion/home/fragment/home/HomeSearchViewManager;->a:Lgl/r;
 

@@ -83,7 +83,7 @@
 
     move-result-object v0
 
-    const v1, 0x3f5c28f6    # 0.86f
+    const v1, 0x3f6147ae    # 0.88f
 
     invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
 
@@ -93,7 +93,7 @@
 
     move-result-object v0
 
-    const-wide/16 v1, 0x4b
+    const-wide/16 v1, 0x37
 
     invoke-virtual {v0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
 
@@ -119,11 +119,27 @@
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    goto :goto_0
+    :catchall_0
+    return-void
+.end method
+
+.method public static attachTouchBounce(Landroid/view/View;)V
+    .locals 1
+
+    if-nez p0, :cond_0
+
+    return-void
+
+    :cond_0
+    :try_start_0
+    new-instance v0, Lcom/miku/animation/BounceAnimationHelper$2;
+
+    invoke-direct {v0}, Lcom/miku/animation/BounceAnimationHelper$2;-><init>()V
+
+    invoke-virtual {p0, v0}, Landroid/view/View;->setOnTouchListener(Landroid/view/View$OnTouchListener;)V
+    :try_end_0
+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
     :catchall_0
-    move-exception p0
-
-    :goto_0
     return-void
 .end method

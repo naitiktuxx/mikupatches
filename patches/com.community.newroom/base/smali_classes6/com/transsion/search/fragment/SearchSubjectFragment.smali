@@ -443,6 +443,8 @@
 
     invoke-virtual {v0, v1}, Landroid/view/View;->setOnClickListener(Landroid/view/View$OnClickListener;)V
 
+    invoke-static {v0}, Lcom/miku/animation/BounceAnimationHelper;->attachTouchBounce(Landroid/view/View;)V
+
     :cond_0
     invoke-virtual {p0}, Lcom/transsion/baseui/fragment/BaseFragment;->getMViewBinding()Lg4/a;
 
@@ -461,6 +463,8 @@
     invoke-direct {v1, p0}, Ltq/d;-><init>(Lcom/transsion/search/fragment/SearchSubjectFragment;)V
 
     invoke-virtual {v0, v1}, Landroid/view/View;->setOnClickListener(Landroid/view/View$OnClickListener;)V
+
+    invoke-static {v0}, Lcom/miku/animation/BounceAnimationHelper;->attachTouchBounce(Landroid/view/View;)V
 
     :cond_1
     invoke-virtual {p0}, Lcom/transsion/baseui/fragment/BaseFragment;->getMViewBinding()Lg4/a;

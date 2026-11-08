@@ -59,7 +59,7 @@
 
     move-result-object v0
 
-    const-wide/16 v1, 0xf0
+    const-wide/16 v1, 0xb4
 
     invoke-virtual {v0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
 
@@ -67,7 +67,7 @@
 
     new-instance v1, Landroid/view/animation/OvershootInterpolator;
 
-    const v2, 0x40266666    # 2.6f
+    const v2, 0x400ccccd    # 2.2f
 
     invoke-direct {v1, v2}, Landroid/view/animation/OvershootInterpolator;-><init>(F)V
 

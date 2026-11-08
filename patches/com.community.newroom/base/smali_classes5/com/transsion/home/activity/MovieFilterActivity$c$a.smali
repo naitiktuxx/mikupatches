@@ -34,6 +34,14 @@
 
 
 # virtual methods
+.method public onClick(Landroid/view/View;)V
+    .locals 0
+
+    invoke-virtual {p0, p1}, Lcom/transsion/home/activity/MovieFilterActivity$c$a;->d(Landroid/view/View;)V
+
+    return-void
+.end method
+
 .method public c(Landroid/view/View;)V
     .locals 0
 
