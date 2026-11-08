@@ -341,6 +341,7 @@
       "res/drawable/player_loading_spinner.xml": "Modern Netflix Red gradient sweep circular loading indicator",
       "res/layout/long_vod_layout_loading.xml": "Modern Netflix Red video player loading indicator without text",
       "res/layout/post_video_loading.xml": "Modern Netflix Red video player loading indicator without text",
+      "res/layout/layout_play_center_control.xml": "Modern Netflix Red video player horizontal loading indicator without text and synchronized controls",
       "res/layout/exo_player_view.xml": "Netflix Red tinted buffering progress bar in ExoPlayer",
       "res/layout/exo_styled_player_view.xml": "Netflix Red tinted buffering progress bar in Styled ExoPlayer",
       "smali/androidx/swiperefreshlayout/widget/SwipeRefreshLayout.smali": "Dark background and Netflix Red spinner for SwipeRefreshLayout",

@@ -1584,45 +1584,35 @@
 .end method
 
 .method protected J2(Z)V
-    .locals 1
+    .locals 2
 
     invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->J2(Z)V
 
-    iget-object p1, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
+    if-eqz p1, :cond_ccl_u0
 
-    if-eqz p1, :cond_1
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
-    iget-object p1, p1, Lso/z;->b:Lbk/e;
+    if-eqz v0, :cond_ccl_u0
 
-    if-eqz p1, :cond_1
+    iget-object v0, v0, Lso/z;->b:Lbk/e;
 
-    iget-object p1, p1, Lbk/e;->d:Landroidx/appcompat/widget/AppCompatImageView;
+    if-eqz v0, :cond_ccl_u0
 
-    if-eqz p1, :cond_1
-
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/u0;->F0()Landroid/view/View;
+    invoke-virtual {v0}, Lbk/e;->b()Landroidx/constraintlayout/widget/ConstraintLayout;
 
     move-result-object v0
 
-    if-eqz v0, :cond_0
+    if-eqz v0, :cond_ccl_u0
 
-    invoke-virtual {v0}, Landroid/view/View;->getVisibility()I
+    const/4 v1, 0x0
 
-    move-result v0
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
-    if-nez v0, :cond_0
+    const/high16 v1, 0x3f800000    # 1.0f
 
-    const/4 v0, 0x4
+    invoke-virtual {v0, v1}, Landroid/view/View;->setAlpha(F)V
 
-    goto :goto_0
-
-    :cond_0
-    const/4 v0, 0x0
-
-    :goto_0
-    invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
-
-    :cond_1
+    :cond_ccl_u0
     return-void
 .end method
 

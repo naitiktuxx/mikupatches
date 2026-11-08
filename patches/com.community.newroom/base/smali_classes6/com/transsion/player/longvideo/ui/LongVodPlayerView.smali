@@ -10554,30 +10554,27 @@
     :goto_0
     invoke-virtual {v0, v3}, Landroid/view/View;->setVisibility(I)V
 
+    if-eqz p1, :cond_ccl_skip
+
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
     iget-object v0, v0, Lho/j;->h:Lho/k;
 
     iget-object v0, v0, Lho/k;->c:Lbk/e;
 
-    iget-object v0, v0, Lbk/e;->d:Landroidx/appcompat/widget/AppCompatImageView;
+    invoke-virtual {v0}, Lbk/e;->b()Landroidx/constraintlayout/widget/ConstraintLayout;
 
-    const-string v3, "ivCenterPause"
+    move-result-object v0
 
-    invoke-static {v0, v3}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
+    if-eqz v0, :cond_ccl_skip
 
-    if-nez p1, :cond_1
+    invoke-virtual {v0, v2}, Landroid/view/View;->setVisibility(I)V
 
-    move v4, v2
+    const/high16 v3, 0x3f800000    # 1.0f
 
-    goto :goto_1
+    invoke-virtual {v0, v3}, Landroid/view/View;->setAlpha(F)V
 
-    :cond_1
-    move v4, v1
-
-    :goto_1
-    invoke-virtual {v0, v4}, Landroid/view/View;->setVisibility(I)V
-
+    :cond_ccl_skip
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
     iget-object v0, v0, Lho/j;->i:Lho/l;
@@ -10599,66 +10596,6 @@
     :cond_2
     invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
-    if-eqz p1, :cond_restore_mid_pause
-
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
-
-    iget-object v0, v0, Lho/j;->h:Lho/k;
-
-    iget-object v0, v0, Lho/k;->c:Lbk/e;
-
-    iget-object v0, v0, Lbk/e;->d:Landroidx/appcompat/widget/AppCompatImageView;
-
-    invoke-static {v0, v3}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
-
-    invoke-static {v0}, Ljg/c;->h(Landroid/view/View;)V
-
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
-
-    iget-object v0, v0, Lho/j;->i:Lho/l;
-
-    iget-object v0, v0, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
-
-    if-eqz v0, :cond_3
-
-    invoke-virtual {v0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
-
-    move-result-object v1
-
-    invoke-virtual {v1}, Landroid/view/ViewPropertyAnimator;->cancel()V
-
-    const/16 v1, 0x8
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
-
-    goto :cond_3
-
-    :cond_restore_mid_pause
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
-
-    iget-object v0, v0, Lho/j;->i:Lho/l;
-
-    iget-object v0, v0, Lho/l;->i:Landroid/widget/LinearLayout;
-
-    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->areControlsVisible(Landroid/view/View;)Z
-
-    move-result v0
-
-    if-eqz v0, :cond_3
-
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
-
-    iget-object v0, v0, Lho/j;->i:Lho/l;
-
-    iget-object v0, v0, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
-
-    if-eqz v0, :cond_3
-
-    const/4 v1, 0x0
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
-
-    :cond_3
     return-void
 .end method
 
