@@ -691,5 +691,29 @@
     "hooks": [
       "patch_aliplayer_buffer.py"
     ]
+  },
+  {
+    "id": "remove_unused_languages",
+    "name": "Remove Unused Languages (Keep English & Hindi)",
+    "desc": "Removes all unused languages from the app, keeping only English and Hindi in UI language selection and stripping unused localized resource bundles while leaving all video content, audio tracks, and subtitles untouched",
+    "default": true,
+    "files": {
+      "smali/com/transsion/baselib/locale/d.smali": "Restricts selectable UI languages in Settings to English and Hindi"
+    },
+    "hooks": [
+      "strip_unused_languages.py"
+    ]
+  },
+  {
+    "id": "remove_home_screen_emojis",
+    "name": "Home: Strip Emojis from Section & Tab Titles",
+    "desc": "Removes any kind of emojis, symbols, and redundant spaces from section headers and category titles across all tabs on the Home screen (Trending, Movie, Anime, TV, Kids, Short TV, Education, UGC)",
+    "default": true,
+    "files": {
+      "smali/com/miku/filter/EmojiFilter.smali": "Helper that strips emojis and normalizes whitespace"
+    },
+    "hooks": [
+      "remove_home_screen_emojis.py"
+    ]
   }
 ]
