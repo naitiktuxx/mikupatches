@@ -4467,107 +4467,8 @@
 .end method
 
 .method private final f1()V
-    .locals 8
+    .locals 0
 
-    sget-object v0, Lcom/transsion/home/enum/BottomTabType;->ME:Lcom/transsion/home/enum/BottomTabType;
-
-    invoke-virtual {v0}, Lcom/transsion/home/enum/BottomTabType;->getValue()Ljava/lang/String;
-
-    move-result-object v0
-
-    invoke-direct {p0, v0}, Lcom/transsion/subroom/activity/MainActivity;->U0(Ljava/lang/String;)I
-
-    move-result v0
-
-    sget-object v1, Lcom/transsion/baselib/report/launch/b;->a:Lcom/transsion/baselib/report/launch/b;
-
-    invoke-virtual {v1}, Lcom/transsion/baselib/report/launch/b;->b()Lcom/tencent/mmkv/MMKV;
-
-    move-result-object v1
-
-    const-string v2, "k_is_family_mode_badge"
-
-    const/4 v3, 0x1
-
-    invoke-virtual {v1, v2, v3}, Lcom/tencent/mmkv/MMKV;->getBoolean(Ljava/lang/String;Z)Z
-
-    move-result v1
-
-    if-eqz v1, :cond_0
-
-    invoke-virtual {p0}, Lcom/transsion/baseui/activity/BaseCommonActivity;->getMViewBinding()Lg4/a;
-
-    move-result-object v1
-
-    check-cast v1, Lau/a;
-
-    iget-object v1, v1, Lau/a;->m:Lcom/google/android/material/tabs/TabLayout;
-
-    invoke-virtual {v1, v0}, Lcom/google/android/material/tabs/TabLayout;->getTabAt(I)Lcom/google/android/material/tabs/TabLayout$Tab;
-
-    move-result-object v0
-
-    if-eqz v0, :cond_0
-
-    iget-object v0, v0, Lcom/google/android/material/tabs/TabLayout$Tab;->view:Lcom/google/android/material/tabs/TabLayout$TabView;
-
-    if-eqz v0, :cond_0
-
-    sget v1, Lcom/transsion/home/R$id;->image_red_tips:I
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->findViewById(I)Landroid/view/View;
-
-    move-result-object v0
-
-    check-cast v0, Landroid/widget/ImageView;
-
-    if-eqz v0, :cond_0
-
-    invoke-static {v0}, Ljg/c;->k(Landroid/view/View;)V
-
-    new-instance v7, Lcom/transsion/subroom/activity/l;
-
-    invoke-direct {v7, p0, v0}, Lcom/transsion/subroom/activity/l;-><init>(Lcom/transsion/subroom/activity/MainActivity;Landroid/widget/ImageView;)V
-
-    sget-object v0, Lcom/transsnet/flow/event/AppScopeVMlProvider;->INSTANCE:Lcom/transsnet/flow/event/AppScopeVMlProvider;
-
-    const-class v1, Lcom/transsnet/flow/event/FlowEventBus;
-
-    invoke-virtual {v0, v1}, Lcom/transsnet/flow/event/AppScopeVMlProvider;->getApplicationScopeViewModel(Ljava/lang/Class;)Landroidx/lifecycle/t0;
-
-    move-result-object v0
-
-    move-object v1, v0
-
-    check-cast v1, Lcom/transsnet/flow/event/FlowEventBus;
-
-    const-class v0, Lcx/b;
-
-    invoke-virtual {v0}, Ljava/lang/Class;->getName()Ljava/lang/String;
-
-    move-result-object v3
-
-    const-string v0, "getName(...)"
-
-    invoke-static {v3, v0}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
-
-    sget-object v4, Landroidx/lifecycle/Lifecycle$State;->CREATED:Landroidx/lifecycle/Lifecycle$State;
-
-    invoke-static {}, Lkotlinx/coroutines/y0;->c()Lkotlinx/coroutines/a2;
-
-    move-result-object v0
-
-    invoke-virtual {v0}, Lkotlinx/coroutines/a2;->d()Lkotlinx/coroutines/a2;
-
-    move-result-object v5
-
-    const/4 v6, 0x0
-
-    move-object v2, p0
-
-    invoke-virtual/range {v1 .. v7}, Lcom/transsnet/flow/event/FlowEventBus;->observeEvent(Landroidx/lifecycle/u;Ljava/lang/String;Landroidx/lifecycle/Lifecycle$State;Lkotlinx/coroutines/i0;ZLkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/t1;
-
-    :cond_0
     return-void
 .end method
 
@@ -5189,31 +5090,8 @@
 .end method
 
 .method private static final m1(Lcom/google/android/material/tabs/TabLayout$TabView;Lcom/transsion/subroom/activity/MainActivity;Ljava/lang/Integer;)Lkotlin/Unit;
-    .locals 1
+    .locals 0
 
-    sget v0, Lcom/transsion/home/R$id;->image_red_tips:I
-
-    invoke-virtual {p0, v0}, Landroid/view/View;->findViewById(I)Landroid/view/View;
-
-    move-result-object p0
-
-    if-eqz p0, :cond_1
-
-    invoke-virtual {p2}, Ljava/lang/Integer;->intValue()I
-
-    move-result p2
-
-    if-lez p2, :cond_0
-
-    invoke-static {p0}, Ljg/c;->k(Landroid/view/View;)V
-
-    goto :goto_0
-
-    :cond_0
-    invoke-direct {p1, p0}, Lcom/transsion/subroom/activity/MainActivity;->F0(Landroid/view/View;)V
-
-    :cond_1
-    :goto_0
     sget-object p0, Lkotlin/Unit;->a:Lkotlin/Unit;
 
     return-object p0

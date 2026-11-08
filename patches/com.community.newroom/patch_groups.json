@@ -742,6 +742,7 @@
     "default": true,
     "files": {
       "res/drawable/bg_dock_matte_pill.xml": "Zero-lag matte dark pill background with stadium corners (999dp) and 1dp border",
+      "res/drawable/bg_red_notice.xml": "Neutralized transparent notification badge drawable",
       "res/color/selector_dock_item.xml": "Color state selector switching between active Netflix Red and muted gray",
       "res/layout/activity_main.xml": "Floating pill dock layout configuration with 24dp margins, 16dp bottom offset, and neutralized full-width background views",
       "res/layout/tab_bottom.xml": "Vertically centered and packed tab item layout fitting inside the 62dp floating dock",
