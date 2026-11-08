@@ -8,7 +8,7 @@
 
 # annotations
 .annotation system Ldalvik/annotation/EnclosingMethod;
-    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/widget/SeekBar;)V
+    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/view/View;)V
 .end annotation
 
 .annotation system Ldalvik/annotation/InnerClass;

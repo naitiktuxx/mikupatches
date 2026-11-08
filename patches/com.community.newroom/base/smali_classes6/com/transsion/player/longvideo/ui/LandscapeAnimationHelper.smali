@@ -1740,7 +1740,7 @@
     return-void
 .end method
 
-.method public static attachSeekbarTouchFeedback(Landroid/widget/SeekBar;)V
+.method public static attachSeekbarTouchFeedback(Landroid/view/View;)V
     .locals 1
 
     .line 145
@@ -1754,7 +1754,7 @@
 
     invoke-direct {v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$1;-><init>()V
 
-    invoke-virtual {p0, v0}, Landroid/widget/SeekBar;->setOnTouchListener(Landroid/view/View$OnTouchListener;)V
+    invoke-virtual {p0, v0}, Landroid/view/View;->setOnTouchListener(Landroid/view/View$OnTouchListener;)V
 
     .line 159
     return-void

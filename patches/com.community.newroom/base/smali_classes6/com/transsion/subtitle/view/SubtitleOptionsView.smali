@@ -1413,7 +1413,7 @@
 
     invoke-virtual {v0, v1}, Lcom/tn/lib/view/SecondariesSeekBar;->setOnSeekBarChangeListener(Lcom/tn/lib/view/v;)V
 
-    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/widget/SeekBar;)V
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/view/View;)V
 
     iget-object v0, p0, Lcom/transsion/subtitle/view/SubtitleOptionsView;->a:Lfu/i;
 

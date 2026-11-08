@@ -2843,7 +2843,7 @@
 
     iget-object v1, v0, Lso/z;->N:Lcom/tn/lib/view/SecondariesSeekBar;
 
-    invoke-static {v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/widget/SeekBar;)V
+    invoke-static {v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/view/View;)V
 
     :cond_skip_local_sb
 

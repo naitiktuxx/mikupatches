@@ -5256,7 +5256,7 @@
 
     invoke-direct {p0, v0}, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->Y0(Lcom/tn/lib/view/SecondariesSeekBar;)V
 
-    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/widget/SeekBar;)V
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/view/View;)V
 
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
