@@ -272,6 +272,10 @@
 
     invoke-direct {p0, p1}, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->H0(Z)V
 
+    const/4 p2, 0x0
+
+    iput-boolean p2, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->m:Z
+
     invoke-direct {p0}, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->s0()Lcom/transsion/search/fragment/result/SearchResultViewModel;
 
     move-result-object p2
@@ -1458,49 +1462,53 @@
 
     const/4 v0, 0x0
 
-    if-eqz p1, :cond_0
+    if-nez p1, :cond_check_tab
 
+    iget-object p0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
+
+    if-eqz p0, :cond_ret
+
+    invoke-virtual {p0}, Lcom/chad/library/adapter/base/BaseQuickAdapter;->h0()Lr6/f;
+
+    move-result-object p0
+
+    if-eqz p0, :cond_ret
+
+    invoke-virtual {p0}, Lr6/f;->v()V
+
+    goto :goto_4
+
+    :cond_check_tab
     invoke-virtual {p1}, Lcom/transsion/search/bean/SearchResultEntity;->getTabId()Ljava/lang/String;
 
     move-result-object v1
 
-    goto :goto_0
-
-    :cond_0
-    move-object v1, v0
-
-    :goto_0
     iget-object v2, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->i:Ljava/lang/String;
 
     invoke-static {v1, v2}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
 
     move-result v1
 
-    if-eqz v1, :cond_7
+    if-nez v1, :cond_1
 
-    if-eqz p1, :cond_1
+    goto :goto_4
 
+    :cond_1
     invoke-virtual {p1}, Lcom/transsion/search/bean/SearchResultEntity;->getResults()Ljava/util/List;
 
     move-result-object v1
 
-    goto :goto_1
-
-    :cond_1
-    move-object v1, v0
-
-    :goto_1
     if-nez v1, :cond_2
 
     iget-object p0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
 
-    if-eqz p0, :cond_7
+    if-eqz p0, :cond_ret
 
     invoke-virtual {p0}, Lcom/chad/library/adapter/base/BaseQuickAdapter;->h0()Lr6/f;
 
     move-result-object p0
 
-    if-eqz p0, :cond_7
+    if-eqz p0, :cond_ret
 
     invoke-virtual {p0}, Lr6/f;->v()V
 
@@ -1534,62 +1542,71 @@
 
     move-result-object v1
 
+    if-eqz v1, :cond_load_end
+
     invoke-virtual {v1}, Lcom/transsion/search/bean/Pager;->getHasMore()Z
 
     move-result v1
 
-    if-eqz v1, :cond_6
+    if-nez v1, :cond_load_complete
 
+    :cond_load_end
+    const/4 v1, 0x1
+
+    iput-boolean v1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->m:Z
+
+    iget-object p0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
+
+    if-eqz p0, :cond_ret
+
+    invoke-virtual {p0}, Lcom/chad/library/adapter/base/BaseQuickAdapter;->h0()Lr6/f;
+
+    move-result-object p0
+
+    if-eqz p0, :cond_ret
+
+    const/4 p1, 0x0
+
+    invoke-static {p0, p1, v1, v0}, Lr6/f;->u(Lr6/f;ZILjava/lang/Object;)V
+
+    goto :goto_4
+
+    :cond_load_complete
+    const/4 v1, 0x0
+
+    iput-boolean v1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->m:Z
+
+    iget-object v1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
+
+    if-eqz v1, :cond_check_empty
+
+    invoke-virtual {v1}, Lcom/chad/library/adapter/base/BaseQuickAdapter;->h0()Lr6/f;
+
+    move-result-object v1
+
+    if-eqz v1, :cond_check_empty
+
+    invoke-virtual {v1}, Lr6/f;->s()V
+
+    :cond_check_empty
     invoke-virtual {p1}, Lcom/transsion/search/bean/SearchResultEntity;->getConvertData()Ljava/util/List;
 
     move-result-object p1
 
     check-cast p1, Ljava/util/Collection;
 
-    if-eqz p1, :cond_6
+    if-eqz p1, :cond_auto_fetch
 
     invoke-interface {p1}, Ljava/util/Collection;->isEmpty()Z
 
     move-result p1
 
-    if-eqz p1, :cond_5
+    if-eqz p1, :cond_ret
 
-    goto :goto_3
+    :cond_auto_fetch
+    invoke-static {p0}, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->B0(Lcom/transsion/search/fragment/result/SearchResultTabFragment;)V
 
-    :cond_5
-    iget-object p0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
-
-    if-eqz p0, :cond_7
-
-    invoke-virtual {p0}, Lcom/chad/library/adapter/base/BaseQuickAdapter;->h0()Lr6/f;
-
-    move-result-object p0
-
-    if-eqz p0, :cond_7
-
-    invoke-virtual {p0}, Lr6/f;->s()V
-
-    goto :goto_4
-
-    :cond_6
-    :goto_3
-    iget-object p0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
-
-    if-eqz p0, :cond_7
-
-    invoke-virtual {p0}, Lcom/chad/library/adapter/base/BaseQuickAdapter;->h0()Lr6/f;
-
-    move-result-object p0
-
-    if-eqz p0, :cond_7
-
-    const/4 p1, 0x0
-
-    const/4 v1, 0x1
-
-    invoke-static {p0, p1, v1, v0}, Lr6/f;->u(Lr6/f;ZILjava/lang/Object;)V
-
-    :cond_7
+    :cond_ret
     :goto_4
     sget-object p0, Lkotlin/Unit;->a:Lkotlin/Unit;
 
@@ -1757,6 +1774,25 @@
     :cond_5
     iput-object v0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->l:Ljava/lang/Integer;
 
+    if-eqz p1, :cond_show_empty
+
+    invoke-virtual {p1}, Lcom/transsion/search/bean/SearchResultEntity;->getPager()Lcom/transsion/search/bean/Pager;
+
+    move-result-object v1
+
+    if-eqz v1, :cond_show_empty
+
+    invoke-virtual {v1}, Lcom/transsion/search/bean/Pager;->getHasMore()Z
+
+    move-result v1
+
+    if-eqz v1, :cond_show_empty
+
+    invoke-static {p0}, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->B0(Lcom/transsion/search/fragment/result/SearchResultTabFragment;)V
+
+    goto :cond_6
+
+    :cond_show_empty
     iget-object v1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
 
     if-eqz v1, :cond_6
@@ -1787,27 +1823,7 @@
     goto :goto_3
 
     :cond_7
-    if-eqz p1, :cond_8
-
-    invoke-virtual {p1}, Lcom/transsion/search/bean/SearchResultEntity;->getConvertData()Ljava/util/List;
-
-    move-result-object p1
-
-    if-eqz p1, :cond_8
-
-    invoke-interface {p1}, Ljava/util/List;->size()I
-
-    move-result p1
-
-    goto :goto_2
-
-    :cond_8
-    move p1, v1
-
-    :goto_2
-    const/16 v2, 0xa
-
-    if-ge p1, v2, :cond_a
+    goto :cond_a
 
     :goto_3
     iget-object p1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
@@ -1830,6 +1846,8 @@
     goto :goto_4
 
     :cond_a
+    iput-boolean v1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->m:Z
+
     iget-object p1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
 
     if-eqz p1, :cond_b
@@ -2303,6 +2321,10 @@
     invoke-direct {p2, p0}, Lcom/transsion/search/fragment/result/g;-><init>(Lcom/transsion/search/fragment/result/SearchResultTabFragment;)V
 
     invoke-virtual {p1, p2}, Lr6/f;->D(Lp6/f;)V
+
+    const/4 p2, 0x4
+
+    invoke-virtual {p1, p2}, Lr6/f;->E(I)V
 
     :cond_6
     iget-object p1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;

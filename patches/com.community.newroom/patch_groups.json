@@ -562,6 +562,7 @@
     "files": {
       "smali/com/miku/filter/SearchMovieFilter.smali": "Engine that filters SearchResultEntity tabs, strips promotional cards, and validates movie/series subjects",
       "smali_classes6/com/transsion/search/fragment/result/SearchResultViewModel.smali": "Filter search result items to exclusively include movies and series",
+      "smali_classes6/com/transsion/search/fragment/result/SearchResultViewModel$requestSearchResult$1.smali": "Coroutines request handler routing loadMore success and failure states properly to LiveData",
       "smali_classes6/com/transsion/search/fragment/result/SearchResultFragment.smali": "Limit viewpager adapter item count to single Movie/Series page",
       "smali_classes6/com/transsion/search/fragment/result/SearchResultTabFragment.smali": "Display movie/series subfilter tabs row while preserving results list",
       "res/layout/fragment_search_result.xml": "Collapse filter tab indicator and divider to gone/0dp with full-screen ViewPager2",
@@ -753,10 +754,10 @@
   {
     "id": "filter_tab_bounce_animation",
     "name": "Filter & Tab Interactive Bounce Animation",
-    "desc": "Adds a lively, responsive bounce-up and bounce-back spring animation when tapping category tabs, search filter chips, and navigation buttons",
+    "desc": "Adds a tactile press-back compression and spring overshoot rebound animation when tapping category tabs, search filter chips, and navigation buttons",
     "default": true,
     "files": {
-      "smali_classes6/com/miku/animation/BounceAnimationHelper.smali": "Central helper orchestrating physical upward bounce (-7dp, 1.08x) and spring overshoot settle (220ms)",
+      "smali_classes6/com/miku/animation/BounceAnimationHelper.smali": "Central helper orchestrating tactile press compression (0.86x, 75ms) and spring overshoot rebound (240ms)",
       "smali_classes6/com/miku/animation/BounceAnimationHelper$1.smali": "Phase 2 spring overshoot settle animator",
       "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager$a$b.smali": "Interactive bounce animation hook for Home category tabs (Movie, Anime, TV, Kids)",
       "smali_classes5/com/transsion/home/activity/MovieFilterActivity$c$a.smali": "Interactive bounce animation hook for Movie filter category tabs",
