@@ -94,11 +94,7 @@
     :cond_0
     iget-object v0, p0, Lcom/transsion/postdetail/layer/local/a0$b;->h:Lcom/transsion/postdetail/layer/local/a0;
 
-    const/4 v2, 0x0
-
-    const/4 v3, 0x0
-
-    invoke-static {v0, v2, v1, v3}, Lcom/transsion/postdetail/layer/local/a0;->B2(Lcom/transsion/postdetail/layer/local/a0;ZILjava/lang/Object;)V
+    invoke-virtual {v0, v1}, Lcom/transsion/postdetail/layer/local/a0;->A2(Z)V
 
     :goto_0
     return-void
