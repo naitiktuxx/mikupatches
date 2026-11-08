@@ -9,7 +9,7 @@
       "smali_classes7/com/mymovie/activity/MySplashActivity.smali": "Remove splash ad delay and launch directly into main screen",
       "res/layout/view_download_movie_ad_layout.xml": "Permanently neutralize and hide download dialog ad container"
     },
-    "description": "Blocks banner ads, splash ads, and full-screen video interstitials"
+    "desc": "Disables in-app ad loading, neutralizes AdMob/Hisavana/Vungle/Mintegral/ByteDance, and eliminates interstitial delays"
   },
   {
     "id": "unlock_1080p_quality",
@@ -19,7 +19,7 @@
       "smali_classes6/com/transsion/player/longvideo/member/ResolutionAdView.smali": "Bypass rewarded ad check on resolution selection",
       "smali_classes6/com/transsion/player/longvideo/intercept/PlaybackInterceptAdView.smali": "Bypass playback intercept ads"
     },
-    "description": "Unlocks 1080p and 720p HD streams without requiring VIP subscription or watching ads"
+    "desc": "Unlocks high-resolution / HD video streams and skips playback interception ads without watching ads"
   },
   {
     "id": "disable_tracking_analytics",
@@ -28,7 +28,7 @@
     "files": {
       "smali_classes7/com/mymovie/MyApp.smali": "Neutralize Firebase Analytics initialization and reporting"
     },
-    "description": "Blocks Firebase, Umeng, and internal tracking SDKs from collecting usage data"
+    "desc": "Disables Firebase Analytics user tracking and crash reporting"
   },
   {
     "id": "remove_unneeded_permissions",
@@ -37,7 +37,7 @@
     "files": {
       "AndroidManifest.xml": "Debloated AndroidManifest with removed ad activities, services, receivers, and invasive permissions"
     },
-    "description": "Strips unnecessary background ad services, analytics trackers, and unneeded permissions"
+    "desc": "Removes 18 intrusive permissions (location, camera, audio, calendar) and disables 26 background ad/tinker/push services"
   },
   {
     "id": "remove_login_prompts",
@@ -50,7 +50,7 @@
       "smali_classes7/com/transsnet/login/LoginLikeActivity.smali": "Auto-finish LoginLikeActivity",
       "smali_classes7/com/transsnet/login/LoginActivity.smali": "Auto-finish LoginActivity"
     },
-    "description": "Removes login prompts, signup buttons, and account management banner from Me tab"
+    "desc": "Completely removes 'Log in to your account' card, login button, and neutralizes all login/sign-up activities"
   },
   {
     "id": "clean_profile_screen",
@@ -64,7 +64,7 @@
       "smali_classes5/com/transsion/ad/view/native_ad/BiddingFloatingIrregularAnimationView.smali": "Disable bidding native floating ad view",
       "smali/com/transsion/fission/FissionProvider.smali": "Disable fission rewards and cash chest tasks"
     },
-    "description": "Removes reward coins, lucky spin, and task center from the profile screen"
+    "desc": "Removes floating cash/chest widget, Premium TV Pro VIP banner in Me section, and fission rewards"
   },
   {
     "id": "remove_community_study",
@@ -84,7 +84,7 @@
       "smali_classes7/com/transsion/usercenter/kids/CreateKidsProfileDialog.smali": "Auto-dismiss Study Mode (kids profile) popup dialog",
       "smali_classes7/com/transsion/usercenter/kids/AccountSwitchDialog.smali": "Auto-dismiss kids account switch dialog"
     },
-    "description": "Removes the community feed, feedback forms, and educational study mode"
+    "desc": "Removes Community, My Activity, Study Mode, TV/Web link, feedback dialogs, and auto-finishes all community and feedback activities"
   },
   {
     "id": "clean_settings_menu",
@@ -98,7 +98,7 @@
       "smali/com/transsion/baselib/report/launch/RoomInstallReferrer.smali": "Disable install referrer tracking and Google Play referrer client callbacks",
       "smali/com/transsion/push/tracker/PushTracker.smali": "Disable push notification event tracking and upload tasks"
     },
-    "description": "Cleans settings by removing update checks, rate us, feedback, and redundant links"
+    "desc": "Removes Check for Updates, About Us, Privacy Policy, User Agreement, and Login/Sign Up from Settings; disables Athena analytics, periodic reporting, install referrer, and push trackers"
   },
   {
     "id": "remove_qr_scanner",
@@ -108,7 +108,7 @@
       "smali_classes7/com/transsion/usercenter/me/MeFragment.smali": "Hide iv_qr_code scan icon and neutralize click action",
       "smali_classes7/com/transsion/usercenter/profile/ProfileQRCodeActivity.smali": "Auto-finish ProfileQRCodeActivity on launch"
     },
-    "description": "Removes the unnecessary QR scanner button and scanner activity"
+    "desc": "Removes the Scan (QR code) icon from the top-right corner of the Me panel, neutralizes the router navigation, and auto-finishes ProfileQRCodeActivity"
   },
   {
     "id": "remove_premium_tab",
@@ -120,7 +120,7 @@
       "smali_classes7/com/mymovie/widget/ImageAdView$a.smali": "Neutralize floating cash onClick listener and MyWebViewActivity intent",
       "smali_classes7/com/mymovie/widget/ImageAdView$b.smali": "Neutralize floating cash background image downloader"
     },
-    "description": "Removes the bottom VIP tab and floating coin reward widget"
+    "desc": "Removes the Premium tab from bottom navigation (retaining only Home, Downloads, Me) and completely removes the floating cash/chest widget and its web view launcher"
   },
   {
     "id": "clean_downloads_page",
@@ -147,7 +147,7 @@
       "res/layout/item_download_re_resolution.xml": "Center resolution text and remove VIP icon spacer in download resolution buttons",
       "res/layout/view_download_movie_ad_layout.xml": "Hide bottom ad placeholder in download dialog"
     },
-    "description": "Removes lottery gift boxes, ad banners, and clutter from the downloads screen"
+    "desc": "Removes transfer/share options, local files player access/scanning, For You recommendations, and Win Big Prizes button from Downloads tab"
   },
   {
     "id": "clean_video_details",
@@ -200,7 +200,7 @@
       "smali_classes6/com/transsion/postdetail/ui/view/LocalVideoMiddleHeaderView.smali": "Remove Details/Download More button handling and hide Resources line in downloaded video header",
       "smali_classes7/so/c0.smali": "Hide Resources title, uploader name, info icon in downloaded video header view binding"
     },
-    "description": "Removes comments, community posts, and spam share buttons below video player"
+    "desc": "Removes TV/Help buttons, Ads skipped for Premium banner, Share button, Resources line (title, uploader, info), For You suggestions, Comments section, + Post button, and neutralizes all post/publishing activities and code"
   },
   {
     "id": "miku_branding_icon",
@@ -270,7 +270,7 @@
       "res/drawable/miku_anim_34.webp": "Miku splash animation frame 34",
       "res/drawable/miku_anim_35.webp": "Miku splash animation frame 35"
     },
-    "description": "Rebrands app to Miku, updates app icon, and sets package to com.mikuplayer.tux"
+    "desc": "Renames app to Miku, updates package name to com.mikuplayer.tux, and replaces launcher icons with custom Miku icons"
   },
   {
     "id": "disable_push_notifications",
@@ -285,7 +285,7 @@
       "smali_classes6/com/transsion/sunflower/c.smali": "Neutralize Sunflower push notification notify display",
       "smali_classes6/com/transsion/sunflower/FSNManager.smali": "Neutralize Sunflower push periodic work scheduling and config triggers"
     },
-    "description": "Completely disables background push notification services and promotional alerts"
+    "desc": "Completely disables server push notifications (FCM), promotional messages (TPush, MPush, Sunflower), and background push workers while preserving download notifications"
   },
   {
     "id": "netflix_dark_theme",
@@ -338,13 +338,16 @@
       "res/mipmap-xxhdpi/short_tv_ic_banner_play.webp": "Netflix Red styled short tv banner play button",
       "res/mipmap-xxhdpi/movie_detail_gradient_play.webp": "Netflix Red styled movie detail play button",
       "res/drawable/ic_loading_white.xml": "Netflix Red styled vector loading spinner",
+      "res/drawable/player_loading_spinner.xml": "Modern Netflix Red gradient sweep circular loading indicator",
+      "res/layout/long_vod_layout_loading.xml": "Modern Netflix Red video player loading indicator without text",
+      "res/layout/post_video_loading.xml": "Modern Netflix Red video player loading indicator without text",
       "res/layout/exo_player_view.xml": "Netflix Red tinted buffering progress bar in ExoPlayer",
       "res/layout/exo_styled_player_view.xml": "Netflix Red tinted buffering progress bar in Styled ExoPlayer",
       "smali/androidx/swiperefreshlayout/widget/SwipeRefreshLayout.smali": "Dark background and Netflix Red spinner for SwipeRefreshLayout",
       "smali_classes2/androidx/swiperefreshlayout/widget/a.smali": "Dark background circle for SwipeRefreshLayout indicator",
       "smali_classes2/androidx/swiperefreshlayout/widget/b.smali": "Netflix Red progress arc spinner for SwipeRefreshLayout"
     },
-    "description": "Applies OLED pitch-black dark theme matching Netflix styling across all screens"
+    "desc": "Applies permanent dark mode (#0B0B0F, #141414, #181818), Netflix Red (#E50914) accents, neutralizes aqua background glow, and removes all green/teal/mint colors"
   },
   {
     "id": "disable_interests_popup",
@@ -357,7 +360,7 @@
       "smali_classes5/com/transsion/home/fragment/dialog/HomePreferencesDialog.smali": "Auto-dismiss and neutralize HomePreferencesDialog",
       "smali_classes5/com/transsion/home/fragment/home/HomeFragment.smali": "Neutralize home preferences popup launcher in HomeFragment"
     },
-    "description": "Stops first-launch dialog asking users to select preferred genres and interests"
+    "desc": "Completely removes 'Tell us about your interests' popup dialogs in Education and Home tabs (CourseManager, InterestSelectDialog, HomePreferencesEnterPopDialog)"
   },
   {
     "id": "clean_search_page",
@@ -377,7 +380,7 @@
       "res/layout/resources_request.xml": "Hide Give Me It button, subtitle, and badge in empty search view layout",
       "smali_classes6/com/transsion/search/fragment/values/SearchValuesFragment.smali": "Remove resource request reporting network calls and click listeners"
     },
-    "description": "Removes sponsored keywords, hot search cards, and promotional suggestions"
+    "desc": "Removes prefilled search suggestions, mic button, 'Everyone is searching' section, and hot tabs/rankings (Hot Movies, Hot Series, etc.) while preserving search functionality and recent searches"
   },
   {
     "id": "secure_file_storage",
@@ -386,7 +389,7 @@
     "files": {
       "res/xml/util_code_provider_paths.xml": "Remove root filesystem path exposure from FileProvider"
     },
-    "description": "Hardens FileProvider paths to protect private app files from external access"
+    "desc": "Removes dangerous root filesystem path from FileProvider in util_code_provider_paths.xml to eliminate sandbox escape risks"
   },
   {
     "id": "lock_hidden_activities",
@@ -395,7 +398,7 @@
     "files": {
       "AndroidManifest.xml": "Hardened AndroidManifest with neutralized exported attributes on sensitive internal components"
     },
-    "description": "Closes exported internal activities to prevent unauthorized app hijacking"
+    "desc": "Sets android:exported=false on PayActivity, ClaimRewardActivity, UGCLocalVideoDetailActivity, and TMC MiniApp IPC services to prevent unauthorized external access without causing runtime crashes"
   },
   {
     "id": "disable_inapp_webviews",
@@ -406,7 +409,7 @@
       "smali_classes7/com/transsion/usercenter/setting/WebViewActivity.smali": "Auto-finish WebViewActivity to avoid launching in-app browser",
       "smali_classes5/com/transsion/ad/web/cct/CCTWebviewActivity.smali": "Auto-finish CCTWebviewActivity to avoid opening ad WebViews"
     },
-    "description": "Disables unused payment WebViews and in-app browser windows to eliminate vulnerabilities"
+    "desc": "Neutralizes WebViewActivity, CCTWebviewActivity, PayWebFragment loadUrl, and disables background TWebViewAdCacheManager pre-warming to save RAM and completely eliminate WebView attack surface without breaking native ExoPlayer streaming"
   },
   {
     "id": "hide_playback_toasts",
@@ -422,7 +425,7 @@
       "smali_classes6/com/transsion/postdetail/ui/fragment/LocalVideoDetailFragment.smali": "Neutralize LayerFlag.SHOW_TOAST dispatches for stream server and playback time",
       "smali_classes6/com/transsion/postdetail/layer/local/j1.smali": "Permanently suppress displaying stream server and last played time toast notifications"
     },
-    "description": "Suppresses server connection and playback toast popups during video playback"
+    "desc": "Hides the 'Analysing from [server]' stream server toast and 'Last played time' overlay toast during video playback across all player layers and orientations while keeping stream resolution and playback seek logic fully intact"
   },
   {
     "id": "optimize_arm64_size",
@@ -432,7 +435,7 @@
     "hooks": [
       "strip_redundant_arch.py"
     ],
-    "description": "Removes 32-bit legacy libraries and bloated dead assets to shrink APK size"
+    "desc": "Strips duplicate legacy 32-bit (armeabi-v7a) native libraries, offline H5 ad bundles, push banners, and modder watermarks to reduce APK size down to ~88MB for modern 64-bit devices while keeping all video codecs and JNI methods intact"
   },
   {
     "id": "hide_vip_badges",
@@ -462,7 +465,7 @@
       "res/drawable/ic_download_speed_up_premium.xml": "Make download speed up premium icon transparent",
       "res/layout/adapter_downloading_item.xml": "Hide VIP crown icon and restyle speed boost text in downloading items"
     },
-    "description": "Removes VIP crowns and premium badges from buttons and resolution menus"
+    "desc": "Removes VIP/Premium crown badges and golden borders from buttons, episode list cards, and resolution selectors so all buttons look uniform with regular app styling"
   },
   {
     "id": "remove_novelhub_stories",
@@ -478,7 +481,7 @@
       "smali_classes7/com/transsion/usercenter/me/MeViewmodel.smali": "Permanently remove Hot Novels card (type 7) from Me tab",
       "smali_classes7/uj/a.smali": "Wipe MiniApp and NovelHub initialization and launch backend methods"
     },
-    "description": "Completely removes NovelHub, web novels reader, and short stories sections"
+    "desc": "Maintains strict UI consistency when Family Mode is toggled off (keeping standard 3 bottom tabs without large button or NovelHub, and removing Hot Novels card and ShortTV tabs), while allowing backend content mode unlocking and wiping NovelHub MiniApp / ShortTV logic"
   },
   {
     "id": "server_crash_protection",
@@ -488,7 +491,7 @@
       "smali/com/transsion/api/gateway/GateWaySdk.smali": "Directly return valid gateway online secret key avoiding null meta-data reads",
       "smali/com/transsion/api/gateway/sercurity/a.smali": "Null-safe HMAC secret key fallback preventing Base64 decode NPE"
     },
-    "description": "Prevents app crashes when MovieBox API gateway servers fail or reject signature requests"
+    "desc": "Ensures Transsion API Gateway HMAC signing always has a valid secret key and never throws NullPointerException in Base64 decode, preventing network request drops and Something went wrong errors"
   },
   {
     "id": "randomize_device_id",
@@ -500,7 +503,7 @@
       "smali/com/transsion/sdk/oneid/a.smali": "Redirect .sys_id.dat path from shared SD card to private internal storage",
       "smali/com/transsion/sdk/oneid/b.smali": "Randomize filesystem UUID statvfs fingerprint and neutralize external storage sync"
     },
-    "description": "Generates per-install randomized device identifiers to prevent server-side device tracking"
+    "desc": "Generates unique random GAID, device_id, and ANDROID_ID per app install/data clear stored in private app storage, and neutralizes hardware statvfs and cross-install .sys_id.dat tracking so guest watchlists and preferences reset cleanly upon data clear or reinstall"
   },
   {
     "id": "hide_trending_promos",
@@ -509,7 +512,7 @@
     "files": {
       "smali/com/transsion/home/fragment/tab/TrendingFragment.smali": "Filter promotional slides in G1 and remove Get Free Premium single image banner in F1"
     },
-    "description": "Hides promotional slides, banners, and free VIP promos on the Trending screen"
+    "desc": "Removes promotional slides (Join Communities, MovieBox Download/TV, Diwali Dhamaka/Special Offer/Binge Dhamaka, and Invite New Friends, Get Free Premium) from the hero carousel while preserving regular trending movies, and removes the Get Free Premium banner section right below the carousel"
   },
   {
     "id": "block_nsfw_suggestions",
@@ -528,7 +531,7 @@
       "smali_classes7/fr/c$b.smali": "Filter raw Google Suggest response items for UGC search",
       "assets/filter_data.b64.txt": "GZIP-compressed base64-encoded filter rules dataset"
     },
-    "description": "Filters out adult and NSFW keywords from search suggestions and queries"
+    "desc": "Blocks adult/NSFW search suggestions, autocomplete terms, and queries across both standard and UGC search backends using an extensive multi-lingual blocklist (English, Hinglish, Hindi Devanagari, regional terms, and ratings) with leetspeak normalization and allowlist exception handling"
   },
   {
     "id": "default_anime_tab",
@@ -542,7 +545,7 @@
       "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager.smali": "Configure CommonNavigator in adjustMode to evenly distribute and center remaining tabs",
       "assets/appTab.json": "Update fallback appTab with defaultSubTabCode Animation and remove Trending"
     },
-    "description": "Hides unwanted home tabs (Short drama, Live) and opens directly to Anime tab"
+    "desc": "Removes unwanted tabs (Football, Trending, Cricket, TV-Channel, Education, Music, Indian, Hindi, Tamil, Telugu, Game, Buzzbox, Midnight) from the Home screen top tab bar, centers the slider with evenly spaced tabs, and sets Anime as the primary default tab on app startup"
   },
   {
     "id": "permanent_family_mode",
@@ -552,7 +555,7 @@
     "hooks": [
       "lock_family_mode.py"
     ],
-    "description": "Locks family safe mode permanently active and hides settings switch"
+    "desc": "Permanently locks Family Mode to ON across all movie/video content interception, neutralizes setting toggles, and completely hides the Family Mode row and notification badges from Settings and Main navigation"
   },
   {
     "id": "movies_only_search",
@@ -572,7 +575,7 @@
     "hooks": [
       "patch_search_filter.py"
     ],
-    "description": "Restricts search results strictly to Movies and TV Series, removing short drama filters"
+    "desc": "Completely removes the category filter tab bar (All, Movie/Series, Sports, Music, Education) from search results, eliminates promotional and vertical rank cards (such as Sports Game) from search suggestions and results, permanently restricts search to movies and series, and sets the search bar default placeholder to 'Search'."
   },
   {
     "id": "rounded_corners_ui",
@@ -667,7 +670,7 @@
       "smali_classes7/com/transsnet/downloader/fragment/DownloadReDetectorBaseFragment.smali": "Calculate exact full area height for download dialog without status/nav bar shrinkage",
       "smali_classes7/com/transsnet/downloader/widget/DownloadResolutionTabView.smali": "Permanently hide horizontal divider line in download resolution tab"
     },
-    "description": "Applies modern rounded corners to cards and transforms search bars into smooth capsules"
+    "desc": "Rounds search bars on Home and Search screens into smooth capsules (18dp) and evenly softens square-cornered option overlays, dialogs, menus, and action buttons into slight rounded shapes (10-16dp) while strictly preserving video cards"
   },
   {
     "id": "smooth_player_fade",
@@ -701,7 +704,7 @@
       "smali_classes6/com/transsion/subtitle/helper/j.smali": "Interactive press feedback for subtitle sync adjust minus and plus buttons",
       "smali_classes6/com/transsion/subtitle/view/SubtitleOptionsView.smali": "Interactive seekbar feedback and font color selection animations in subtitle style options"
     },
-    "description": "Adds smooth fade animation for video player on-screen controls"
+    "desc": "Adds smooth, subtle fade-in and fade-out animations when showing or hiding player controls by tapping or timeout in both online streaming and downloaded video playback"
   },
   {
     "id": "fast_video_buffering",
@@ -711,7 +714,7 @@
     "hooks": [
       "patch_aliplayer_buffer.py"
     ],
-    "description": "Increases video pre-cache buffer from 2s to 15s for stutter-free playback"
+    "desc": "Reduces streaming buffering and stalls by overriding AliPlayer buffer settings: startBuffer=2.5s, highBuffer=8s, maxBuffer=120s, cacheSize=1024MB, networkTimeout=15s, networkRetryCount=5, and preload=10s"
   },
   {
     "id": "keep_english_hindi_only",
@@ -723,7 +726,7 @@
     "hooks": [
       "strip_unused_languages.py"
     ],
-    "description": "Removes 40+ unused foreign language files, retaining only English and Hindi"
+    "desc": "Removes all unused languages from the app, keeping only English and Hindi in UI language selection and stripping unused localized resource bundles while leaving all video content, audio tracks, and subtitles untouched"
   },
   {
     "id": "remove_title_emojis",
@@ -735,7 +738,7 @@
     "hooks": [
       "remove_home_screen_emojis.py"
     ],
-    "description": "Strips emojis from section titles and tab labels for a clean professional look"
+    "desc": "Removes any kind of emojis, symbols, and redundant spaces from section headers and category titles across all tabs on the Home screen (Trending, Movie, Anime, TV, Kids, Short TV, Education, UGC)"
   },
   {
     "id": "floating_glass_dock",
@@ -749,7 +752,7 @@
       "res/layout/tab_bottom.xml": "Vertically and horizontally centered tab icon layout without text labels for the 48dp floating dock",
       "smali_classes2/app/patches/ui/DockStylePatch.smali": "Single-file compact floating frosted-glass dock engine with dynamic blur, macOS specular gradient outline, and spring bounce physics"
     },
-    "description": "Transforms default bottom navigation bar into a compact floating frosted-glass dock"
+    "desc": "Converts bottom navigation into a sleek 180dp x 48dp floating frosted-glass pill dock with symmetrical icon spacing, hidden labels, real-time dynamic blur, Apple macOS specular gradient rim, and spring bounce physics"
   },
   {
     "id": "tab_bounce_animation",
@@ -773,6 +776,6 @@
       "smali_classes5/com/transsion/home/view/filter/linear/FilterView.smali": "Interactive bounce animation hook for horizontal filter category items",
       "smali_classes5/com/transsion/home/view/filter/expand/TabExpandView.smali": "Interactive bounce animation hook for expand filter category items"
     },
-    "description": "Adds interactive spring bounce animations when selecting category tabs"
+    "desc": "Adds a tactile press-back compression and spring overshoot rebound animation when tapping category tabs, search filter chips, and navigation buttons"
   }
 ]

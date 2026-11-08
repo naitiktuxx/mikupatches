@@ -2916,41 +2916,10 @@
 .end method
 
 .method protected J2(Z)V
-    .locals 2
+    .locals 0
 
     invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->J2(Z)V
 
-    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
-
-    if-eqz v0, :cond_1
-
-    iget-object v0, v0, Lso/b0;->N:Landroidx/appcompat/widget/AppCompatImageView;
-
-    if-eqz v0, :cond_1
-
-    if-eqz p1, :cond_0
-
-    const/16 v1, 0x8
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
-
-    goto :goto_0
-
-    :cond_0
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->D0()Landroid/view/ViewGroup;
-
-    move-result-object v1
-
-    invoke-static {v1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->areControlsVisible(Landroid/view/View;)Z
-
-    move-result v1
-
-    if-eqz v1, :cond_1
-
-    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
-
-    :cond_1
-    :goto_0
     return-void
 .end method
 
@@ -2974,28 +2943,9 @@
 .end method
 
 .method public A2(Z)V
-    .locals 2
+    .locals 0
 
     invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->A2(Z)V
 
-    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
-
-    if-eqz v0, :cond_0
-
-    iget-object v0, v0, Lso/b0;->N:Landroidx/appcompat/widget/AppCompatImageView;
-
-    if-eqz v0, :cond_0
-
-    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->isVerticalPauseClashingWithLoading(Landroid/view/View;)Z
-
-    move-result v1
-
-    if-eqz v1, :cond_0
-
-    const/16 v1, 0x8
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
-
-    :cond_0
     return-void
 .end method

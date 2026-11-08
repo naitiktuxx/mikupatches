@@ -36,7 +36,7 @@ class PatchGroup:
         return cls(
             id=data.get("id", ""),
             name=data.get("name", ""),
-            desc=data.get("desc", ""),
+            desc=data.get("desc") or data.get("description", ""),
             default=data.get("default", True),
             tag=data.get("tag") or data.get("short_name"),
             files=data.get("files", {}),
