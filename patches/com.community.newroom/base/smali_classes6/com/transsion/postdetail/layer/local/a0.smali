@@ -3488,7 +3488,7 @@
 .method private static final o2(Lcom/transsion/postdetail/layer/local/a0;)V
     .locals 0
 
-    invoke-direct {p0}, Lcom/transsion/postdetail/layer/local/a0;->x1()V
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->x1()V
 
     return-void
 .end method
@@ -3824,14 +3824,12 @@
     return-void
 .end method
 
-.method private final x1()V
+.method public x1()V
     .locals 2
 
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->C0()Z
 
     move-result v0
-
-    const/16 v1, 0x8
 
     if-nez v0, :cond_0
 
@@ -3841,9 +3839,29 @@
 
     if-eqz v0, :cond_0
 
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
     :cond_0
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->O0()Landroid/widget/ImageView;
+
+    move-result-object v0
+
+    if-eqz v0, :cond_back
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
+
+    :cond_back
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->f2()Landroid/widget/ImageView;
+
+    move-result-object v0
+
+    if-eqz v0, :cond_pause
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
+
+    :cond_pause
+    const/16 v1, 0x8
+
     iget-boolean v0, p0, Lcom/transsion/postdetail/layer/local/a0;->y:Z
 
     if-nez v0, :cond_1
@@ -3890,7 +3908,7 @@
 
     if-eqz v0, :cond_5
 
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
     :cond_5
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->q1()Landroid/view/View;
@@ -3899,7 +3917,7 @@
 
     if-eqz v0, :cond_6
 
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
     :cond_6
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->b1()Landroid/view/View;
@@ -4214,9 +4232,27 @@
 
     if-eqz p1, :cond_6
 
-    invoke-virtual {p1, v2}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
 
     :cond_6
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->O0()Landroid/widget/ImageView;
+
+    move-result-object p1
+
+    if-eqz p1, :cond_in_back
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
+
+    :cond_in_back
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->f2()Landroid/widget/ImageView;
+
+    move-result-object p1
+
+    if-eqz p1, :cond_in_pause
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
+
+    :cond_in_pause
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->Z2()Landroidx/constraintlayout/widget/Group;
 
     move-result-object p1
@@ -4241,7 +4277,7 @@
 
     if-eqz p1, :cond_9
 
-    invoke-virtual {p1, v2}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
 
     :cond_9
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->A0()Landroid/view/View;
@@ -4259,7 +4295,7 @@
 
     if-eqz p1, :cond_b
 
-    invoke-virtual {p1, v2}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
 
     :cond_b
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->E0()Landroid/view/ViewGroup;
@@ -4492,7 +4528,7 @@
     invoke-interface {v0, v1}, Lcom/transsion/player/orplayer/g;->setSpeed(F)V
 
     :cond_1
-    invoke-direct {p0}, Lcom/transsion/postdetail/layer/local/a0;->x1()V
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->x1()V
 
     const/4 v0, 0x1
 
@@ -7707,7 +7743,7 @@
 
     if-eqz p1, :cond_0
 
-    invoke-direct {p0}, Lcom/transsion/postdetail/layer/local/a0;->x1()V
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->x1()V
 
     goto :goto_0
 

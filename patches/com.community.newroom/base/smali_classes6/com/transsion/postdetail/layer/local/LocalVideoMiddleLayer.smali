@@ -2937,24 +2937,39 @@
     goto :goto_0
 
     :cond_0
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->Z2()Landroidx/constraintlayout/widget/Group;
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->D0()Landroid/view/ViewGroup;
 
     move-result-object v1
 
-    if-eqz v1, :cond_1
-
-    invoke-virtual {v1}, Landroid/view/View;->getVisibility()I
+    invoke-static {v1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->areControlsVisible(Landroid/view/View;)Z
 
     move-result v1
 
-    if-nez v1, :cond_1
+    if-eqz v1, :cond_1
 
-    const/4 v1, 0x0
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
 
     :cond_1
     :goto_0
+    return-void
+.end method
+
+.method public x1()V
+    .locals 2
+
+    invoke-super {p0}, Lcom/transsion/postdetail/layer/local/a0;->x1()V
+
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
+
+    if-eqz v0, :cond_0
+
+    iget-object v0, v0, Lso/b0;->N:Landroidx/appcompat/widget/AppCompatImageView;
+
+    if-eqz v0, :cond_0
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
+
+    :cond_0
     return-void
 .end method
 
