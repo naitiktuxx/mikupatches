@@ -7943,7 +7943,20 @@
 
     invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 
+    iget-boolean v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->w:Z
+
+    if-eqz v0, :cond_fade_in_mid_pause
+
+    const/16 v0, 0x8
+
+    invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
+
+    goto :cond_skip_mid_pause
+
+    :cond_fade_in_mid_pause
     invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
+
+    :cond_skip_mid_pause
 
     iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
@@ -10608,7 +10621,15 @@
 
     if-eqz v0, :cond_3
 
-    invoke-static {v0}, Ljg/c;->h(Landroid/view/View;)V
+    invoke-virtual {v0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Landroid/view/ViewPropertyAnimator;->cancel()V
+
+    const/16 v1, 0x8
+
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
     goto :cond_3
 
@@ -11072,6 +11093,17 @@
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
+    iget-boolean v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->w:Z
+
+    if-eqz v0, :cond_mid_play_anim
+
+    const/16 v0, 0x8
+
+    invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
+
+    goto :goto_0
+
+    :cond_mid_play_anim
     const/4 v0, 0x1
 
     invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;Z)V
@@ -11119,6 +11151,17 @@
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
+    iget-boolean v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->w:Z
+
+    if-eqz v0, :cond_mid_pause_anim
+
+    const/16 v0, 0x8
+
+    invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
+
+    goto :goto_0
+
+    :cond_mid_pause_anim
     const/4 v0, 0x0
 
     invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;Z)V

@@ -107,6 +107,19 @@
 
     .line 219
     :cond_0
+    invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->isVerticalPauseClashingWithLoading(Landroid/view/View;)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_animate_normal
+
+    const/16 v0, 0x8
+
+    invoke-virtual {p0, v0}, Landroid/view/View;->setVisibility(I)V
+
+    return-void
+
+    :cond_animate_normal
     invoke-virtual {p0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
@@ -1093,134 +1106,190 @@
 
     move-result v1
 
-    .line 58
+    const v2, 0x7f0a062f
+
+    if-eq v1, v2, :cond_check_parent
+
     const/4 v2, -0x1
 
-    if-eq v1, v2, :cond_3
+    if-eq v1, v2, :cond_end
 
     invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
 
-    move-result-object v3
+    move-result-object v2
 
-    if-eqz v3, :cond_3
+    if-eqz v2, :cond_end
 
-    .line 59
-    invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
-
-    move-result-object v3
-
-    invoke-virtual {v3, v1}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
+    invoke-virtual {v2, v1}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
 
     move-result-object v1
 
-    .line 60
-    const-string v3, "iv_middle_pause"
+    const-string v2, "iv_middle_pause"
 
-    invoke-virtual {v3, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+    invoke-virtual {v2, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
     move-result v1
 
-    if-eqz v1, :cond_3
+    if-nez v1, :cond_check_parent
 
-    .line 61
+    return v0
+
+    :cond_check_parent
     invoke-virtual {p0}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
 
     move-result-object v1
 
-    instance-of v1, v1, Landroid/view/ViewGroup;
+    instance-of v2, v1, Landroid/view/ViewGroup;
 
-    if-eqz v1, :cond_3
-
-    .line 62
-    invoke-virtual {p0}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
-
-    move-result-object v1
+    if-eqz v2, :cond_end
 
     check-cast v1, Landroid/view/ViewGroup;
 
-    .line 63
-    const/4 v3, 0x0
+    const v2, 0x7f0a070d
 
-    :goto_0
-    invoke-virtual {v1}, Landroid/view/ViewGroup;->getChildCount()I
+    invoke-virtual {v1, v2}, Landroid/view/ViewGroup;->findViewById(I)Landroid/view/View;
 
-    move-result v4
+    move-result-object v2
 
-    if-ge v3, v4, :cond_3
+    if-eqz v2, :cond_check_surface
 
-    .line 64
-    invoke-virtual {v1, v3}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    invoke-virtual {v2}, Landroid/view/View;->getVisibility()I
 
-    move-result-object v4
+    move-result v2
 
-    .line 65
-    if-eqz v4, :cond_2
+    if-nez v2, :cond_check_surface
 
-    invoke-virtual {v4}, Landroid/view/View;->getVisibility()I
-
-    move-result v5
-
-    if-nez v5, :cond_2
-
-    invoke-virtual {v4}, Landroid/view/View;->getId()I
-
-    move-result v5
-
-    if-eq v5, v2, :cond_2
-
-    .line 66
-    invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
-
-    move-result-object v5
-
-    invoke-virtual {v4}, Landroid/view/View;->getId()I
-
-    move-result v4
-
-    invoke-virtual {v5, v4}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
-
-    move-result-object v4
-
-    .line 67
-    const-string v5, "layout_loading"
-
-    invoke-virtual {v5, v4}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-
-    move-result v5
-
-    if-nez v5, :cond_1
-
-    const-string v5, "vd_surface_loading"
-
-    invoke-virtual {v5, v4}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-
-    move-result v4
-    :try_end_0
-    .catchall {:try_start_0 .. :try_end_0} :catchall_0
-
-    if-eqz v4, :cond_2
-
-    .line 68
-    :cond_1
     const/4 p0, 0x1
 
     return p0
 
-    .line 63
-    :cond_2
-    add-int/lit8 v3, v3, 0x1
+    :cond_check_surface
+    const v2, 0x7f0a110d
+
+    invoke-virtual {v1, v2}, Landroid/view/ViewGroup;->findViewById(I)Landroid/view/View;
+
+    move-result-object v2
+
+    if-eqz v2, :cond_check_tv
+
+    invoke-virtual {v2}, Landroid/view/View;->getVisibility()I
+
+    move-result v2
+
+    if-nez v2, :cond_check_tv
+
+    const/4 p0, 0x1
+
+    return p0
+
+    :cond_check_tv
+    const v2, 0x7f0a0f36
+
+    invoke-virtual {v1, v2}, Landroid/view/ViewGroup;->findViewById(I)Landroid/view/View;
+
+    move-result-object v2
+
+    if-eqz v2, :cond_check_children
+
+    invoke-virtual {v2}, Landroid/view/View;->getVisibility()I
+
+    move-result v2
+
+    if-nez v2, :cond_check_children
+
+    const/4 p0, 0x1
+
+    return p0
+
+    :cond_check_children
+    const/4 v2, 0x0
+
+    :goto_0
+    invoke-virtual {v1}, Landroid/view/ViewGroup;->getChildCount()I
+
+    move-result v3
+
+    if-ge v2, v3, :cond_end
+
+    invoke-virtual {v1, v2}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+
+    move-result-object v3
+
+    if-eqz v3, :cond_next_child
+
+    invoke-virtual {v3}, Landroid/view/View;->getVisibility()I
+
+    move-result v4
+
+    if-nez v4, :cond_next_child
+
+    instance-of v4, v3, Landroid/widget/ProgressBar;
+
+    if-eqz v4, :cond_check_child_name
+
+    const/4 p0, 0x1
+
+    return p0
+
+    :cond_check_child_name
+    invoke-virtual {v3}, Landroid/view/View;->getId()I
+
+    move-result v3
+
+    const/4 v4, -0x1
+
+    if-eq v3, v4, :cond_next_child
+
+    invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
+
+    move-result-object v4
+    :try_end_0
+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+
+    if-eqz v4, :cond_next_child
+
+    :try_start_1
+    invoke-virtual {v4, v3}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
+
+    move-result-object v3
+
+    if-eqz v3, :cond_next_child
+
+    const-string v4, "loading"
+
+    invoke-virtual {v3, v4}, Ljava/lang/String;->contains(Ljava/lang/CharSequence;)Z
+
+    move-result v4
+
+    if-nez v4, :cond_found_loading
+
+    const-string v4, "Loading"
+
+    invoke-virtual {v3, v4}, Ljava/lang/String;->contains(Ljava/lang/CharSequence;)Z
+
+    move-result v3
+    :try_end_1
+    .catchall {:try_start_1 .. :try_end_1} :catch_child
+
+    if-eqz v3, :cond_next_child
+
+    :cond_found_loading
+    const/4 p0, 0x1
+
+    return p0
+
+    :catch_child
+    :cond_next_child
+    add-int/lit8 v2, v2, 0x1
 
     goto :goto_0
 
-    .line 76
-    :cond_3
+    :cond_end
     goto :goto_1
 
-    .line 75
     :catchall_0
     move-exception p0
 
-    .line 77
     :goto_1
     return v0
 .end method
