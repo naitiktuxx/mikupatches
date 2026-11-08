@@ -1128,6 +1128,14 @@
 
     invoke-virtual {v2, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
+    move-result v2
+
+    if-nez v2, :cond_check_parent
+
+    const-string v2, "vd_pause"
+
+    invoke-virtual {v2, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
     move-result v1
 
     if-nez v1, :cond_check_parent

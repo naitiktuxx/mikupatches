@@ -1483,7 +1483,11 @@
 
     move-result-object v1
 
+    if-eqz v1, :cond_1
+
     iget-object v2, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->i:Ljava/lang/String;
+
+    if-eqz v2, :cond_1
 
     invoke-static {v1, v2}, Lkotlin/jvm/internal/Intrinsics;->c(Ljava/lang/Object;Ljava/lang/Object;)Z
 
@@ -2352,6 +2356,20 @@
 
     if-eqz v0, :cond_3
 
+    invoke-virtual {v0}, Lcom/transsion/search/bean/SearchResultEntity;->getConvertData()Ljava/util/List;
+
+    move-result-object v1
+
+    check-cast v1, Ljava/util/Collection;
+
+    if-eqz v1, :cond_3
+
+    invoke-interface {v1}, Ljava/util/Collection;->isEmpty()Z
+
+    move-result v1
+
+    if-nez v1, :cond_3
+
     iget-object v1, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
 
     if-eqz v1, :cond_1
@@ -2377,21 +2395,17 @@
     invoke-virtual {v1, v0}, Lcom/chad/library/adapter/base/BaseQuickAdapter;->n1(Ljava/util/Collection;)V
 
     :cond_1
-    iget-object v0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->j:Lcom/transsion/search/bean/SearchResultEntity;
+    const/4 v0, 0x0
 
-    if-eqz v0, :cond_2
+    iput-boolean v0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->m:Z
 
-    invoke-virtual {v0}, Lcom/transsion/search/bean/SearchResultEntity;->getPager()Lcom/transsion/search/bean/Pager;
+    invoke-direct {p0}, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->s0()Lcom/transsion/search/fragment/result/SearchResultViewModel;
 
     move-result-object v0
 
-    if-eqz v0, :cond_2
+    const/4 v1, 0x2
 
-    invoke-virtual {v0}, Lcom/transsion/search/bean/Pager;->getHasMore()Z
-
-    move-result v0
-
-    if-nez v0, :cond_2
+    invoke-virtual {v0, v1}, Lcom/transsion/search/fragment/result/SearchResultViewModel;->r(I)V
 
     iget-object v0, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->a:Lcom/transsion/search/fragment/result/adapter/a;
 
@@ -2403,20 +2417,11 @@
 
     if-eqz v0, :cond_6
 
-    const/4 v1, 0x1
+    invoke-virtual {v0}, Lr6/f;->s()V
 
-    invoke-virtual {v0, v1}, Lr6/f;->t(Z)V
+    const/4 v1, 0x4
 
-    goto :goto_1
-
-    :cond_2
-    invoke-direct {p0}, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->s0()Lcom/transsion/search/fragment/result/SearchResultViewModel;
-
-    move-result-object v0
-
-    const/4 v1, 0x2
-
-    invoke-virtual {v0, v1}, Lcom/transsion/search/fragment/result/SearchResultViewModel;->r(I)V
+    invoke-virtual {v0, v1}, Lr6/f;->E(I)V
 
     goto :goto_1
 

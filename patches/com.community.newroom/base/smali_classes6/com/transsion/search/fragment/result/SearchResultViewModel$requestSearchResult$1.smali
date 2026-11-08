@@ -398,6 +398,10 @@
 
     invoke-virtual {v4, v5}, Lcom/transsion/search/bean/SearchResultEntity;->setConvertData(Ljava/util/List;)V
 
+    iget-object v5, p0, Lcom/transsion/search/fragment/result/SearchResultViewModel$requestSearchResult$1;->$tabId:Ljava/lang/String;
+
+    invoke-virtual {v4, v5}, Lcom/transsion/search/bean/SearchResultEntity;->setTabId(Ljava/lang/String;)V
+
     :cond_6
     if-eqz v1, :cond_7
 

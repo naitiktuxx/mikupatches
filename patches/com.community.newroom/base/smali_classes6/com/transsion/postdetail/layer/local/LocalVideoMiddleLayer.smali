@@ -2881,3 +2881,106 @@
 
     return-void
 .end method
+
+.method public u2(Z)V
+    .locals 2
+
+    invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->u2(Z)V
+
+    move v1, p1
+
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
+
+    if-eqz v0, :cond_0
+
+    iget-object p1, v0, Lso/b0;->N:Landroidx/appcompat/widget/AppCompatImageView;
+
+    if-eqz p1, :cond_0
+
+    if-eqz v1, :cond_pause_off
+
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_pause:I
+
+    goto :goto_set_vd
+
+    :cond_pause_off
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_play:I
+
+    :goto_set_vd
+    invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
+
+    invoke-static {p1, v1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;Z)V
+
+    :cond_0
+    return-void
+.end method
+
+.method protected J2(Z)V
+    .locals 2
+
+    invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->J2(Z)V
+
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
+
+    if-eqz v0, :cond_1
+
+    iget-object v0, v0, Lso/b0;->N:Landroidx/appcompat/widget/AppCompatImageView;
+
+    if-eqz v0, :cond_1
+
+    if-eqz p1, :cond_0
+
+    const/16 v1, 0x8
+
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+
+    goto :goto_0
+
+    :cond_0
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->Z2()Landroidx/constraintlayout/widget/Group;
+
+    move-result-object v1
+
+    if-eqz v1, :cond_1
+
+    invoke-virtual {v1}, Landroid/view/View;->getVisibility()I
+
+    move-result v1
+
+    if-nez v1, :cond_1
+
+    const/4 v1, 0x0
+
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+
+    :cond_1
+    :goto_0
+    return-void
+.end method
+
+.method public A2(Z)V
+    .locals 2
+
+    invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->A2(Z)V
+
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
+
+    if-eqz v0, :cond_0
+
+    iget-object v0, v0, Lso/b0;->N:Landroidx/appcompat/widget/AppCompatImageView;
+
+    if-eqz v0, :cond_0
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->isVerticalPauseClashingWithLoading(Landroid/view/View;)Z
+
+    move-result v1
+
+    if-eqz v1, :cond_0
+
+    const/16 v1, 0x8
+
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+
+    :cond_0
+    return-void
+.end method
