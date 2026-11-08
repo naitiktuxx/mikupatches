@@ -143,3 +143,24 @@
     :catchall_0
     return-void
 .end method
+
+.method public static attachSubtleTouchBounce(Landroid/view/View;)V
+    .locals 1
+
+    if-nez p0, :cond_0
+
+    return-void
+
+    :cond_0
+    :try_start_0
+    new-instance v0, Lcom/miku/animation/BounceAnimationHelper$3;
+
+    invoke-direct {v0}, Lcom/miku/animation/BounceAnimationHelper$3;-><init>()V
+
+    invoke-virtual {p0, v0}, Landroid/view/View;->setOnTouchListener(Landroid/view/View$OnTouchListener;)V
+    :try_end_0
+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+
+    :catchall_0
+    return-void
+.end method

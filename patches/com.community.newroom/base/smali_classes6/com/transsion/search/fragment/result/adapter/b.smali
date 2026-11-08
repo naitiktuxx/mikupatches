@@ -128,7 +128,7 @@
     invoke-virtual {p1, p2, v0}, Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;->setVisible(IZ)Lcom/chad/library/adapter/base/viewholder/BaseViewHolder;
 
     :goto_0
-    iget-object v0, p1, Landroidx/recyclerview/widget/RecyclerView$ViewHolder;->itemView:Landroid/view/View;
+    iget-object v0, p1, Landroidx/recyclerview/widget/RecyclerView$b0;->itemView:Landroid/view/View;
 
     invoke-static {v0}, Lcom/miku/animation/BounceAnimationHelper;->attachTouchBounce(Landroid/view/View;)V
 

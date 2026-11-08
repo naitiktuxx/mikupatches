@@ -760,6 +760,7 @@
       "smali_classes6/com/miku/animation/BounceAnimationHelper.smali": "Central helper orchestrating instant touch compression (0.88x, 60ms) and spring overshoot rebound (180ms)",
       "smali_classes6/com/miku/animation/BounceAnimationHelper$1.smali": "Phase 2 spring overshoot settle animator",
       "smali_classes6/com/miku/animation/BounceAnimationHelper$2.smali": "Zero-delay instant touch listener triggering on ACTION_DOWN and spring rebound on release",
+      "smali_classes6/com/miku/animation/BounceAnimationHelper$3.smali": "Zero-delay subtle touch listener with softened 0.96x compression and gentle spring rebound for Search Bar",
       "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager.smali": "Attaches instant touch bounce to Home Search Bar container and search button",
       "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager$a.smali": "Attaches instant touch bounce to Home category tabs (Movie, Anime, TV, Kids)",
       "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager$a$b.smali": "Bypasses 300ms double-click delay to switch tabs and bounce immediately",

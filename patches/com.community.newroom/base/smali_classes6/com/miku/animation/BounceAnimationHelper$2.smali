@@ -107,7 +107,7 @@
 
     move-result-object p1
 
-    const p2, 0x3f6147ae    # 0.88f
+    const p2, 0x3f666666    # 0.90f
 
     invoke-virtual {p1, p2}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
 
@@ -117,7 +117,7 @@
 
     move-result-object p1
 
-    const-wide/16 v1, 0x3c
+    const-wide/16 v1, 0x37
 
     invoke-virtual {p1, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
 
@@ -177,7 +177,7 @@
 
     new-instance p2, Landroid/view/animation/OvershootInterpolator;
 
-    const v1, 0x400ccccd    # 2.2f
+    const v1, 0x3fe66666    # 1.8f
 
     invoke-direct {p2, v1}, Landroid/view/animation/OvershootInterpolator;-><init>(F)V
 
