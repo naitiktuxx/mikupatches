@@ -874,6 +874,12 @@
     iget v0, v0, Landroid/util/DisplayMetrics;->heightPixels:I
 
     :cond_fallback_end
+    invoke-static {}, Lcom/blankj/utilcode/util/d;->c()I
+
+    move-result v1
+
+    sub-int/2addr v0, v1
+
     invoke-static {}, Lcom/blankj/utilcode/util/y;->e()I
 
     move-result v1
