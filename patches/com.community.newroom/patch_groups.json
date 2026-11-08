@@ -630,7 +630,16 @@
       "res/drawable/libui_sub_btn3_normal.xml": "Rounded (10dp) sub dialog 3 action buttons",
       "res/drawable/libui_sub_btn4_bg.xml": "Rounded (10dp) sub dialog 4 action buttons",
       "res/drawable/bg_shape_confirm_dialog_btn.xml": "Rounded (10dp) confirm dialog buttons",
-      "res/drawable/download_shape_confirm_dialog_btn_bg.xml": "Rounded (10dp) download confirm dialog buttons"
+      "res/drawable/download_shape_confirm_dialog_btn_bg.xml": "Rounded (10dp) download confirm dialog buttons",
+      "res/drawable/bg_radius_top_6_color_white_6p.xml": "Rounded (14dp) top card corners in Settings and Me",
+      "res/drawable/bg_radius_bottom_6_color_white_6p.xml": "Rounded (14dp) bottom card corners in Settings and Me",
+      "res/drawable/bg_radius_6_color_white_6p.xml": "Rounded (14dp) single card corners in Settings and Me",
+      "res/drawable/bg_radius_9_color_white_6p.xml": "Rounded (14dp) card corners in guide and dialogs",
+      "res/drawable/btn_state_view_bg.xml": "Rounded pill (18dp) state view button (Find more free sources)",
+      "res/drawable/btn_gray.xml": "Rounded pill (18dp) gray state view button",
+      "res/drawable/download_empty_btn_bg.xml": "Rounded pill (18dp) download empty state button",
+      "res/drawable/short_tv_download_empty_btn_bg.xml": "Rounded pill (18dp) Short TV download empty state button",
+      "res/layout/dialog_download_more.xml": "Redesigned download more dialog with drag handle and removed extra gap"
     }
   }
 ]
