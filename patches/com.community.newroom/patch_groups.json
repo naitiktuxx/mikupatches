@@ -142,7 +142,9 @@
       "res/layout/fragment_file_manager.xml": "Hide Miku badge MagicIndicator in downloaded tab",
       "res/layout/view_download_top_tab.xml": "Hide Miku badge tab view and dot",
       "res/layout/fragment_ugc_my_downloads.xml": "Hide MagicIndicator and divider line in UGC downloads",
-      "res/drawable/bg_shape_download_tab_selected.xml": "Transparent background for download tab badge"
+      "res/drawable/bg_shape_download_tab_selected.xml": "Transparent background for download tab badge",
+      "smali_classes7/com/transsnet/downloader/adapter/r.smali": "Hide VIP badge in resolution buttons to center 720p and 1080p text",
+      "res/layout/item_download_re_resolution.xml": "Center resolution text and remove VIP icon spacer in download resolution buttons"
     }
   },
   {
@@ -608,6 +610,10 @@
       "res/drawable/bg_btn_module_05.xml": "Rounded (10dp) module buttons",
       "res/drawable/button_normal_bg.xml": "Rounded (10dp) standard buttons",
       "res/drawable/selector_download_resolution_bg.xml": "Rounded (10dp) download resolution selector tiles",
+      "res/drawable/p_v2_resolution_ratio_1_bg.xml": "Rounded (10dp) download resolution ratio selected background",
+      "res/drawable/p_v2_resolution_ratio_2_bg.xml": "Rounded (10dp) download VIP resolution ratio selected background",
+      "res/drawable/p_v2_resolution_ratio_3_bg.xml": "Rounded (10dp) download resolution ratio unselected background",
+      "res/layout/layout_download_re_resolution_tab.xml": "Rounded (10dp) download language and season dropdown pills and card container",
       "res/drawable/selector_video_detail_episode_bg.xml": "Rounded (10dp) video detail episode tiles",
       "res/drawable/post_detail_episode_bg.xml": "Rounded (10dp) post detail episode tiles",
       "res/drawable/selector_download_episode_bg.xml": "Rounded (10dp) episode download selector tiles",
@@ -640,7 +646,42 @@
       "res/drawable/btn_gray.xml": "Rounded pill (18dp) gray state view button",
       "res/drawable/download_empty_btn_bg.xml": "Rounded pill (18dp) download empty state button",
       "res/drawable/short_tv_download_empty_btn_bg.xml": "Rounded pill (18dp) Short TV download empty state button",
-      "res/layout/dialog_download_more.xml": "Redesigned download more dialog with drag handle and removed extra gap"
+      "res/layout/dialog_download_more.xml": "Redesigned download more dialog with drag handle and removed extra gap",
+      "res/layout/fragment_download_res_group_main.xml": "Rounded (14dp) download dialog resolution card and (16dp) dialog top corners",
+      "res/drawable/shape_download_group_button.xml": "Rounded pill (18dp) download action button in download dialog",
+      "res/drawable/p_v2_download_bg.xml": "Rounded pill (18dp) VIP download action button in download dialog",
+      "res/drawable/shape_download_dialog_bg.xml": "Rounded (16dp) download dialog background",
+      "res/drawable/shape_video_detail_dialog_bg.xml": "Rounded (16dp) video detail dialog background",
+      "res/drawable/post_detail_shape_short_tv_dialog_bottom_bg.xml": "Rounded (16dp) short TV episode dialog bottom background",
+      "res/layout/fragment_episode.xml": "Rounded (10dp) episode All button and language/season dropdowns in video player",
+      "res/layout/fragment_resource_detector_layout.xml": "Rounded (10dp) episode All button and language/season dropdowns in resource detector",
+      "res/drawable/p_v2_download_bg.xml": "Rounded pill (18dp) download button background",
+      "res/drawable/shape_download_dialog_bg.xml": "Rounded (16dp) download dialog top corners",
+      "res/drawable/shape_download_group_button.xml": "Rounded pill (18dp) download group button",
+      "res/drawable/shape_video_detail_dialog_bg.xml": "Rounded (16dp) video detail dialog top corners",
+      "res/drawable/post_detail_shape_short_tv_dialog_bottom_bg.xml": "Rounded (16dp) short TV bottom dialog top corners",
+      "res/layout/fragment_download_res_group_main.xml": "Rounded (16dp) main download resolution group dialog sheet"
     }
+  },
+  {
+    "id": "player_controls_fade_animation",
+    "name": "Subtle Fade Animation for Player Controls",
+    "desc": "Adds smooth, subtle fade-in and fade-out animations when showing or hiding player controls by tapping or timeout in both online streaming and downloaded video playback",
+    "default": true,
+    "files": {
+      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth alpha fade-in, fade-out, and visibility transitions for player controls",
+      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper$1.smali": "Animator listener for clean fade-out completion and state cleanup",
+      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates fade animation hooks into control visibility toggling and single-tap handling"
+    }
+  },
+  {
+    "id": "player_aliplayer_buffer_optimization",
+    "name": "Player: Anti-Stall Buffer & Cache Optimization (AliPlayer)",
+    "desc": "Reduces streaming buffering and stalls by overriding AliPlayer buffer settings: startBuffer=2.5s, highBuffer=8s, maxBuffer=120s, cacheSize=1024MB, networkTimeout=15s, networkRetryCount=5, and preload=10s",
+    "default": true,
+    "files": {},
+    "hooks": [
+      "patch_aliplayer_buffer.py"
+    ]
   }
 ]
