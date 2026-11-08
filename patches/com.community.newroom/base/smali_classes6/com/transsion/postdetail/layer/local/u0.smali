@@ -783,6 +783,8 @@
 .method private static final K3(Lcom/transsion/postdetail/layer/local/u0;Landroid/view/View;)V
     .locals 0
 
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateButtonPress(Landroid/view/View;)V
+
     iget-object p0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
     if-eqz p0, :cond_0
@@ -937,6 +939,8 @@
 .method private static final O3(Lcom/transsion/postdetail/layer/local/u0;Landroid/view/View;)V
     .locals 5
 
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateButtonPress(Landroid/view/View;)V
+
     sget-object p1, Lbo/c;->a:Lbo/c;
 
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->k1()Ljava/lang/String;
@@ -978,6 +982,8 @@
 
 .method private static final P3(Lcom/transsion/postdetail/layer/local/u0;Ljava/lang/String;Landroid/view/View;)V
     .locals 3
+
+    invoke-static {p2}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateButtonPress(Landroid/view/View;)V
 
     new-instance p2, Lcom/transsion/player/longvideo/ui/dialog/PlayerSettingDialog;
 
