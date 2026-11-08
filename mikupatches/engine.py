@@ -149,6 +149,7 @@ class BuildEngine:
                 input_file=input_file,
                 bundle_staging=bundle_staging,
                 patches_dir=DEFAULT_PATCHES_DIR,
+                target_pkg=options.target_app,
                 verbose=options.verbose,
             )
         except Exception as e:

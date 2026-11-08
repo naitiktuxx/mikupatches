@@ -187,9 +187,4 @@ class Extractor:
             if not os.path.exists(info_json) and os.path.exists(app_info):
                 shutil.copyfile(app_info, info_json)
 
-        # 2. General fallback directory
-        fallback_dir = os.path.join(patches_dir, "bundle_fallback")
-        if not os.path.exists(icon_png) and os.path.exists(os.path.join(fallback_dir, "icon.png")):
-            shutil.copyfile(os.path.join(fallback_dir, "icon.png"), icon_png)
-
         return base_apk

@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
     unzip \
+    webp \
     && rm -rf /var/lib/apt/lists/*
 
 # Install official Apktool wrapper and standalone jar (v2.11.0)
