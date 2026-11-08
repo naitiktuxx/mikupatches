@@ -163,9 +163,9 @@ def main():
         groups = json.load(f)
 
     new_group = {
-        "id": "remove_interests_popup",
-        "name": "Remove Interests & Preferences Popups",
-        "desc": "Completely removes 'Tell us about your interests' popup dialogs in Education and Home tabs (CourseManager, InterestSelectDialog, HomePreferencesEnterPopDialog)",
+        "id": "disable_interests_popup",
+        "name": "Disable Interests Popup",
+        "description": "Completely removes 'Tell us about your interests' popup dialogs in Education and Home tabs (CourseManager, InterestSelectDialog, HomePreferencesEnterPopDialog)",
         "default": True,
         "files": {
             f1: "Disable Education interest dialog trigger in CourseManager",
@@ -176,7 +176,7 @@ def main():
         }
     }
 
-    idx = next((i for i, g in enumerate(groups) if g["id"] == "remove_interests_popup"), None)
+    idx = next((i for i, g in enumerate(groups) if g["id"] == "disable_interests_popup"), None)
     if idx is not None:
         groups[idx] = new_group
     else:
@@ -185,7 +185,7 @@ def main():
     with open(PATCH_GROUPS_FILE, "w") as f:
         json.dump(groups, f, indent=2)
 
-    print("Successfully registered remove_interests_popup in patch_groups.json!")
+    print("Successfully registered disable_interests_popup in patch_groups.json!")
 
 if __name__ == "__main__":
     main()

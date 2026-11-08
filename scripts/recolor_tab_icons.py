@@ -168,15 +168,15 @@ def main():
                 print(f"Recolored and saved: {rel_path} ({len(recolored)} bytes)")
                 new_file_paths.append(rel_path)
 
-    # Register in patch_groups.json under theme_netflix_dark
+    # Register in patch_groups.json under netflix_dark_theme
     with open(PATCH_GROUPS_FILE, "r") as f:
         groups = json.load(f)
 
     for g in groups:
-        if g["id"] == "theme_netflix_dark":
+        if g["id"] == "netflix_dark_theme":
             for p in new_file_paths:
                 g["files"][p] = "Netflix Red styled active tab/action icon"
-            print(f"Updated patch group 'theme_netflix_dark' with {len(new_file_paths)} recolored icon(s).")
+            print(f"Updated patch group 'netflix_dark_theme' with {len(new_file_paths)} recolored icon(s).")
             break
 
     with open(PATCH_GROUPS_FILE, "w") as f:
