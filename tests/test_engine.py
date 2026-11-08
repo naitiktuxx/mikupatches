@@ -778,6 +778,70 @@ OFFLINE_DEVICE_99      offline
                 self.assertIn("lib/armeabi-v7a/libnative32.so", names)
                 self.assertNotIn("lib/arm64-v8a/libnative64.so", names)
 
+    def test_assemble_bundles_multi_arch_clean_output(self):
+        import zipfile
+        from unittest.mock import patch
+
+        fake_apk = os.path.join(self.temp_dir, "multi_arch_base.apk")
+        with zipfile.ZipFile(fake_apk, "w") as zf:
+            zf.writestr("classes.dex", b"DEX")
+            zf.writestr("AndroidManifest.xml", b"MANIFEST")
+            zf.writestr("lib/arm64-v8a/libtest64.so", b"SO_64")
+            zf.writestr("lib/armeabi-v7a/libtest32.so", b"SO_32")
+
+        bundle_staging = os.path.join(self.temp_dir, "b_stage")
+        build_staging = os.path.join(self.temp_dir, "build_stage")
+        dist_dir = os.path.join(self.temp_dir, "dist_clean_test")
+        os.makedirs(bundle_staging, exist_ok=True)
+        os.makedirs(build_staging, exist_ok=True)
+        os.makedirs(dist_dir, exist_ok=True)
+
+        profile = AppProfile(
+            package_name="com.test.app",
+            app_title="Test App",
+            target_version_name="1.0.0",
+            target_version_code="100",
+            apkmirror_url="",
+            main_activity="",
+            supported_arches=["arm64-v8a", "armeabi-v7a"],
+            patch_groups=[],
+            profile_dir="",
+        )
+
+        options = BuildOptions(
+            output_dir=dist_dir,
+            output_formats=["apkm"],
+            staging_dir=build_staging,
+        )
+
+        with patch("mikupatches.signer.ApkSigner.align_and_sign") as mock_sign:
+            mock_sign.side_effect = lambda input_apk, output_apk, **kwargs: shutil.copyfile(input_apk, output_apk)
+
+            generated = Bundler.assemble_bundles(
+                staged_base_apk=fake_apk,
+                bundle_staging=bundle_staging,
+                build_staging=build_staging,
+                staged_splits={},
+                app_profile=profile,
+                options=options,
+            )
+
+        app_output_dir = os.path.join(dist_dir, "Test_App")
+        self.assertTrue(os.path.isdir(app_output_dir))
+
+        # Ensure NO subdirectories exist inside dist/Test_App
+        subdirs = [d for d in os.listdir(app_output_dir) if os.path.isdir(os.path.join(app_output_dir, d))]
+        self.assertEqual(subdirs, [])
+
+        # Ensure exactly the 2 architecture APKMs exist (no loose APKs, no [Full] tag)
+        apkms = sorted([f for f in os.listdir(app_output_dir) if f.endswith(".apkm")])
+        self.assertEqual(apkms, ["Test_App-v1.0.0-arm64-v8a.apkm", "Test_App-v1.0.0-armeabi-v7a.apkm"])
+
+        for fname in apkms:
+            self.assertNotIn("[Full]", fname)
+            self.assertNotIn("[Custom]", fname)
+
+
 
 
 if __name__ == "__main__":

@@ -343,17 +343,17 @@ class BuildEngine:
         else:
             effective_profile = app_profile
 
-        # Determine variant slug and output directory
+        # Determine output directory directly under app name (e.g. dist/MovieBox/)
         variant_slug = Bundler.get_variant_slug(effective_profile, active_status)
         app_dirname = Bundler.get_clean_app_dirname(effective_profile)
-        primary_out_dir = os.path.join(options.output_dir, app_dirname, variant_slug)
+        primary_out_dir = os.path.join(options.output_dir, app_dirname)
         overwrite = True
 
         if not options.dry_run and os.path.exists(primary_out_dir) and len(os.listdir(primary_out_dir)) > 0:
             if not options.yes and sys.stdin.isatty():
                 try:
                     ans = input(
-                        f"\n{Colors.YELLOW}[Clean] Previous '{variant_slug}' build for '{effective_profile.app_title}' found in '{os.path.basename(options.output_dir)}/'. "
+                        f"\n{Colors.YELLOW}[Clean] Previous build for '{effective_profile.app_title}' found in '{os.path.basename(options.output_dir)}/'. "
                         f"Overwrite previous build? [y/N]: {Colors.RESET}"
                     ).strip().lower()
                     overwrite = ans in ("y", "yes")
@@ -370,7 +370,7 @@ class BuildEngine:
             target_app_dir = Bundler.resolve_app_output_dir(
                 options.output_dir,
                 effective_profile,
-                variant_slug=variant_slug,
+                variant_slug=None,
                 overwrite=False,
             )
             Console.step(f"Preserving old build. Saving to '{os.path.relpath(target_app_dir, options.output_dir)}/'.")
@@ -403,13 +403,21 @@ class BuildEngine:
                     AdbManager.uninstall(effective_profile.package_name, device_serial=options.device, verbose=options.verbose)
 
                 if options.install:
-                    # 1. Prefer universal.apkm or arch-specific bundle over standalone base.apk for split apps
-                    univ_apkm = os.path.join(target_app_dir, "universal.apkm")
+                    # 1. Prefer device architecture-matching APKM bundle
+                    device_abi = AdbManager.get_device_abi(options.device)
                     target_to_install = None
 
-                    if os.path.exists(univ_apkm):
-                        target_to_install = univ_apkm
-                    else:
+                    if device_abi:
+                        for root, _, files in os.walk(target_app_dir):
+                            for f in sorted(files):
+                                if f.endswith(".apkm") and device_abi in f:
+                                    target_to_install = os.path.join(root, f)
+                                    break
+                            if target_to_install:
+                                break
+
+                    # 2. Fallback to any APKM bundle in output directory
+                    if not target_to_install:
                         for root, _, files in os.walk(target_app_dir):
                             for f in sorted(files):
                                 if f.endswith(".apkm"):
@@ -418,7 +426,7 @@ class BuildEngine:
                             if target_to_install:
                                 break
 
-                    # Fallback to standalone base.apk if no bundle exists
+                    # 3. Fallback to standalone base.apk if no bundle exists
                     if not target_to_install:
                         base_out = os.path.join(target_app_dir, "base.apk")
                         if os.path.exists(base_out):
