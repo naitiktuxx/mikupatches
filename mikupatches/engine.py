@@ -141,6 +141,8 @@ class BuildEngine:
                 return BuildResult(success=False, error_message="No supported apps found")
 
             input_file = prompt_download(target_profile, DEFAULT_INPUT_DIR)
+            if not input_file:
+                return BuildResult(success=False, error_message=f"Missing input package for '{target_profile.app_title}'")
 
         # 5. Extract bundle to staging
         bundle_staging = os.path.join(options.staging_dir, "bundle")
