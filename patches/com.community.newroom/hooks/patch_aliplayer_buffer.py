@@ -107,6 +107,15 @@ def apply_hook(decompiled_dir, app_profile, verbose=False):
             m1_patched
         )
 
+        # Ensure logcat prints 'Aliplayer config:120000'
+        pattern_append = r'(invoke-virtual\s+\{v3,\s+v2\},\s+Ljava/lang/StringBuilder;->append\(Ljava/lang/Object;\)Ljava/lang/StringBuilder;)'
+        if re.search(pattern_append, m1_patched):
+            m1_patched = re.sub(
+                pattern_append,
+                r'\g<1>\n\n    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;\n\n    move-result-object v3\n\n    const-string v4, "Aliplayer"\n\n    invoke-static {v4, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I\n\n    sget-object v4, Ljava/lang/System;->out:Ljava/io/PrintStream;\n\n    invoke-virtual {v4, v3}, Ljava/io/PrintStream;->println(Ljava/lang/String;)V',
+                m1_patched
+            )
+
         # Overwrite this.s assignment: invoke-virtual {p1}, Lbo/d;->g()I / move-result p1 -> const p1, 0x1d4c0
         pattern_this_s = r'(:cond_2\s+)invoke-virtual\s+\{[^}]+\},\s+L[^;]+;->g\(\)I\s+move-result\s+(\w+)'
         if not re.search(pattern_this_s, m1_patched):

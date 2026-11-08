@@ -7925,6 +7925,18 @@
 
     iget-object p1, p1, Lho/j;->i:Lho/l;
 
+    iget-object p1, p1, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
+
+    const-string v0, "ivMiddlePause"
+
+    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
+
+    iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
+
+    iget-object p1, p1, Lho/j;->i:Lho/l;
+
     iget-object p1, p1, Lho/l;->j:Landroid/view/View;
 
     const-string v0, "middleGradientBottom"
@@ -10989,9 +11001,11 @@
 
     iget-object p1, p1, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
 
-    sget v0, Lcom/transsion/baseui/R$mipmap;->icon_player_pause:I
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_pause:I
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;)V
 
     goto :goto_0
 
@@ -11024,9 +11038,11 @@
 
     iget-object p1, p1, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
 
-    sget v0, Lcom/transsion/baseui/R$mipmap;->icon_player_play:I
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_play:I
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;)V
 
     :goto_0
     return-void
@@ -12416,6 +12432,18 @@
     iget-object v0, v0, Lho/l;->i:Landroid/widget/LinearLayout;
 
     const-string v1, "llMiddleBottomController"
+
+    invoke-static {v0, v1}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
+
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
+
+    iget-object v0, v0, Lho/j;->i:Lho/l;
+
+    iget-object v0, v0, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
+
+    const-string v1, "ivMiddlePause"
 
     invoke-static {v0, v1}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 

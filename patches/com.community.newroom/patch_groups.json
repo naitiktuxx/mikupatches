@@ -7,7 +7,8 @@
     "files": {
       "smali_classes7/com/mymovie/ad/AdManager.smali": "Disable in-app ad loaders and bypass interstitial ad dialogs",
       "smali_classes5/com/transsion/ad/MBAd.smali": "Disable Transsion MBAd framework and ad initialization",
-      "smali_classes7/com/mymovie/activity/MySplashActivity.smali": "Remove splash ad delay and launch directly into main screen"
+      "smali_classes7/com/mymovie/activity/MySplashActivity.smali": "Remove splash ad delay and launch directly into main screen",
+      "res/layout/view_download_movie_ad_layout.xml": "Permanently neutralize and hide download dialog ad container"
     }
   },
   {
@@ -144,7 +145,8 @@
       "res/layout/fragment_ugc_my_downloads.xml": "Hide MagicIndicator and divider line in UGC downloads",
       "res/drawable/bg_shape_download_tab_selected.xml": "Transparent background for download tab badge",
       "smali_classes7/com/transsnet/downloader/adapter/r.smali": "Hide VIP badge in resolution buttons to center 720p and 1080p text",
-      "res/layout/item_download_re_resolution.xml": "Center resolution text and remove VIP icon spacer in download resolution buttons"
+      "res/layout/item_download_re_resolution.xml": "Center resolution text and remove VIP icon spacer in download resolution buttons",
+      "res/layout/view_download_movie_ad_layout.xml": "Hide bottom ad placeholder in download dialog"
     }
   },
   {
@@ -654,13 +656,7 @@
       "res/drawable/shape_video_detail_dialog_bg.xml": "Rounded (16dp) video detail dialog background",
       "res/drawable/post_detail_shape_short_tv_dialog_bottom_bg.xml": "Rounded (16dp) short TV episode dialog bottom background",
       "res/layout/fragment_episode.xml": "Rounded (10dp) episode All button and language/season dropdowns in video player",
-      "res/layout/fragment_resource_detector_layout.xml": "Rounded (10dp) episode All button and language/season dropdowns in resource detector",
-      "res/drawable/p_v2_download_bg.xml": "Rounded pill (18dp) download button background",
-      "res/drawable/shape_download_dialog_bg.xml": "Rounded (16dp) download dialog top corners",
-      "res/drawable/shape_download_group_button.xml": "Rounded pill (18dp) download group button",
-      "res/drawable/shape_video_detail_dialog_bg.xml": "Rounded (16dp) video detail dialog top corners",
-      "res/drawable/post_detail_shape_short_tv_dialog_bottom_bg.xml": "Rounded (16dp) short TV bottom dialog top corners",
-      "res/layout/fragment_download_res_group_main.xml": "Rounded (16dp) main download resolution group dialog sheet"
+      "res/layout/fragment_resource_detector_layout.xml": "Rounded (10dp) episode All button and language/season dropdowns in resource detector"
     }
   },
   {
@@ -669,6 +665,7 @@
     "desc": "Adds smooth, subtle fade-in and fade-out animations when showing or hiding player controls by tapping or timeout in both online streaming and downloaded video playback",
     "default": true,
     "files": {
+      "res/layout/long_vod_view_player_middle.xml": "Center play/pause button, move duration counter to left, and extend seekbar to fullscreen button in portrait video player",
       "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth alpha fade-in, fade-out, and visibility transitions for player controls",
       "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper$1.smali": "Animator listener for clean fade-out completion and state cleanup",
       "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates fade animation hooks into control visibility toggling and single-tap handling"
