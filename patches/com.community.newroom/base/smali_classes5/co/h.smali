@@ -821,11 +821,11 @@
 
     invoke-direct {v1}, Landroidx/media3/exoplayer/m$b;-><init>()V
 
-    const/16 v2, 0x320
+    const/16 v2, 0x9c4
 
-    const/16 v3, 0x7d0
+    const/16 v3, 0x1388
 
-    const/16 v5, 0x7530
+    const v5, 0xc350
 
     const v0, 0x1d4c0
 
@@ -853,7 +853,7 @@
 
     const-string v1, "MikuBuffer"
 
-    const-string v2, "Option A Applied: minBufferMs=30000, maxBufferMs=120000, bufferForPlaybackMs=800, bufferForPlaybackAfterRebufferMs=2000, targetBufferBytes=-1, prioritizeTimeOverSizeThresholds=true"
+    const-string v2, "Optimized LoadControl Applied: minBufferMs=50000, maxBufferMs=120000, bufferForPlaybackMs=2500, bufferForPlaybackAfterRebufferMs=5000, targetBufferBytes=-1, prioritizeTimeOverSizeThresholds=true"
 
     invoke-static {v1, v2}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
 

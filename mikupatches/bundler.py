@@ -60,6 +60,8 @@ class Bundler:
         else:
             tags = [cls.get_patch_tag(g) for g in active_non_clone]
             base_slug = "+".join(tags)
+            if len(base_slug) > 60:
+                base_slug = "Custom"
 
         if is_clone:
             return f"{base_slug}_Clone"

@@ -2172,29 +2172,6 @@
 
     if-eqz v1, :cond_1
 
-    iget-object v4, v0, Lcom/transsion/videodetail/StreamDetailFragment;->h:Ljava/lang/String;
-
-    if-nez v4, :cond_miku_subj
-
-    iget-object v5, v0, Lcom/transsion/videodetail/StreamDetailFragment;->c:Lcom/transsion/moviedetailapi/bean/Subject;
-
-    if-eqz v5, :cond_miku_subj
-
-    invoke-virtual {v5}, Lcom/transsion/moviedetailapi/bean/Subject;->getSubjectId()Ljava/lang/String;
-
-    move-result-object v4
-
-    :cond_miku_subj
-    invoke-virtual {v1}, Lcom/transsion/videodetail/bean/VideoDetailStreamList;->getSe()I
-
-    move-result v5
-
-    invoke-virtual {v1}, Lcom/transsion/videodetail/bean/VideoDetailStreamList;->getEp()I
-
-    move-result v6
-
-    invoke-static {v1, v4, v5, v6}, Lcom/miku/stream/DownloadCdnStreamHelper;->resolveStreamList(Lcom/transsion/videodetail/bean/VideoDetailStreamList;Ljava/lang/String;II)V
-
     invoke-virtual/range {p1 .. p1}, Lcom/transsion/videodetail/bean/VideoDetailStreamList;->getStreams()Ljava/util/List;
 
     move-result-object v4
