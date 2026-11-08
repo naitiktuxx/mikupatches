@@ -3950,6 +3950,10 @@
 
     invoke-virtual {v0, v3, v1, v2}, Loo/e;->a(Ljava/lang/String;Ljava/lang/String;Z)V
 
+    const-string v0, "MikuStreamCdn"
+
+    invoke-static {v0, v1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
     iget-object v0, p0, Lco/h;->H:Ljava/util/concurrent/CopyOnWriteArrayList;
 
     invoke-interface {v0}, Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;

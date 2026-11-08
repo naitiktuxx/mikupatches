@@ -364,6 +364,7 @@
       "res/layout/fragment_search_subject.xml": "Modern capsule search bar with integrated pill search button and removed mic button",
       "res/drawable/bg_search_bar_capsule.xml": "Frosted acrylic capsule background with subtle border for search bar",
       "res/drawable/bg_search_btn_pill.xml": "Sleek pill button background for search action",
+      "res/drawable/bg_liquid_glass_circle.xml": "Liquid glass circular background with frosted border for search back button",
       "res/drawable/bg_search_bg_02.xml": "Capsule shape fallback for search backgrounds",
       "res/drawable/bg_radius_4_color_white.xml": "Capsule shape fallback for home search container",
       "res/layout/fragment_hot_search.xml": "Hide Everyone is searching, hot tabs magic indicator, and ranking viewpager while preserving recent searches",
@@ -574,7 +575,10 @@
       "smali_classes6/com/transsion/search/fragment/result/SearchResultTabFragment.smali": "Display movie/series subfilter tabs row while preserving results list",
       "res/layout/fragment_search_result.xml": "Collapse filter tab indicator and divider to gone/0dp with full-screen ViewPager2",
       "res/layout/fragment_search_result_list.xml": "Center-align subfilter tabs with wrap_content and constrained width",
-      "res/layout/item_search_result_tab.xml": "Center-align tab pill texts with symmetric margins and touch targets"
+      "res/layout/item_search_result_tab.xml": "Center-align tab pill texts with symmetric margins and touch targets",
+      "res/drawable/bg_liquid_glass_filter_selected.xml": "Liquid glass selected pill for search subfilters",
+      "res/drawable/bg_liquid_glass_filter_unselected.xml": "Liquid glass unselected pill for search subfilters",
+      "res/drawable/bg_radius_20_color_module10.xml": "Liquid glass shape fallback for search subfilters"
     },
     "hooks": [
       "patch_search_filter.py"
@@ -589,10 +593,26 @@
       "res/layout/activity_main.xml": "Floating dock container with rounded capsule TabLayout and bottom-anchored content container",
       "res/layout/tab_bottom.xml": "Vertically centered tab icon and text inside floating dock",
       "res/drawable/bg_floating_dock_capsule.xml": "Frosted acrylic glass capsule background with subtle border",
-      "res/drawable/bg_dock_tab_active.xml": "Active tab capsule highlight indicator"
+      "res/drawable/bg_dock_sliding_pill.xml": "Sliding liquid glass pill indicator for floating dock",
+      "res/drawable/bg_dock_tab_active.xml": "Active tab soft red liquid glass ambient glow indicator",
+      "res/drawable/selector_dock_tab_active.xml": "Selector to cleanly center active liquid glass pill on selected dock tab"
     },
     "hooks": [
       "patch_dock_navigation.py"
     ]
+  },
+  {
+    "id": "stream_download_cdn_route",
+    "name": "High-Speed Download CDN Streaming & Local Cache Fallback",
+    "desc": "Routes video playback directly through high-speed download CDN endpoints using progressive HTTP range streaming instead of slow HLS proxy streams, auto-detects local downloaded files for instant playback, and supports full multi-resolution switching (360p-1080p) with seamless fallback",
+    "default": true,
+    "files": {
+      "smali/com/miku/stream/DownloadCdnStreamHelper.smali": "Helper resolving high-speed download CDN endpoints and local offline playback",
+      "smali/com/miku/stream/DownloadCdnStreamHelper$1.smali": "Async worker callable for non-blocking CDN API resolution",
+      "smali_classes7/com/transsion/videodetail/bean/VideoDetailStream.smali": "Add setFormat setter for progressive MP4 media source recognition",
+      "smali_classes7/com/transsion/videodetail/VideoDetailViewModel$getPlayInfo$2.smali": "Hook getPlayInfo coroutine to inject download CDN stream URLs",
+      "smali_classes7/com/transsion/videodetail/StreamDetailFragment.smali": "Hook master playback W1 to resolve download CDN stream URLs",
+      "smali_classes5/co/h.smali": "Log playback data source URLs to logcat under MikuStreamCdn"
+    }
   }
 ]
