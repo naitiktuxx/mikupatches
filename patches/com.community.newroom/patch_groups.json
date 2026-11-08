@@ -360,8 +360,12 @@
     "desc": "Removes prefilled search suggestions, mic button, 'Everyone is searching' section, and hot tabs/rankings (Hot Movies, Hot Series, etc.) while preserving search functionality and recent searches",
     "default": true,
     "files": {
-      "res/layout/fragment_home.xml": "Hide cycling search suggestion text switcher in home search bar",
-      "res/layout/fragment_search_subject.xml": "Permanently remove mic button in search header",
+      "res/layout/fragment_home.xml": "Modern capsule search bar and hide cycling search suggestion text switcher",
+      "res/layout/fragment_search_subject.xml": "Modern capsule search bar with integrated pill search button and removed mic button",
+      "res/drawable/bg_search_bar_capsule.xml": "Frosted acrylic capsule background with subtle border for search bar",
+      "res/drawable/bg_search_btn_pill.xml": "Sleek pill button background for search action",
+      "res/drawable/bg_search_bg_02.xml": "Capsule shape fallback for search backgrounds",
+      "res/drawable/bg_radius_4_color_white.xml": "Capsule shape fallback for home search container",
       "res/layout/fragment_hot_search.xml": "Hide Everyone is searching, hot tabs magic indicator, and ranking viewpager while preserving recent searches",
       "res/layout/pugc_fragment_hot_search.xml": "Hide Everyone is searching and ranking tabs in pugc hot search layout",
       "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager.smali": "Disable cycling hot search keywords in home top search bar and stop passing prefilled hot search word",
@@ -453,7 +457,10 @@
       "smali_classes7/ly/f.smali": "Fix Save button alignment in downloaded items list by removing compound drawable offset",
       "res/drawable-xxhdpi/icon_download_dialog_premium.webp": "Transparent dummy for download dialog premium icon",
       "smali_classes7/com/transsnet/downloader/dialog/l.smali": "Remove VIP crown icon and change gold text to white in downloads Save to my phone popup",
-      "smali_classes7/com/transsnet/downloader/widget/PlaybackResolutionView.smali": "Hide premium icon and keep resolution text white in downloader playback view"
+      "smali_classes7/com/transsnet/downloader/widget/PlaybackResolutionView.smali": "Hide premium icon and keep resolution text white in downloader playback view",
+      "res/drawable/ic_download_speed_up_small_premium.xml": "Make download speed boost crown icon transparent",
+      "res/drawable/ic_download_speed_up_premium.xml": "Make download speed up premium icon transparent",
+      "res/layout/adapter_downloading_item.xml": "Hide VIP crown icon and restyle speed boost text in downloading items"
     }
   },
   {
@@ -571,6 +578,21 @@
     },
     "hooks": [
       "patch_search_filter.py"
+    ]
+  },
+  {
+    "id": "modern_floating_dock_ui",
+    "name": "Modern Floating Dock Navigation",
+    "desc": "Redesigns bottom navigation into a modern floating capsule dock with frosted glass styling, rounded corners, active tab indicator, and bottom content clearing",
+    "default": true,
+    "files": {
+      "res/layout/activity_main.xml": "Floating dock container with rounded capsule TabLayout and bottom-anchored content container",
+      "res/layout/tab_bottom.xml": "Vertically centered tab icon and text inside floating dock",
+      "res/drawable/bg_floating_dock_capsule.xml": "Frosted acrylic glass capsule background with subtle border",
+      "res/drawable/bg_dock_tab_active.xml": "Active tab capsule highlight indicator"
+    },
+    "hooks": [
+      "patch_dock_navigation.py"
     ]
   }
 ]
