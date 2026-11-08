@@ -7587,9 +7587,11 @@
 
     if-eqz p1, :cond_2
 
-    sget v0, Lcom/transsion/baseui/R$mipmap;->icon_player_pause:I
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_pause:I
 
     invoke-virtual {p1, v0}, Landroid/widget/ImageView;->setImageResource(I)V
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;)V
 
     goto :goto_0
 
@@ -7600,9 +7602,11 @@
 
     if-eqz p1, :cond_2
 
-    sget v0, Lcom/transsion/baseui/R$mipmap;->icon_player_play:I
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_play:I
 
     invoke-virtual {p1, v0}, Landroid/widget/ImageView;->setImageResource(I)V
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;)V
 
     :cond_2
     :goto_0

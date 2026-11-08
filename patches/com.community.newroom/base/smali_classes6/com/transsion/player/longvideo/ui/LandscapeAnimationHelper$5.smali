@@ -30,7 +30,7 @@
         }
     .end annotation
 
-    .line 369
+    .line 362
     iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$5;->val$oldCheck:Landroid/view/View;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
@@ -43,13 +43,13 @@
 .method public run()V
     .locals 2
 
-    .line 372
+    .line 365
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$5;->val$oldCheck:Landroid/view/View;
 
     const/16 v1, 0x8
 
     invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
-    .line 373
+    .line 366
     return-void
 .end method

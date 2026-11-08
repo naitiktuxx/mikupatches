@@ -2845,6 +2845,10 @@
 
     invoke-static {v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/view/View;)V
 
+    const/4 v1, -0x1
+
+    invoke-direct {p0, v1}, Lcom/transsion/postdetail/layer/local/u0;->H3(I)V
+
     :cond_skip_local_sb
 
     invoke-super {p0, p1, p2}, Lcom/transsion/postdetail/layer/local/a0;->r(Landroid/view/View;Lcom/transsion/postdetail/layer/local/LocalUiType;)V
@@ -3111,6 +3115,27 @@
     iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
     if-eqz v0, :cond_1
+
+    iget-object p1, v0, Lso/z;->M:Landroidx/appcompat/widget/AppCompatImageView;
+
+    if-eqz p1, :cond_skip_vd_pause
+
+    if-eqz v1, :cond_pause_off
+
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_pause:I
+
+    goto :goto_set_vd
+
+    :cond_pause_off
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_play:I
+
+    :goto_set_vd
+    invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
+
+    invoke-static {p1, v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePlayPause(Landroid/widget/ImageView;Z)V
+
+    :cond_skip_vd_pause
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
     iget-object v0, v0, Lso/z;->b:Lbk/e;
 

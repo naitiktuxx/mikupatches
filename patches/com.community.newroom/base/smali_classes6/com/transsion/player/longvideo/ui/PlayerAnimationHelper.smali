@@ -522,36 +522,36 @@
 .method public static getActivity(Landroid/view/View;)Landroid/app/Activity;
     .locals 2
 
-    .line 285
+    .line 298
     const/4 v0, 0x0
 
     if-nez p0, :cond_0
 
     return-object v0
 
-    .line 286
+    .line 299
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->getContext()Landroid/content/Context;
 
     move-result-object p0
 
-    .line 287
+    .line 300
     :goto_0
     instance-of v1, p0, Landroid/content/ContextWrapper;
 
     if-eqz v1, :cond_2
 
-    .line 288
+    .line 301
     instance-of v1, p0, Landroid/app/Activity;
 
     if-eqz v1, :cond_1
 
-    .line 289
+    .line 302
     check-cast p0, Landroid/app/Activity;
 
     return-object p0
 
-    .line 291
+    .line 304
     :cond_1
     check-cast p0, Landroid/content/ContextWrapper;
 
@@ -561,7 +561,7 @@
 
     goto :goto_0
 
-    .line 293
+    .line 306
     :cond_2
     return-object v0
 .end method
@@ -764,26 +764,26 @@
 .method private static getDisplayCutoutInsets(Landroid/view/View;Landroid/app/Activity;)[I
     .locals 3
 
-    .line 243
+    .line 256
     const/4 v0, 0x2
 
     new-array v0, v0, [I
 
-    .line 244
+    .line 257
     sget v1, Landroid/os/Build$VERSION;->SDK_INT:I
 
     const/16 v2, 0x1c
 
     if-ge v1, v2, :cond_0
 
-    .line 245
+    .line 258
     return-object v0
 
-    .line 248
+    .line 261
     :cond_0
     nop
 
-    .line 249
+    .line 262
     if-eqz p1, :cond_1
 
     :try_start_0
@@ -803,7 +803,7 @@
 
     if-eqz v1, :cond_1
 
-    .line 250
+    .line 263
     invoke-virtual {p1}, Landroid/app/Activity;->getWindow()Landroid/view/Window;
 
     move-result-object p1
@@ -818,13 +818,13 @@
 
     goto :goto_0
 
-    .line 262
+    .line 275
     :catchall_0
     move-exception p0
 
     goto :goto_1
 
-    .line 252
+    .line 265
     :cond_1
     const/4 p1, 0x0
 
@@ -833,24 +833,24 @@
 
     if-eqz p0, :cond_2
 
-    .line 253
+    .line 266
     invoke-virtual {p0}, Landroid/view/View;->getRootWindowInsets()Landroid/view/WindowInsets;
 
     move-result-object p1
 
-    .line 255
+    .line 268
     :cond_2
     if-eqz p1, :cond_3
 
-    .line 256
+    .line 269
     invoke-virtual {p1}, Landroid/view/WindowInsets;->getDisplayCutout()Landroid/view/DisplayCutout;
 
     move-result-object p0
 
-    .line 257
+    .line 270
     if-eqz p0, :cond_3
 
-    .line 258
+    .line 271
     invoke-virtual {p0}, Landroid/view/DisplayCutout;->getSafeInsetLeft()I
 
     move-result p1
@@ -859,7 +859,7 @@
 
     aput p1, v0, v1
 
-    .line 259
+    .line 272
     invoke-virtual {p0}, Landroid/view/DisplayCutout;->getSafeInsetRight()I
 
     move-result p0
@@ -870,11 +870,11 @@
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    .line 263
+    .line 276
     :cond_3
     nop
 
-    .line 264
+    .line 277
     :goto_1
     return-object v0
 .end method
@@ -882,32 +882,32 @@
 .method private static getDisplayRotation(Landroid/view/View;)I
     .locals 0
 
-    .line 269
+    .line 282
     :try_start_0
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getActivity(Landroid/view/View;)Landroid/app/Activity;
 
     move-result-object p0
 
-    .line 270
+    .line 283
     if-eqz p0, :cond_0
 
-    .line 271
+    .line 284
     invoke-virtual {p0}, Landroid/app/Activity;->getWindowManager()Landroid/view/WindowManager;
 
     move-result-object p0
 
-    .line 272
+    .line 285
     if-eqz p0, :cond_0
 
-    .line 273
+    .line 286
     invoke-interface {p0}, Landroid/view/WindowManager;->getDefaultDisplay()Landroid/view/Display;
 
     move-result-object p0
 
-    .line 274
+    .line 287
     if-eqz p0, :cond_0
 
-    .line 275
+    .line 288
     invoke-virtual {p0}, Landroid/view/Display;->getRotation()I
 
     move-result p0
@@ -916,15 +916,15 @@
 
     return p0
 
-    .line 280
+    .line 293
     :cond_0
     goto :goto_0
 
-    .line 279
+    .line 292
     :catchall_0
     move-exception p0
 
-    .line 281
+    .line 294
     :goto_0
     const/4 p0, 0x1
 
@@ -988,37 +988,37 @@
 .method public static setViewWidth(Landroid/view/View;I)V
     .locals 2
 
-    .line 297
+    .line 310
     if-nez p0, :cond_0
 
     return-void
 
-    .line 298
+    .line 311
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
 
     move-result-object v0
 
-    .line 299
+    .line 312
     if-eqz v0, :cond_1
 
     iget v1, v0, Landroid/view/ViewGroup$LayoutParams;->width:I
 
     if-eq v1, p1, :cond_1
 
-    .line 300
+    .line 313
     iput p1, v0, Landroid/view/ViewGroup$LayoutParams;->width:I
 
-    .line 301
+    .line 314
     invoke-virtual {p0, v0}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
 
-    .line 303
+    .line 316
     :cond_1
     return-void
 .end method
 
 .method public static updateNotchSpaces(Landroid/view/View;Landroid/view/View;Landroid/view/View;Landroid/view/View;ZI)V
-    .locals 8
+    .locals 10
 
     .line 190
     const/4 v0, 0x0
@@ -1075,28 +1075,53 @@
     nop
 
     .line 201
-    const/4 v2, -0x1
+    const/4 v2, 0x3
 
-    if-ne p5, v2, :cond_4
+    const/4 v3, 0x1
+
+    if-eq p5, v3, :cond_6
+
+    if-eq p5, v2, :cond_6
 
     .line 202
-    invoke-static {p4}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getDisplayRotation(Landroid/view/View;)I
+    if-eqz p4, :cond_4
+
+    move-object p5, p4
+
+    goto :goto_1
+
+    :cond_4
+    if-eqz v1, :cond_5
+
+    invoke-virtual {v1}, Landroid/app/Activity;->getWindow()Landroid/view/Window;
+
+    move-result-object p5
+
+    invoke-virtual {p5}, Landroid/view/Window;->getDecorView()Landroid/view/View;
+
+    move-result-object p5
+
+    goto :goto_1
+
+    :cond_5
+    const/4 p5, 0x0
+
+    :goto_1
+    invoke-static {p5}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getDisplayRotation(Landroid/view/View;)I
 
     move-result p5
 
     .line 205
-    :cond_4
+    :cond_6
     invoke-static {p4, v1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getDisplayCutoutInsets(Landroid/view/View;Landroid/app/Activity;)[I
 
-    move-result-object v1
+    move-result-object v4
 
     .line 206
-    aget v2, v1, v0
+    aget v5, v4, v0
 
     .line 207
-    const/4 v3, 0x1
-
-    aget v1, v1, v3
+    aget v3, v4, v3
 
     .line 209
     nop
@@ -1108,48 +1133,40 @@
     move-result-object v4
 
     .line 212
-    const-string v5, "status_bar_height"
+    const-string v6, "status_bar_height"
 
-    const-string v6, "dimen"
+    const-string v7, "dimen"
 
-    const-string v7, "android"
+    const-string v8, "android"
 
-    invoke-virtual {v4, v5, v6, v7}, Landroid/content/res/Resources;->getIdentifier(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I
+    invoke-virtual {v4, v6, v7, v8}, Landroid/content/res/Resources;->getIdentifier(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I
 
-    move-result v5
+    move-result v6
 
     .line 213
-    if-lez v5, :cond_5
+    if-lez v6, :cond_7
 
     .line 214
-    invoke-virtual {v4, v5}, Landroid/content/res/Resources;->getDimensionPixelSize(I)I
+    invoke-virtual {v4, v6}, Landroid/content/res/Resources;->getDimensionPixelSize(I)I
 
-    move-result v4
+    move-result v0
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    goto :goto_1
-
-    .line 213
-    :cond_5
-    const/4 v4, 0x0
-
     .line 217
-    :goto_1
+    :cond_7
     goto :goto_2
 
     .line 216
     :catchall_0
     move-exception v4
 
-    const/4 v4, 0x0
-
     .line 219
     :goto_2
     nop
 
     .line 220
-    if-eqz p4, :cond_6
+    if-eqz p4, :cond_8
 
     .line 221
     invoke-virtual {p4}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
@@ -1164,89 +1181,123 @@
 
     goto :goto_3
 
-    .line 220
-    :cond_6
-    const/high16 p4, 0x40400000    # 3.0f
+    .line 222
+    :cond_8
+    if-eqz v1, :cond_9
 
     .line 223
-    :goto_3
-    const/high16 v5, 0x42100000    # 36.0f
+    invoke-virtual {v1}, Landroid/app/Activity;->getResources()Landroid/content/res/Resources;
 
-    mul-float p4, p4, v5
+    move-result-object p4
+
+    invoke-virtual {p4}, Landroid/content/res/Resources;->getDisplayMetrics()Landroid/util/DisplayMetrics;
+
+    move-result-object p4
+
+    iget p4, p4, Landroid/util/DisplayMetrics;->density:F
+
+    goto :goto_3
+
+    .line 222
+    :cond_9
+    const/high16 p4, 0x40400000    # 3.0f
+
+    .line 225
+    :goto_3
+    const/high16 v1, 0x42180000    # 38.0f
+
+    mul-float v1, v1, p4
+
+    float-to-int v1, v1
+
+    invoke-static {v0, v1}, Ljava/lang/Math;->max(II)I
+
+    move-result v0
+
+    .line 226
+    const/high16 v1, 0x41600000    # 14.0f
+
+    mul-float p4, p4, v1
 
     float-to-int p4, p4
 
-    invoke-static {v4, p4}, Ljava/lang/Math;->max(II)I
+    .line 231
+    if-gtz v5, :cond_c
 
-    move-result p4
-
-    .line 225
-    nop
-
-    .line 226
-    nop
-
-    .line 228
-    if-ne p5, v3, :cond_9
-
-    .line 229
-    if-lez v2, :cond_7
+    if-lez v3, :cond_a
 
     goto :goto_4
 
-    :cond_7
-    move v2, p4
+    .line 240
+    :cond_a
+    if-ne p5, v2, :cond_b
 
-    .line 230
-    :goto_4
-    if-lez v1, :cond_8
+    .line 241
+    nop
 
-    move v0, v1
+    .line 242
+    move v9, v0
 
-    :cond_8
-    move p4, v0
+    move v0, p4
 
-    move v0, v2
+    move p4, v9
 
     goto :goto_5
 
-    .line 231
-    :cond_9
-    const/4 v3, 0x3
+    .line 244
+    :cond_b
+    nop
 
-    if-ne p5, v3, :cond_b
+    .line 245
+    goto :goto_5
 
     .line 232
-    if-lez v2, :cond_a
-
-    move v0, v2
+    :cond_c
+    :goto_4
+    if-lez v5, :cond_d
 
     .line 233
-    :cond_a
-    if-lez v1, :cond_c
+    invoke-static {v5, v0}, Ljava/lang/Math;->max(II)I
 
-    move p4, v1
+    move-result v0
+
+    .line 234
+    invoke-static {v3, p4}, Ljava/lang/Math;->max(II)I
+
+    move-result p4
 
     goto :goto_5
 
-    .line 231
-    :cond_b
-    const/4 p4, 0x0
-
     .line 236
-    :cond_c
+    :cond_d
+    invoke-static {v5, p4}, Ljava/lang/Math;->max(II)I
+
+    move-result p4
+
+    .line 237
+    invoke-static {v3, v0}, Ljava/lang/Math;->max(II)I
+
+    move-result v0
+
+    move v9, v0
+
+    move v0, p4
+
+    move p4, v9
+
+    .line 249
     :goto_5
     invoke-static {p0, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 237
+    .line 250
     invoke-static {p2, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 238
+    .line 251
     invoke-static {p1, p4}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 239
+    .line 252
     invoke-static {p3, p4}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 240
+    .line 253
     return-void
 .end method

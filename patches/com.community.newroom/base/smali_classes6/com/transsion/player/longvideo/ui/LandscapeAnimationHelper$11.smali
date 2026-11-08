@@ -30,7 +30,7 @@
         }
     .end annotation
 
-    .line 590
+    .line 583
     iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$11;->val$textView:Landroid/widget/TextView;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
@@ -43,7 +43,7 @@
 .method public onAnimationUpdate(Landroid/animation/ValueAnimator;)V
     .locals 1
 
-    .line 593
+    .line 586
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$11;->val$textView:Landroid/widget/TextView;
 
     invoke-virtual {p1}, Landroid/animation/ValueAnimator;->getAnimatedValue()Ljava/lang/Object;
@@ -58,6 +58,6 @@
 
     invoke-virtual {v0, p1}, Landroid/widget/TextView;->setTextColor(I)V
 
-    .line 594
+    .line 587
     return-void
 .end method

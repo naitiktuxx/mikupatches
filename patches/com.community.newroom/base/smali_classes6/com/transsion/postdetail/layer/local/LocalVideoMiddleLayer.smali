@@ -2688,6 +2688,16 @@
 
     iget-object p1, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
 
+    if-eqz p1, :cond_skip_mid_sb
+
+    iget-object p1, p1, Lso/b0;->P:Lcom/tn/lib/view/SecondariesSeekBar;
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/view/View;)V
+
+    :cond_skip_mid_sb
+
+    iget-object p1, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
+
     if-eqz p1, :cond_1
 
     iget-object p1, p1, Lso/b0;->j:Landroid/view/View;

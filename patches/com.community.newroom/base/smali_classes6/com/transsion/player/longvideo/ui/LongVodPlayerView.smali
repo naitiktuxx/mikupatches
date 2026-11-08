@@ -9445,7 +9445,7 @@
 
     if-eqz v1, :cond_notch_n0
 
-    const/4 v2, 0x0
+    const/4 v2, -0x1
 
     invoke-virtual {v1, v0, v2}, Lcom/transsion/player/longvideo/helper/j;->d(Lcom/transsion/player/longvideo/ui/LongVodUiType;I)V
 
@@ -11001,7 +11001,7 @@
 
     iget-object p1, p1, Lho/k;->k:Landroidx/appcompat/widget/AppCompatImageView;
 
-    sget v0, Lcom/transsion/baseui/R$mipmap;->icon_player_pause:I
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_pause:I
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
@@ -11046,7 +11046,7 @@
 
     iget-object p1, p1, Lho/k;->k:Landroidx/appcompat/widget/AppCompatImageView;
 
-    sget v0, Lcom/transsion/baseui/R$mipmap;->icon_player_play:I
+    sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_play:I
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
@@ -14882,7 +14882,7 @@
 
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->n:Lcom/transsion/player/longvideo/ui/LongVodUiType;
 
-    const/4 v1, 0x0
+    const/4 v1, -0x1
 
     invoke-virtual {p1, v0, v1}, Lcom/transsion/player/longvideo/helper/j;->d(Lcom/transsion/player/longvideo/ui/LongVodUiType;I)V
 

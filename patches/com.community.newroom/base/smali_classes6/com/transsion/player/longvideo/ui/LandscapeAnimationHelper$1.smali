@@ -21,7 +21,7 @@
 .method constructor <init>()V
     .locals 0
 
-    .line 146
+    .line 139
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
     return-void
@@ -32,7 +32,7 @@
 .method public onTouch(Landroid/view/View;Landroid/view/MotionEvent;)Z
     .locals 4
 
-    .line 149
+    .line 142
     invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->isLandscape(Landroid/view/View;)Z
 
     move-result v0
@@ -43,18 +43,18 @@
 
     return v1
 
-    .line 150
+    .line 143
     :cond_0
     invoke-virtual {p2}, Landroid/view/MotionEvent;->getActionMasked()I
 
     move-result p2
 
-    .line 151
+    .line 144
     const-wide/16 v2, 0x96
 
     if-nez p2, :cond_1
 
-    .line 152
+    .line 145
     invoke-virtual {p1}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
@@ -81,7 +81,7 @@
 
     goto :goto_0
 
-    .line 153
+    .line 146
     :cond_1
     const/4 v0, 0x1
 
@@ -91,7 +91,7 @@
 
     if-ne p2, v0, :cond_3
 
-    .line 154
+    .line 147
     :cond_2
     invoke-virtual {p1}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
@@ -117,7 +117,7 @@
 
     invoke-virtual {p1}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    .line 156
+    .line 149
     :cond_3
     :goto_0
     return v1
