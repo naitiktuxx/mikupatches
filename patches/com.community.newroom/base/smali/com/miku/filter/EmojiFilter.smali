@@ -17,7 +17,7 @@
     .locals 10
 
     .line 23
-    if-eqz p0, :cond_5
+    if-eqz p0, :cond_6
 
     invoke-virtual {p0}, Ljava/lang/String;->isEmpty()Z
 
@@ -53,7 +53,7 @@
 
     const/4 v6, 0x1
 
-    if-ge v3, v0, :cond_3
+    if-ge v3, v0, :cond_4
 
     .line 28
     invoke-virtual {p0, v3}, Ljava/lang/String;->codePointAt(I)I
@@ -70,55 +70,73 @@
 
     move-result v9
 
-    if-nez v9, :cond_2
-
-    .line 31
-    invoke-static {v7}, Ljava/lang/Character;->isWhitespace(I)Z
-
-    move-result v9
-
     if-eqz v9, :cond_1
 
-    .line 32
-    if-nez v4, :cond_2
+    .line 31
+    if-nez v4, :cond_3
 
     invoke-virtual {v1}, Ljava/lang/StringBuilder;->length()I
 
     move-result v7
 
-    if-lez v7, :cond_2
+    if-lez v7, :cond_3
 
-    .line 33
+    .line 32
     invoke-virtual {v1, v5}, Ljava/lang/StringBuilder;->append(C)Ljava/lang/StringBuilder;
 
-    .line 34
+    .line 33
     const/4 v4, 0x1
 
     goto :goto_1
 
-    .line 37
+    .line 36
     :cond_1
-    invoke-virtual {v1, v7}, Ljava/lang/StringBuilder;->appendCodePoint(I)Ljava/lang/StringBuilder;
+    invoke-static {v7}, Ljava/lang/Character;->isWhitespace(I)Z
+
+    move-result v9
+
+    if-eqz v9, :cond_2
+
+    .line 37
+    if-nez v4, :cond_3
+
+    invoke-virtual {v1}, Ljava/lang/StringBuilder;->length()I
+
+    move-result v7
+
+    if-lez v7, :cond_3
 
     .line 38
+    invoke-virtual {v1, v5}, Ljava/lang/StringBuilder;->append(C)Ljava/lang/StringBuilder;
+
+    .line 39
+    const/4 v4, 0x1
+
+    goto :goto_1
+
+    .line 42
+    :cond_2
+    invoke-virtual {v1, v7}, Ljava/lang/StringBuilder;->appendCodePoint(I)Ljava/lang/StringBuilder;
+
+    .line 43
     const/4 v4, 0x0
 
-    .line 41
-    :cond_2
+    .line 46
+    :cond_3
     :goto_1
     add-int/2addr v3, v8
 
-    .line 42
+    .line 47
     goto :goto_0
 
-    .line 43
-    :cond_3
+    .line 48
+    :cond_4
     invoke-virtual {v1}, Ljava/lang/StringBuilder;->length()I
 
     move-result p0
 
-    .line 44
-    if-lez p0, :cond_4
+    .line 49
+    if-lez p0, :cond_5
 
     sub-int/2addr p0, v6
 
@@ -126,13 +144,13 @@
 
     move-result v0
 
-    if-ne v0, v5, :cond_4
+    if-ne v0, v5, :cond_5
 
-    .line 45
+    .line 50
     invoke-virtual {v1, p0}, Ljava/lang/StringBuilder;->setLength(I)V
 
-    .line 47
-    :cond_4
+    .line 52
+    :cond_5
     invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 
     move-result-object p0
@@ -140,7 +158,7 @@
     return-object p0
 
     .line 23
-    :cond_5
+    :cond_6
     :goto_2
     return-object p0
 .end method

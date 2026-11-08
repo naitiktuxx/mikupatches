@@ -8,11 +8,13 @@ import shutil
 import zipfile
 import json
 import re
+import subprocess
 from typing import List, Dict, Any, Optional
 
 from mikupatches.constants import (
     ARCH_SPLIT_MAP,
     SUPPORTED_ARCHITECTURES,
+    DEFAULT_PATCHES_DIR,
 )
 from mikupatches.models import AppProfile, BuildOptions
 from mikupatches.extractor import Extractor
