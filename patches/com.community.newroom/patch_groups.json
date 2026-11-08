@@ -662,7 +662,9 @@
       "res/layout/fragment_download_audio_track.xml": "Full area coverage and rounded (16dp) top corners for download language selection",
       "res/layout/fragment_seasons.xml": "Full area coverage and rounded (16dp) top corners for download seasons selection",
       "res/layout/fragment_video_detail_seasons.xml": "Rounded (16dp) top corners for player season selection dialog",
-      "smali_classes5/com/transsion/baseui/dialog/BaseDialog.smali": "Prevent bottom padding gap injection under dialog action buttons"
+      "smali_classes5/com/transsion/baseui/dialog/BaseDialog.smali": "Prevent bottom padding gap injection under dialog action buttons",
+      "smali_classes7/com/transsnet/downloader/fragment/DownloadReDetectorBaseFragment.smali": "Calculate exact full area height for download dialog without status/nav bar shrinkage",
+      "smali_classes7/com/transsnet/downloader/widget/DownloadResolutionTabView.smali": "Permanently hide horizontal divider line in download resolution tab"
     }
   },
   {
