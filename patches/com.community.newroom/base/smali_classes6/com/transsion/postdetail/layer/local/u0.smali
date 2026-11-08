@@ -584,6 +584,8 @@
 
     invoke-virtual {p3, v1}, Landroid/view/View;->setSelected(Z)V
 
+    invoke-static {p3, v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateLock(Landroid/view/View;Z)V
+
     invoke-virtual {p3}, Landroid/view/View;->isSelected()Z
 
     move-result v1
@@ -817,6 +819,15 @@
     :cond_0
     iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
+    if-eqz v0, :cond_scale_local
+
+    iget-object v1, v0, Lso/z;->i:Lcom/transsion/postdetail/ui/view/ImmScaleView;
+
+    invoke-static {v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateFitFill(Landroid/view/View;)V
+
+    :cond_scale_local
+    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
+
     if-eqz v0, :cond_1
 
     iget-object v0, v0, Lso/z;->v:Landroid/widget/TextView;
@@ -872,6 +883,8 @@
 .method private static final M3(Lcom/transsion/postdetail/layer/local/u0;Landroid/view/View;)V
     .locals 2
 
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateForward(Landroid/view/View;)V
+
     sget-object p1, Lhj/i;->a:Lhj/i;
 
     const-string v0, "forward"
@@ -897,6 +910,8 @@
 
 .method private static final N3(Lcom/transsion/postdetail/layer/local/u0;Landroid/view/View;)V
     .locals 2
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateRewind(Landroid/view/View;)V
 
     sget-object p1, Lhj/i;->a:Lhj/i;
 
@@ -2824,6 +2839,14 @@
 
     iput-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
+    if-eqz v0, :cond_skip_local_sb
+
+    iget-object v1, v0, Lso/z;->N:Lcom/tn/lib/view/SecondariesSeekBar;
+
+    invoke-static {v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/widget/SeekBar;)V
+
+    :cond_skip_local_sb
+
     invoke-super {p0, p1, p2}, Lcom/transsion/postdetail/layer/local/a0;->r(Landroid/view/View;Lcom/transsion/postdetail/layer/local/LocalUiType;)V
 
     invoke-static {}, Lcom/blankj/utilcode/util/y;->c()I
@@ -3079,9 +3102,11 @@
 .end method
 
 .method public u2(Z)V
-    .locals 1
+    .locals 2
 
     invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->u2(Z)V
+
+    move v1, p1
 
     iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
@@ -3095,7 +3120,7 @@
 
     if-eqz v0, :cond_1
 
-    if-eqz p1, :cond_0
+    if-eqz v1, :cond_0
 
     sget p1, Lcom/transsion/baseui/R$drawable;->ic_player_pause:I
 
@@ -3106,6 +3131,8 @@
 
     :goto_0
     invoke-virtual {v0, p1}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
+
+    invoke-static {v0, v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePlayPause(Landroid/widget/ImageView;Z)V
 
     :cond_1
     return-void

@@ -675,11 +675,30 @@
     "files": {
       "res/layout/long_vod_view_player_middle.xml": "Center play/pause button, move duration counter to left, and extend seekbar to fullscreen button in portrait video player",
       "res/layout/long_vod_view_player_land.xml": "Avoid display cutout/notch overlap for lock button, brand ad, and controls in landscape player",
+      "smali_classes5/com/tn/lib/view/SwitchButton.smali": "Smooth 200ms sliding toggle transition for subtitle, bilingual, shadow, and background switches",
       "smali_classes6/com/transsion/player/longvideo/helper/j.smali": "Dynamic display cutout and safe inset manager for landscape notch handling on both rotation sides",
-      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth alpha fade-in, fade-out, visibility transitions, and safe notch insets",
+      "smali_classes6/com/transsion/player/longvideo/ui/PlayPauseMorphDrawable.smali": "Zero-allocation vector morphing drawable for play and pause icon transitions",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper.smali": "Landscape player animations helper: play/pause morph, rewind/forward rotation, seekbar touch feedback, lock shackle, popups, and panels",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$1.smali": "Touch listener for seekbar enlargement and interactive track feedback",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$2.smali": "Exit animation complete callback helper",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$3.smali": "Speed selection scale restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$4.smali": "Speed selection main label alpha restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$5.smali": "Subpanel slide-out complete callback helper",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$6.smali": "Subpanel slide-out end action helper",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$7.smali": "Text color transition animator update listener",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$8.smali": "Delay value change alpha transition listener",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$9.smali": "Resolution selection scale restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$10.smali": "Resolution selection main label alpha restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$11.smali": "Color option scale restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth coordinated fade-in, fade-out, 8dp slide transitions, and safe notch insets",
       "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper$1.smali": "Animator listener for clean fade-out completion and state cleanup",
-      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates fade animation hooks and orientation change notch updates into player view",
-      "smali_classes6/com/transsion/postdetail/layer/local/u0.smali": "Applies safe notch insets for downloaded video player on both landscape rotation sides"
+      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates landscape animation hooks for play/pause morphing, seekbar feedback, rewind, forward, lock, fit/fill, and next episode",
+      "smali_classes6/com/transsion/player/longvideo/ui/dialog/LongVdPlayerConfigDialog.smali": "Popup enter animation and resolution selection highlight transition for video quality dialog",
+      "smali_classes6/com/transsion/postdetail/layer/local/u0.smali": "Landscape animation hooks for downloaded video player play/pause morph, seekbar feedback, rewind, forward, and lock",
+      "smali_classes6/com/transsion/postdetail/ui/dialog/SpeedConfigDialog.smali": "Popup enter animation and speed selection highlight transition for playback speed menu",
+      "smali_classes6/com/transsion/subtitle/dialog/SubtitleMainDialog2.smali": "Popup enter animation and subpanel slide-in animations for subtitle style and sync adjust",
+      "smali_classes6/com/transsion/subtitle/helper/j.smali": "Interactive press feedback for subtitle sync adjust minus and plus buttons",
+      "smali_classes6/com/transsion/subtitle/view/SubtitleOptionsView.smali": "Interactive seekbar feedback and font color selection animations in subtitle style options"
     }
   },
   {

@@ -3182,6 +3182,14 @@
 
     invoke-interface {v0, p1}, Lcom/transsion/player/orplayer/g;->setScaleMode(Lcom/transsion/player/enum/ScaleMode;)V
 
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
+
+    iget-object v0, v0, Lho/j;->h:Lho/k;
+
+    iget-object v0, v0, Lho/k;->n:Lcom/transsion/postdetail/ui/view/ImmScaleView;
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateFitFill(Landroid/view/View;)V
+
     iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
     iget-object p1, p1, Lho/j;->h:Lho/k;
@@ -3252,6 +3260,8 @@
 
 .method private static final M0(Lcom/transsion/player/longvideo/ui/LongVodPlayerView;Landroid/view/View;)V
     .locals 2
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateButtonPress(Landroid/view/View;)V
 
     sget-object p1, Lhj/i;->a:Lhj/i;
 
@@ -3402,6 +3412,8 @@
 .method private static final O0(Lcom/transsion/player/longvideo/ui/LongVodPlayerView;Landroid/view/View;)V
     .locals 1
 
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateForward(Landroid/view/View;)V
+
     const-string p1, "forward"
 
     invoke-direct {p0, p1}, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->O1(Ljava/lang/String;)V
@@ -3545,6 +3557,8 @@
 
 .method private static final P0(Lcom/transsion/player/longvideo/ui/LongVodPlayerView;Landroid/view/View;)V
     .locals 0
+
+    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateRewind(Landroid/view/View;)V
 
     const-string p1, "backward"
 
@@ -4257,6 +4271,8 @@
     xor-int/2addr v1, v0
 
     invoke-virtual {p1, v1}, Landroid/view/View;->setSelected(Z)V
+
+    invoke-static {p1, v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateLock(Landroid/view/View;Z)V
 
     invoke-virtual {p1}, Landroid/view/View;->isSelected()Z
 
@@ -5239,6 +5255,8 @@
     invoke-static {v0, v1}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 
     invoke-direct {p0, v0}, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->Y0(Lcom/tn/lib/view/SecondariesSeekBar;)V
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->attachSeekbarTouchFeedback(Landroid/widget/SeekBar;)V
 
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
@@ -10987,6 +11005,10 @@
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
+    const/4 v0, 0x1
+
+    invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePlayPause(Landroid/widget/ImageView;Z)V
+
     iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
     iget-object p1, p1, Lho/j;->h:Lho/k;
@@ -10998,6 +11020,10 @@
     sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_pause:I
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
+
+    const/4 v0, 0x1
+
+    invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePlayPause(Landroid/widget/ImageView;Z)V
 
     iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
@@ -11024,6 +11050,10 @@
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
+    const/4 v0, 0x0
+
+    invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePlayPause(Landroid/widget/ImageView;Z)V
+
     iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
     iget-object p1, p1, Lho/j;->h:Lho/k;
@@ -11035,6 +11065,10 @@
     sget v0, Lcom/transsion/baseui/R$drawable;->ic_player_play:I
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
+
+    const/4 v0, 0x0
+
+    invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePlayPause(Landroid/widget/ImageView;Z)V
 
     iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
