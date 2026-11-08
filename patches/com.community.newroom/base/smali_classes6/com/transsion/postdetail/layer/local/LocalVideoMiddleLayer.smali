@@ -1569,36 +1569,16 @@
 .method public G0()Landroid/widget/TextView;
     .locals 1
 
-    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
-
-    if-eqz v0, :cond_0
-
-    iget-object v0, v0, Lso/b0;->D:Landroid/widget/TextView;
-
-    goto :goto_0
-
-    :cond_0
     const/4 v0, 0x0
 
-    :goto_0
     return-object v0
 .end method
 
 .method public H0()Landroid/widget/TextView;
     .locals 1
 
-    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->c0:Lso/b0;
-
-    if-eqz v0, :cond_0
-
-    iget-object v0, v0, Lso/b0;->B:Landroid/widget/TextView;
-
-    goto :goto_0
-
-    :cond_0
     const/4 v0, 0x0
 
-    :goto_0
     return-object v0
 .end method
 

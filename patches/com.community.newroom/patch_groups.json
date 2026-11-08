@@ -268,7 +268,11 @@
       "res/drawable/miku_anim_32.webp": "Miku splash animation frame 32",
       "res/drawable/miku_anim_33.webp": "Miku splash animation frame 33",
       "res/drawable/miku_anim_34.webp": "Miku splash animation frame 34",
-      "res/drawable/miku_anim_35.webp": "Miku splash animation frame 35"
+      "res/drawable/miku_anim_35.webp": "Miku splash animation frame 35",
+      "smali_classes7/lj/b.smali": "Change gallery and download root storage folder from MovieBox to Miku",
+      "smali_classes7/com/transsnet/downloader/y.smali": "Set MediaStore export relative path and album destination folder to Miku",
+      "smali_classes5/com/transsion/baselib/db/download/DownloadBean.smali": "Update isSaved() check to verify downloaded file presence in DCIM/Miku",
+      "smali_classes6/com/transsion/ninegridview/helper/FileHelper.smali": "Update image and media gallery save directory to Miku"
     },
     "desc": "Renames app to Miku, updates package name to com.mikuplayer.tux, and replaces launcher icons with custom Miku icons"
   },
@@ -699,7 +703,10 @@
       "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper$1.smali": "Animator listener for clean fade-out completion and state cleanup",
       "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates landscape animation hooks for play/pause morphing, seekbar feedback, rewind, forward, lock, fit/fill, and next episode",
       "smali_classes6/com/transsion/player/longvideo/ui/dialog/LongVdPlayerConfigDialog.smali": "Popup enter animation and resolution selection highlight transition for video quality dialog",
+      "smali_classes6/com/transsion/postdetail/layer/local/a0.smali": "Offline player base layer smooth fade transitions and synchronized control visibility",
+      "smali_classes6/com/transsion/postdetail/layer/local/a0$b.smali": "Offline player single-tap control toggle with areControlsVisible check",
       "smali_classes6/com/transsion/postdetail/layer/local/u0.smali": "Landscape animation hooks for downloaded video player play/pause morph, seekbar feedback, rewind, forward, and lock",
+      "smali_classes6/com/transsion/postdetail/ui/view/ImmSpeedView.smali": "Playback speed button press scale feedback animation",
       "smali_classes6/com/transsion/postdetail/ui/dialog/SpeedConfigDialog.smali": "Popup enter animation and speed selection highlight transition for playback speed menu",
       "smali_classes6/com/transsion/subtitle/dialog/SubtitleMainDialog2.smali": "Popup enter animation and subpanel slide-in animations for subtitle style and sync adjust",
       "smali_classes6/com/transsion/subtitle/helper/j.smali": "Interactive press feedback for subtitle sync adjust minus and plus buttons",

@@ -1321,6 +1321,13 @@
 
     .line 55
     :cond_0
+    instance-of v1, p0, Landroid/widget/SeekBar;
+
+    if-eqz v1, :cond_check_pb
+
+    return v0
+
+    :cond_check_pb
     instance-of v1, p0, Landroid/widget/ProgressBar;
 
     const/4 v2, 0x1
