@@ -32,7 +32,7 @@
         }
     .end annotation
 
-    .line 473
+    .line 494
     iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$textView:Landroid/widget/TextView;
 
     iput-object p2, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$newText:Ljava/lang/CharSequence;
@@ -47,44 +47,44 @@
 .method public run()V
     .locals 3
 
-    .line 476
+    .line 497
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$textView:Landroid/widget/TextView;
 
     iget-object v1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$newText:Ljava/lang/CharSequence;
 
     invoke-virtual {v0, v1}, Landroid/widget/TextView;->setText(Ljava/lang/CharSequence;)V
 
-    .line 477
+    .line 498
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$textView:Landroid/widget/TextView;
 
     invoke-virtual {v0}, Landroid/widget/TextView;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 478
+    .line 499
     const/high16 v1, 0x3f800000    # 1.0f
 
     invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->alpha(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 479
+    .line 500
     const/4 v1, 0x0
 
     invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->translationY(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 480
+    .line 501
     const-wide/16 v1, 0x4b
 
     invoke-virtual {v0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 481
+    .line 502
     invoke-virtual {v0}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    .line 482
+    .line 503
     return-void
 .end method

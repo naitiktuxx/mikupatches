@@ -10586,19 +10586,56 @@
     :cond_2
     invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
-    if-eqz p1, :cond_3
+    if-eqz p1, :cond_restore_mid_pause
 
-    iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
 
-    iget-object p1, p1, Lho/j;->h:Lho/k;
+    iget-object v0, v0, Lho/j;->h:Lho/k;
 
-    iget-object p1, p1, Lho/k;->c:Lbk/e;
+    iget-object v0, v0, Lho/k;->c:Lbk/e;
 
-    iget-object p1, p1, Lbk/e;->d:Landroidx/appcompat/widget/AppCompatImageView;
+    iget-object v0, v0, Lbk/e;->d:Landroidx/appcompat/widget/AppCompatImageView;
 
-    invoke-static {p1, v3}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
+    invoke-static {v0, v3}, Lkotlin/jvm/internal/Intrinsics;->g(Ljava/lang/Object;Ljava/lang/String;)V
 
-    invoke-static {p1}, Ljg/c;->h(Landroid/view/View;)V
+    invoke-static {v0}, Ljg/c;->h(Landroid/view/View;)V
+
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
+
+    iget-object v0, v0, Lho/j;->i:Lho/l;
+
+    iget-object v0, v0, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
+
+    if-eqz v0, :cond_3
+
+    invoke-static {v0}, Ljg/c;->h(Landroid/view/View;)V
+
+    goto :cond_3
+
+    :cond_restore_mid_pause
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
+
+    iget-object v0, v0, Lho/j;->i:Lho/l;
+
+    iget-object v0, v0, Lho/l;->i:Landroid/widget/LinearLayout;
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->areControlsVisible(Landroid/view/View;)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_3
+
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->a:Lho/j;
+
+    iget-object v0, v0, Lho/j;->i:Lho/l;
+
+    iget-object v0, v0, Lho/l;->e:Landroidx/appcompat/widget/AppCompatImageView;
+
+    if-eqz v0, :cond_3
+
+    const/4 v1, 0x0
+
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
     :cond_3
     return-void
@@ -11035,7 +11072,9 @@
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
-    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;)V
+    const/4 v0, 0x1
+
+    invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;Z)V
 
     goto :goto_0
 
@@ -11080,7 +11119,9 @@
 
     invoke-virtual {p1, v0}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
-    invoke-static {p1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;)V
+    const/4 v0, 0x0
+
+    invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;Z)V
 
     :goto_0
     return-void

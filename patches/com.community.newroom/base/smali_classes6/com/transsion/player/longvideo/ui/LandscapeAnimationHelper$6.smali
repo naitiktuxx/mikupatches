@@ -30,7 +30,7 @@
         }
     .end annotation
 
-    .line 438
+    .line 459
     iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$onComplete:Ljava/lang/Runnable;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
@@ -43,14 +43,14 @@
 .method public run()V
     .locals 1
 
-    .line 441
+    .line 462
     iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$onComplete:Ljava/lang/Runnable;
 
     if-eqz v0, :cond_0
 
     invoke-interface {v0}, Ljava/lang/Runnable;->run()V
 
-    .line 442
+    .line 463
     :cond_0
     return-void
 .end method

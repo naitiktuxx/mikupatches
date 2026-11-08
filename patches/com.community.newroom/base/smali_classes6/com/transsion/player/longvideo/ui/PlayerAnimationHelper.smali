@@ -23,12 +23,14 @@
     .end annotation
 .end field
 
+.field private static final playOvershootInterpolator:Landroid/view/animation/OvershootInterpolator;
+
 
 # direct methods
 .method static constructor <clinit>()V
-    .locals 1
+    .locals 2
 
-    .line 33
+    .line 34
     new-instance v0, Ljava/util/WeakHashMap;
 
     invoke-direct {v0}, Ljava/util/WeakHashMap;-><init>()V
@@ -39,19 +41,28 @@
 
     sput-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadingOutViews:Ljava/util/Map;
 
-    .line 34
+    .line 35
     new-instance v0, Landroid/view/animation/DecelerateInterpolator;
 
     invoke-direct {v0}, Landroid/view/animation/DecelerateInterpolator;-><init>()V
 
     sput-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeInInterpolator:Landroid/view/animation/DecelerateInterpolator;
 
-    .line 35
+    .line 36
     new-instance v0, Landroid/view/animation/AccelerateInterpolator;
 
     invoke-direct {v0}, Landroid/view/animation/AccelerateInterpolator;-><init>()V
 
     sput-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOutInterpolator:Landroid/view/animation/AccelerateInterpolator;
+
+    .line 37
+    new-instance v0, Landroid/view/animation/OvershootInterpolator;
+
+    const/high16 v1, 0x3fc00000    # 1.5f
+
+    invoke-direct {v0, v1}, Landroid/view/animation/OvershootInterpolator;-><init>(F)V
+
+    sput-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->playOvershootInterpolator:Landroid/view/animation/OvershootInterpolator;
 
     return-void
 .end method
@@ -59,7 +70,7 @@
 .method public constructor <init>()V
     .locals 0
 
-    .line 28
+    .line 29
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
     return-void
@@ -68,21 +79,33 @@
 .method static synthetic access$000()Ljava/util/Map;
     .locals 1
 
-    .line 28
+    .line 29
     sget-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadingOutViews:Ljava/util/Map;
 
     return-object v0
 .end method
 
 .method public static animatePlayPause(Landroid/view/View;)V
-    .locals 2
+    .locals 1
 
-    .line 176
+    .line 247
+    const/4 v0, 0x1
+
+    invoke-static {p0, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->animatePlayPause(Landroid/view/View;Z)V
+
+    .line 248
+    return-void
+.end method
+
+.method public static animatePlayPause(Landroid/view/View;Z)V
+    .locals 3
+
+    .line 216
     if-nez p0, :cond_0
 
     return-void
 
-    .line 177
+    .line 219
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
@@ -90,70 +113,122 @@
 
     invoke-virtual {v0}, Landroid/view/ViewPropertyAnimator;->cancel()V
 
-    .line 178
-    const/high16 v0, 0x3f400000    # 0.75f
+    .line 221
+    const/4 v0, 0x0
 
-    invoke-virtual {p0, v0}, Landroid/view/View;->setScaleX(F)V
+    const/high16 v1, 0x3f800000    # 1.0f
 
-    .line 179
-    invoke-virtual {p0, v0}, Landroid/view/View;->setScaleY(F)V
+    if-eqz p1, :cond_1
 
-    .line 180
+    .line 223
+    const p1, 0x3f51eb85    # 0.82f
+
+    invoke-virtual {p0, p1}, Landroid/view/View;->setScaleX(F)V
+
+    .line 224
+    invoke-virtual {p0, p1}, Landroid/view/View;->setScaleY(F)V
+
+    .line 225
     invoke-virtual {p0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 181
-    const/high16 v0, 0x3f800000    # 1.0f
-
-    invoke-virtual {p0, v0}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
+    .line 226
+    invoke-virtual {p0, v1}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 182
-    invoke-virtual {p0, v0}, Landroid/view/ViewPropertyAnimator;->scaleY(F)Landroid/view/ViewPropertyAnimator;
+    .line 227
+    invoke-virtual {p0, v1}, Landroid/view/ViewPropertyAnimator;->scaleY(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 183
-    const-wide/16 v0, 0xdc
+    .line 228
+    const-wide/16 v1, 0xc8
 
-    invoke-virtual {p0, v0, v1}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
-
-    move-result-object p0
-
-    sget-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeInInterpolator:Landroid/view/animation/DecelerateInterpolator;
-
-    .line 184
-    invoke-virtual {p0, v0}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
+    invoke-virtual {p0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 185
-    const/4 v0, 0x0
+    sget-object p1, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->playOvershootInterpolator:Landroid/view/animation/OvershootInterpolator;
 
+    .line 229
+    invoke-virtual {p0, p1}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object p0
+
+    .line 230
     invoke-virtual {p0, v0}, Landroid/view/ViewPropertyAnimator;->setListener(Landroid/animation/Animator$AnimatorListener;)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 186
+    .line 231
     invoke-virtual {p0}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    .line 187
+    goto :goto_0
+
+    .line 234
+    :cond_1
+    const p1, 0x3f5c28f6    # 0.86f
+
+    invoke-virtual {p0, p1}, Landroid/view/View;->setScaleX(F)V
+
+    .line 235
+    invoke-virtual {p0, p1}, Landroid/view/View;->setScaleY(F)V
+
+    .line 236
+    invoke-virtual {p0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
+
+    move-result-object p0
+
+    .line 237
+    invoke-virtual {p0, v1}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object p0
+
+    .line 238
+    invoke-virtual {p0, v1}, Landroid/view/ViewPropertyAnimator;->scaleY(F)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object p0
+
+    .line 239
+    const-wide/16 v1, 0xb4
+
+    invoke-virtual {p0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object p0
+
+    sget-object p1, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeInInterpolator:Landroid/view/animation/DecelerateInterpolator;
+
+    .line 240
+    invoke-virtual {p0, p1}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object p0
+
+    .line 241
+    invoke-virtual {p0, v0}, Landroid/view/ViewPropertyAnimator;->setListener(Landroid/animation/Animator$AnimatorListener;)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object p0
+
+    .line 242
+    invoke-virtual {p0}, Landroid/view/ViewPropertyAnimator;->start()V
+
+    .line 244
+    :goto_0
     return-void
 .end method
 
 .method public static areControlsVisible(Landroid/view/View;)Z
     .locals 2
 
-    .line 38
+    .line 40
     const/4 v0, 0x0
 
     if-nez p0, :cond_0
 
     return v0
 
-    .line 39
+    .line 41
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->getVisibility()I
 
@@ -163,7 +238,7 @@
 
     return v0
 
-    .line 40
+    .line 42
     :cond_1
     sget-object v1, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadingOutViews:Ljava/util/Map;
 
@@ -173,7 +248,7 @@
 
     check-cast p0, Ljava/lang/Boolean;
 
-    .line 41
+    .line 43
     sget-object v1, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
 
     invoke-virtual {v1, p0}, Ljava/lang/Boolean;->equals(Ljava/lang/Object;)Z
@@ -184,7 +259,7 @@
 
     return v0
 
-    .line 42
+    .line 44
     :cond_2
     const/4 p0, 0x1
 
@@ -194,20 +269,36 @@
 .method public static fadeIn(Landroid/view/View;)V
     .locals 6
 
-    .line 87
+    .line 115
     if-nez p0, :cond_0
 
     return-void
 
-    .line 88
+    .line 118
     :cond_0
+    invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->isVerticalPauseClashingWithLoading(Landroid/view/View;)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_1
+
+    .line 119
+    const/16 v0, 0x8
+
+    invoke-virtual {p0, v0}, Landroid/view/View;->setVisibility(I)V
+
+    .line 120
+    return-void
+
+    .line 123
+    :cond_1
     invoke-virtual {p0}, Landroid/view/View;->getVisibility()I
 
     move-result v0
 
     const/high16 v1, 0x3f800000    # 1.0f
 
-    if-nez v0, :cond_1
+    if-nez v0, :cond_2
 
     invoke-virtual {p0}, Landroid/view/View;->getAlpha()F
 
@@ -215,43 +306,43 @@
 
     cmpl-float v0, v0, v1
 
-    if-nez v0, :cond_1
+    if-nez v0, :cond_2
 
-    .line 89
+    .line 124
     return-void
 
-    .line 92
-    :cond_1
+    .line 127
+    :cond_2
     invoke-virtual {p0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
     invoke-virtual {v0}, Landroid/view/ViewPropertyAnimator;->cancel()V
 
-    .line 93
+    .line 128
     sget-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadingOutViews:Ljava/util/Map;
 
     invoke-interface {v0, p0}, Ljava/util/Map;->remove(Ljava/lang/Object;)Ljava/lang/Object;
 
-    .line 94
+    .line 129
     const/4 v0, 0x0
 
     invoke-virtual {p0, v0}, Landroid/view/View;->setVisibility(I)V
 
-    .line 96
+    .line 131
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->isLandscape(Landroid/view/View;)Z
 
     move-result v0
 
-    .line 97
+    .line 132
     nop
 
-    .line 98
+    .line 133
     const/4 v2, 0x0
 
-    if-eqz v0, :cond_4
+    if-eqz v0, :cond_5
 
-    .line 99
+    .line 134
     invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
 
     move-result-object v3
@@ -262,48 +353,48 @@
 
     iget v3, v3, Landroid/util/DisplayMetrics;->density:F
 
-    .line 100
+    .line 135
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getControlPositionType(Landroid/view/View;)I
 
     move-result v4
 
-    .line 101
+    .line 136
     const/4 v5, 0x1
 
-    if-ne v4, v5, :cond_2
+    if-ne v4, v5, :cond_3
 
-    .line 102
+    .line 137
     const/high16 v4, -0x3f000000    # -8.0f
 
     mul-float v3, v3, v4
 
-    .line 103
+    .line 138
     invoke-virtual {p0, v3}, Landroid/view/View;->setTranslationY(F)V
 
     goto :goto_0
 
-    .line 104
-    :cond_2
+    .line 139
+    :cond_3
     const/4 v5, 0x2
 
-    if-ne v4, v5, :cond_3
+    if-ne v4, v5, :cond_4
 
-    .line 105
+    .line 140
     const/high16 v4, 0x41000000    # 8.0f
 
     mul-float v3, v3, v4
 
-    .line 106
+    .line 141
     invoke-virtual {p0, v3}, Landroid/view/View;->setTranslationY(F)V
 
     goto :goto_0
 
-    .line 108
-    :cond_3
+    .line 143
+    :cond_4
     invoke-virtual {p0, v2}, Landroid/view/View;->setTranslationY(F)V
 
-    .line 112
-    :cond_4
+    .line 147
+    :cond_5
     :goto_0
     invoke-virtual {p0}, Landroid/view/View;->getAlpha()F
 
@@ -311,23 +402,23 @@
 
     cmpl-float v3, v3, v1
 
-    if-ltz v3, :cond_5
+    if-ltz v3, :cond_6
 
-    .line 113
+    .line 148
     invoke-virtual {p0, v2}, Landroid/view/View;->setAlpha(F)V
 
-    .line 116
-    :cond_5
+    .line 151
+    :cond_6
     invoke-virtual {p0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 117
+    .line 152
     invoke-virtual {p0, v1}, Landroid/view/ViewPropertyAnimator;->alpha(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 118
+    .line 153
     const-wide/16 v3, 0xc8
 
     invoke-virtual {p0, v3, v4}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
@@ -336,36 +427,36 @@
 
     sget-object v1, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeInInterpolator:Landroid/view/animation/DecelerateInterpolator;
 
-    .line 119
+    .line 154
     invoke-virtual {p0, v1}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 120
+    .line 155
     const/4 v1, 0x0
 
     invoke-virtual {p0, v1}, Landroid/view/ViewPropertyAnimator;->setListener(Landroid/animation/Animator$AnimatorListener;)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p0
 
-    .line 122
-    if-eqz v0, :cond_6
+    .line 157
+    if-eqz v0, :cond_7
 
-    .line 123
+    .line 158
     invoke-virtual {p0, v2}, Landroid/view/ViewPropertyAnimator;->translationY(F)Landroid/view/ViewPropertyAnimator;
 
-    .line 125
-    :cond_6
+    .line 160
+    :cond_7
     invoke-virtual {p0}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    .line 126
+    .line 161
     return-void
 .end method
 
 .method public static fadeOut(Landroid/view/View;)V
     .locals 5
 
-    .line 129
+    .line 164
     if-eqz p0, :cond_4
 
     invoke-virtual {p0}, Landroid/view/View;->getVisibility()I
@@ -376,7 +467,7 @@
 
     goto :goto_1
 
-    .line 131
+    .line 166
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
@@ -384,27 +475,27 @@
 
     invoke-virtual {v0}, Landroid/view/ViewPropertyAnimator;->cancel()V
 
-    .line 132
+    .line 167
     sget-object v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadingOutViews:Ljava/util/Map;
 
     sget-object v1, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
 
     invoke-interface {v0, p0, v1}, Ljava/util/Map;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 
-    .line 134
+    .line 169
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->isLandscape(Landroid/view/View;)Z
 
     move-result v0
 
-    .line 135
+    .line 170
     nop
 
-    .line 136
+    .line 171
     const/4 v1, 0x0
 
     if-eqz v0, :cond_2
 
-    .line 137
+    .line 172
     invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
 
     move-result-object v2
@@ -415,37 +506,37 @@
 
     iget v2, v2, Landroid/util/DisplayMetrics;->density:F
 
-    .line 138
+    .line 173
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getControlPositionType(Landroid/view/View;)I
 
     move-result v3
 
-    .line 139
+    .line 174
     const/4 v4, 0x1
 
     if-ne v3, v4, :cond_1
 
-    .line 140
+    .line 175
     const/high16 v3, -0x3f000000    # -8.0f
 
     mul-float v2, v2, v3
 
     goto :goto_0
 
-    .line 141
+    .line 176
     :cond_1
     const/4 v4, 0x2
 
     if-ne v3, v4, :cond_2
 
-    .line 142
+    .line 177
     const/high16 v3, 0x41000000    # 8.0f
 
     mul-float v2, v2, v3
 
     goto :goto_0
 
-    .line 146
+    .line 181
     :cond_2
     const/4 v2, 0x0
 
@@ -454,12 +545,12 @@
 
     move-result-object v3
 
-    .line 147
+    .line 182
     invoke-virtual {v3, v1}, Landroid/view/ViewPropertyAnimator;->alpha(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v1
 
-    .line 148
+    .line 183
     const-wide/16 v3, 0xb4
 
     invoke-virtual {v1, v3, v4}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
@@ -468,18 +559,18 @@
 
     sget-object v3, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOutInterpolator:Landroid/view/animation/AccelerateInterpolator;
 
-    .line 149
+    .line 184
     invoke-virtual {v1, v3}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v1
 
-    .line 151
+    .line 186
     if-eqz v0, :cond_3
 
-    .line 152
+    .line 187
     invoke-virtual {v1, v2}, Landroid/view/ViewPropertyAnimator;->translationY(F)Landroid/view/ViewPropertyAnimator;
 
-    .line 155
+    .line 190
     :cond_3
     new-instance v0, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper$1;
 
@@ -487,13 +578,13 @@
 
     invoke-virtual {v1, v0}, Landroid/view/ViewPropertyAnimator;->setListener(Landroid/animation/Animator$AnimatorListener;)Landroid/view/ViewPropertyAnimator;
 
-    .line 164
+    .line 199
     invoke-virtual {v1}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    .line 165
+    .line 200
     return-void
 
-    .line 129
+    .line 164
     :cond_4
     :goto_1
     return-void
@@ -502,19 +593,19 @@
 .method public static fadeVisibility(Landroid/view/View;I)V
     .locals 0
 
-    .line 168
+    .line 203
     if-nez p1, :cond_0
 
-    .line 169
+    .line 204
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
 
     goto :goto_0
 
-    .line 171
+    .line 206
     :cond_0
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
-    .line 173
+    .line 208
     :goto_0
     return-void
 .end method
@@ -522,36 +613,36 @@
 .method public static getActivity(Landroid/view/View;)Landroid/app/Activity;
     .locals 2
 
-    .line 298
+    .line 359
     const/4 v0, 0x0
 
     if-nez p0, :cond_0
 
     return-object v0
 
-    .line 299
+    .line 360
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->getContext()Landroid/content/Context;
 
     move-result-object p0
 
-    .line 300
+    .line 361
     :goto_0
     instance-of v1, p0, Landroid/content/ContextWrapper;
 
     if-eqz v1, :cond_2
 
-    .line 301
+    .line 362
     instance-of v1, p0, Landroid/app/Activity;
 
     if-eqz v1, :cond_1
 
-    .line 302
+    .line 363
     check-cast p0, Landroid/app/Activity;
 
     return-object p0
 
-    .line 304
+    .line 365
     :cond_1
     check-cast p0, Landroid/content/ContextWrapper;
 
@@ -561,7 +652,7 @@
 
     goto :goto_0
 
-    .line 306
+    .line 367
     :cond_2
     return-object v0
 .end method
@@ -569,14 +660,14 @@
 .method private static getControlPositionType(Landroid/view/View;)I
     .locals 6
 
-    .line 53
+    .line 81
     if-nez p0, :cond_0
 
     const/4 p0, 0x0
 
     return p0
 
-    .line 55
+    .line 83
     :cond_0
     const/4 v0, 0x1
 
@@ -589,7 +680,7 @@
 
     move-result v3
 
-    .line 56
+    .line 84
     const/4 v4, -0x1
 
     if-eq v3, v4, :cond_6
@@ -600,7 +691,7 @@
 
     if-eqz v4, :cond_6
 
-    .line 57
+    .line 85
     invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
 
     move-result-object v4
@@ -613,7 +704,7 @@
 
     move-result-object v3
 
-    .line 58
+    .line 86
     const-string v4, "center"
 
     invoke-virtual {v3, v4}, Ljava/lang/String;->contains(Ljava/lang/CharSequence;)Z
@@ -632,7 +723,7 @@
 
     goto :goto_1
 
-    .line 61
+    .line 89
     :cond_1
     const-string v4, "top"
 
@@ -660,7 +751,7 @@
 
     goto :goto_0
 
-    .line 64
+    .line 92
     :cond_2
     const-string v4, "bottom"
 
@@ -680,37 +771,37 @@
 
     if-eqz v3, :cond_6
 
-    .line 65
+    .line 93
     :cond_3
     return v2
 
-    .line 62
+    .line 90
     :cond_4
     :goto_0
     return v0
 
-    .line 59
+    .line 87
     :cond_5
     :goto_1
     return v1
 
-    .line 69
+    .line 97
     :cond_6
     goto :goto_2
 
-    .line 68
+    .line 96
     :catch_0
     move-exception v3
 
-    .line 73
+    .line 101
     :goto_2
     :try_start_1
     new-array v3, v2, [I
 
-    .line 74
+    .line 102
     invoke-virtual {p0, v3}, Landroid/view/View;->getLocationInWindow([I)V
 
-    .line 75
+    .line 103
     invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
 
     move-result-object p0
@@ -719,7 +810,7 @@
 
     move-result-object p0
 
-    .line 76
+    .line 104
     aget v4, v3, v0
 
     iget v5, p0, Landroid/util/DisplayMetrics;->heightPixels:I
@@ -728,10 +819,10 @@
 
     if-ge v4, v5, :cond_7
 
-    .line 77
+    .line 105
     return v0
 
-    .line 78
+    .line 106
     :cond_7
     aget v0, v3, v0
 
@@ -745,18 +836,18 @@
 
     if-le v0, p0, :cond_8
 
-    .line 79
+    .line 107
     return v2
 
-    .line 82
+    .line 110
     :cond_8
     goto :goto_3
 
-    .line 81
+    .line 109
     :catch_1
     move-exception p0
 
-    .line 83
+    .line 111
     :goto_3
     return v1
 .end method
@@ -764,26 +855,26 @@
 .method private static getDisplayCutoutInsets(Landroid/view/View;Landroid/app/Activity;)[I
     .locals 3
 
-    .line 256
+    .line 317
     const/4 v0, 0x2
 
     new-array v0, v0, [I
 
-    .line 257
+    .line 318
     sget v1, Landroid/os/Build$VERSION;->SDK_INT:I
 
     const/16 v2, 0x1c
 
     if-ge v1, v2, :cond_0
 
-    .line 258
+    .line 319
     return-object v0
 
-    .line 261
+    .line 322
     :cond_0
     nop
 
-    .line 262
+    .line 323
     if-eqz p1, :cond_1
 
     :try_start_0
@@ -803,7 +894,7 @@
 
     if-eqz v1, :cond_1
 
-    .line 263
+    .line 324
     invoke-virtual {p1}, Landroid/app/Activity;->getWindow()Landroid/view/Window;
 
     move-result-object p1
@@ -818,13 +909,13 @@
 
     goto :goto_0
 
-    .line 275
+    .line 336
     :catchall_0
     move-exception p0
 
     goto :goto_1
 
-    .line 265
+    .line 326
     :cond_1
     const/4 p1, 0x0
 
@@ -833,24 +924,24 @@
 
     if-eqz p0, :cond_2
 
-    .line 266
+    .line 327
     invoke-virtual {p0}, Landroid/view/View;->getRootWindowInsets()Landroid/view/WindowInsets;
 
     move-result-object p1
 
-    .line 268
+    .line 329
     :cond_2
     if-eqz p1, :cond_3
 
-    .line 269
+    .line 330
     invoke-virtual {p1}, Landroid/view/WindowInsets;->getDisplayCutout()Landroid/view/DisplayCutout;
 
     move-result-object p0
 
-    .line 270
+    .line 331
     if-eqz p0, :cond_3
 
-    .line 271
+    .line 332
     invoke-virtual {p0}, Landroid/view/DisplayCutout;->getSafeInsetLeft()I
 
     move-result p1
@@ -859,7 +950,7 @@
 
     aput p1, v0, v1
 
-    .line 272
+    .line 333
     invoke-virtual {p0}, Landroid/view/DisplayCutout;->getSafeInsetRight()I
 
     move-result p0
@@ -870,11 +961,11 @@
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    .line 276
+    .line 337
     :cond_3
     nop
 
-    .line 277
+    .line 338
     :goto_1
     return-object v0
 .end method
@@ -882,32 +973,32 @@
 .method private static getDisplayRotation(Landroid/view/View;)I
     .locals 0
 
-    .line 282
+    .line 343
     :try_start_0
     invoke-static {p0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getActivity(Landroid/view/View;)Landroid/app/Activity;
 
     move-result-object p0
 
-    .line 283
+    .line 344
     if-eqz p0, :cond_0
 
-    .line 284
+    .line 345
     invoke-virtual {p0}, Landroid/app/Activity;->getWindowManager()Landroid/view/WindowManager;
 
     move-result-object p0
 
-    .line 285
+    .line 346
     if-eqz p0, :cond_0
 
-    .line 286
+    .line 347
     invoke-interface {p0}, Landroid/view/WindowManager;->getDefaultDisplay()Landroid/view/Display;
 
     move-result-object p0
 
-    .line 287
+    .line 348
     if-eqz p0, :cond_0
 
-    .line 288
+    .line 349
     invoke-virtual {p0}, Landroid/view/Display;->getRotation()I
 
     move-result p0
@@ -916,15 +1007,15 @@
 
     return p0
 
-    .line 293
+    .line 354
     :cond_0
     goto :goto_0
 
-    .line 292
+    .line 353
     :catchall_0
     move-exception p0
 
-    .line 294
+    .line 355
     :goto_0
     const/4 p0, 0x1
 
@@ -934,20 +1025,20 @@
 .method public static isLandscape(Landroid/view/View;)Z
     .locals 2
 
-    .line 46
+    .line 48
     const/4 v0, 0x0
 
     if-nez p0, :cond_0
 
     return v0
 
-    .line 47
+    .line 49
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->getContext()Landroid/content/Context;
 
     move-result-object p0
 
-    .line 48
+    .line 50
     if-eqz p0, :cond_3
 
     invoke-virtual {p0}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
@@ -958,7 +1049,7 @@
 
     goto :goto_0
 
-    .line 49
+    .line 51
     :cond_1
     invoke-virtual {p0}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
 
@@ -979,40 +1070,189 @@
     :cond_2
     return v0
 
-    .line 48
+    .line 50
     :cond_3
     :goto_0
+    return v0
+.end method
+
+.method public static isVerticalPauseClashingWithLoading(Landroid/view/View;)Z
+    .locals 6
+
+    .line 55
+    const/4 v0, 0x0
+
+    if-nez p0, :cond_0
+
+    return v0
+
+    .line 57
+    :cond_0
+    :try_start_0
+    invoke-virtual {p0}, Landroid/view/View;->getId()I
+
+    move-result v1
+
+    .line 58
+    const/4 v2, -0x1
+
+    if-eq v1, v2, :cond_3
+
+    invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
+
+    move-result-object v3
+
+    if-eqz v3, :cond_3
+
+    .line 59
+    invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
+
+    move-result-object v3
+
+    invoke-virtual {v3, v1}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
+
+    move-result-object v1
+
+    .line 60
+    const-string v3, "iv_middle_pause"
+
+    invoke-virtual {v3, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v1
+
+    if-eqz v1, :cond_3
+
+    .line 61
+    invoke-virtual {p0}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
+
+    move-result-object v1
+
+    instance-of v1, v1, Landroid/view/ViewGroup;
+
+    if-eqz v1, :cond_3
+
+    .line 62
+    invoke-virtual {p0}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
+
+    move-result-object v1
+
+    check-cast v1, Landroid/view/ViewGroup;
+
+    .line 63
+    const/4 v3, 0x0
+
+    :goto_0
+    invoke-virtual {v1}, Landroid/view/ViewGroup;->getChildCount()I
+
+    move-result v4
+
+    if-ge v3, v4, :cond_3
+
+    .line 64
+    invoke-virtual {v1, v3}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+
+    move-result-object v4
+
+    .line 65
+    if-eqz v4, :cond_2
+
+    invoke-virtual {v4}, Landroid/view/View;->getVisibility()I
+
+    move-result v5
+
+    if-nez v5, :cond_2
+
+    invoke-virtual {v4}, Landroid/view/View;->getId()I
+
+    move-result v5
+
+    if-eq v5, v2, :cond_2
+
+    .line 66
+    invoke-virtual {p0}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
+
+    move-result-object v5
+
+    invoke-virtual {v4}, Landroid/view/View;->getId()I
+
+    move-result v4
+
+    invoke-virtual {v5, v4}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
+
+    move-result-object v4
+
+    .line 67
+    const-string v5, "layout_loading"
+
+    invoke-virtual {v5, v4}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v5
+
+    if-nez v5, :cond_1
+
+    const-string v5, "vd_surface_loading"
+
+    invoke-virtual {v5, v4}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v4
+    :try_end_0
+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+
+    if-eqz v4, :cond_2
+
+    .line 68
+    :cond_1
+    const/4 p0, 0x1
+
+    return p0
+
+    .line 63
+    :cond_2
+    add-int/lit8 v3, v3, 0x1
+
+    goto :goto_0
+
+    .line 76
+    :cond_3
+    goto :goto_1
+
+    .line 75
+    :catchall_0
+    move-exception p0
+
+    .line 77
+    :goto_1
     return v0
 .end method
 
 .method public static setViewWidth(Landroid/view/View;I)V
     .locals 2
 
-    .line 310
+    .line 371
     if-nez p0, :cond_0
 
     return-void
 
-    .line 311
+    .line 372
     :cond_0
     invoke-virtual {p0}, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
 
     move-result-object v0
 
-    .line 312
+    .line 373
     if-eqz v0, :cond_1
 
     iget v1, v0, Landroid/view/ViewGroup$LayoutParams;->width:I
 
     if-eq v1, p1, :cond_1
 
-    .line 313
+    .line 374
     iput p1, v0, Landroid/view/ViewGroup$LayoutParams;->width:I
 
-    .line 314
+    .line 375
     invoke-virtual {p0, v0}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
 
-    .line 316
+    .line 377
     :cond_1
     return-void
 .end method
@@ -1020,27 +1260,27 @@
 .method public static updateNotchSpaces(Landroid/view/View;Landroid/view/View;Landroid/view/View;Landroid/view/View;ZI)V
     .locals 10
 
-    .line 190
+    .line 251
     const/4 v0, 0x0
 
     if-nez p4, :cond_0
 
-    .line 191
+    .line 252
     invoke-static {p0, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 192
+    .line 253
     invoke-static {p1, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 193
+    .line 254
     invoke-static {p2, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 194
+    .line 255
     invoke-static {p3, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 195
+    .line 256
     return-void
 
-    .line 198
+    .line 259
     :cond_0
     if-eqz p0, :cond_1
 
@@ -1065,16 +1305,16 @@
     :cond_3
     move-object p4, p1
 
-    .line 199
+    .line 260
     :goto_0
     invoke-static {p4}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getActivity(Landroid/view/View;)Landroid/app/Activity;
 
     move-result-object v1
 
-    .line 200
+    .line 261
     nop
 
-    .line 201
+    .line 262
     const/4 v2, 0x3
 
     const/4 v3, 0x1
@@ -1083,7 +1323,7 @@
 
     if-eq p5, v2, :cond_6
 
-    .line 202
+    .line 263
     if-eqz p4, :cond_4
 
     move-object p5, p4
@@ -1111,28 +1351,28 @@
 
     move-result p5
 
-    .line 205
+    .line 266
     :cond_6
     invoke-static {p4, v1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->getDisplayCutoutInsets(Landroid/view/View;Landroid/app/Activity;)[I
 
     move-result-object v4
 
-    .line 206
+    .line 267
     aget v5, v4, v0
 
-    .line 207
+    .line 268
     aget v3, v4, v3
 
-    .line 209
+    .line 270
     nop
 
-    .line 211
+    .line 272
     :try_start_0
     invoke-static {}, Landroid/content/res/Resources;->getSystem()Landroid/content/res/Resources;
 
     move-result-object v4
 
-    .line 212
+    .line 273
     const-string v6, "status_bar_height"
 
     const-string v7, "dimen"
@@ -1143,32 +1383,32 @@
 
     move-result v6
 
-    .line 213
+    .line 274
     if-lez v6, :cond_7
 
-    .line 214
+    .line 275
     invoke-virtual {v4, v6}, Landroid/content/res/Resources;->getDimensionPixelSize(I)I
 
     move-result v0
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    .line 217
+    .line 278
     :cond_7
     goto :goto_2
 
-    .line 216
+    .line 277
     :catchall_0
     move-exception v4
 
-    .line 219
+    .line 280
     :goto_2
     nop
 
-    .line 220
+    .line 281
     if-eqz p4, :cond_8
 
-    .line 221
+    .line 282
     invoke-virtual {p4}, Landroid/view/View;->getResources()Landroid/content/res/Resources;
 
     move-result-object p4
@@ -1181,11 +1421,11 @@
 
     goto :goto_3
 
-    .line 222
+    .line 283
     :cond_8
     if-eqz v1, :cond_9
 
-    .line 223
+    .line 284
     invoke-virtual {v1}, Landroid/app/Activity;->getResources()Landroid/content/res/Resources;
 
     move-result-object p4
@@ -1198,11 +1438,11 @@
 
     goto :goto_3
 
-    .line 222
+    .line 283
     :cond_9
     const/high16 p4, 0x40400000    # 3.0f
 
-    .line 225
+    .line 286
     :goto_3
     const/high16 v1, 0x42180000    # 38.0f
 
@@ -1214,28 +1454,28 @@
 
     move-result v0
 
-    .line 226
+    .line 287
     const/high16 v1, 0x41600000    # 14.0f
 
     mul-float p4, p4, v1
 
     float-to-int p4, p4
 
-    .line 231
+    .line 292
     if-gtz v5, :cond_c
 
     if-lez v3, :cond_a
 
     goto :goto_4
 
-    .line 240
+    .line 301
     :cond_a
     if-ne p5, v2, :cond_b
 
-    .line 241
+    .line 302
     nop
 
-    .line 242
+    .line 303
     move v9, v0
 
     move v0, p4
@@ -1244,37 +1484,37 @@
 
     goto :goto_5
 
-    .line 244
+    .line 305
     :cond_b
     nop
 
-    .line 245
+    .line 306
     goto :goto_5
 
-    .line 232
+    .line 293
     :cond_c
     :goto_4
     if-lez v5, :cond_d
 
-    .line 233
+    .line 294
     invoke-static {v5, v0}, Ljava/lang/Math;->max(II)I
 
     move-result v0
 
-    .line 234
+    .line 295
     invoke-static {v3, p4}, Ljava/lang/Math;->max(II)I
 
     move-result p4
 
     goto :goto_5
 
-    .line 236
+    .line 297
     :cond_d
     invoke-static {v5, p4}, Ljava/lang/Math;->max(II)I
 
     move-result p4
 
-    .line 237
+    .line 298
     invoke-static {v3, v0}, Ljava/lang/Math;->max(II)I
 
     move-result v0
@@ -1285,19 +1525,19 @@
 
     move p4, v9
 
-    .line 249
+    .line 310
     :goto_5
     invoke-static {p0, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 250
+    .line 311
     invoke-static {p2, v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 251
+    .line 312
     invoke-static {p1, p4}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 252
+    .line 313
     invoke-static {p3, p4}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->setViewWidth(Landroid/view/View;I)V
 
-    .line 253
+    .line 314
     return-void
 .end method
