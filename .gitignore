@@ -21,6 +21,7 @@ input/*
 dist/
 build_staging/
 framework/
+scratch/
 *.apk
 *.apkm
 *.apks
