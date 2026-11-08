@@ -384,7 +384,7 @@ class TestCLIParser(unittest.TestCase):
         self.assertFalse(options.force)
         self.assertFalse(options.dry_run)
         self.assertFalse(options.clone)
-        self.assertEqual(options.output_formats, ["all"])
+        self.assertEqual(options.output_formats, ["apkm"])
         self.assertEqual(set(options.arches), set(SUPPORTED_ARCHITECTURES))
 
     def test_custom_flags(self):
@@ -729,6 +729,55 @@ OFFLINE_DEVICE_99      offline
         self.assertIsNotNone(resolved)
         self.assertTrue(os.path.isfile(resolved))
         self.assertTrue(Bundler.is_valid_png(resolved))
+
+    def test_get_apk_architectures(self):
+        import zipfile
+        fake_apk = os.path.join(self.temp_dir, "multi_arch.apk")
+        with zipfile.ZipFile(fake_apk, "w") as zf:
+            zf.writestr("classes.dex", b"DEX")
+            zf.writestr("lib/arm64-v8a/libnative.so", b"ARM64_SO")
+            zf.writestr("lib/armeabi-v7a/libnative.so", b"ARM32_SO")
+
+        arches = Bundler.get_apk_architectures(fake_apk)
+        self.assertEqual(arches, ["arm64-v8a", "armeabi-v7a"])
+
+    def test_create_arch_specific_apk_stripping(self):
+        import zipfile
+        from unittest.mock import patch
+
+        fake_apk = os.path.join(self.temp_dir, "multi_arch_fat.apk")
+        with zipfile.ZipFile(fake_apk, "w") as zf:
+            zf.writestr("classes.dex", b"DEX")
+            zf.writestr("AndroidManifest.xml", b"MANIFEST")
+            zf.writestr("lib/arm64-v8a/libnative64.so", b"SO_64")
+            zf.writestr("lib/armeabi-v7a/libnative32.so", b"SO_32")
+
+        staging_dir = os.path.join(self.temp_dir, "strip_staging")
+        os.makedirs(staging_dir, exist_ok=True)
+        options = BuildOptions()
+
+        with patch("mikupatches.signer.ApkSigner.align_and_sign") as mock_sign:
+            # Mock align_and_sign to simply copy input to output
+            mock_sign.side_effect = lambda input_apk, output_apk, **kwargs: shutil.copyfile(input_apk, output_apk)
+
+            # 1. Target 64-bit: Ensure 32-bit library is completely stripped
+            target_64 = os.path.join(self.temp_dir, "arm64.apk")
+            Bundler.create_arch_specific_apk(fake_apk, target_64, "arm64-v8a", staging_dir, options)
+            self.assertTrue(os.path.isfile(target_64))
+            with zipfile.ZipFile(target_64, "r") as zf:
+                names = zf.namelist()
+                self.assertIn("lib/arm64-v8a/libnative64.so", names)
+                self.assertNotIn("lib/armeabi-v7a/libnative32.so", names)
+
+            # 2. Target 32-bit: Ensure 64-bit library is completely stripped
+            target_32 = os.path.join(self.temp_dir, "armeabi.apk")
+            Bundler.create_arch_specific_apk(fake_apk, target_32, "armeabi-v7a", staging_dir, options)
+            self.assertTrue(os.path.isfile(target_32))
+            with zipfile.ZipFile(target_32, "r") as zf:
+                names = zf.namelist()
+                self.assertIn("lib/armeabi-v7a/libnative32.so", names)
+                self.assertNotIn("lib/arm64-v8a/libnative64.so", names)
+
 
 
 if __name__ == "__main__":

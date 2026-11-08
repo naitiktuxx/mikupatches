@@ -18,6 +18,7 @@ from mikupatches.constants import (
 )
 from mikupatches.models import AppProfile, BuildOptions
 from mikupatches.extractor import Extractor
+from mikupatches.signer import ApkSigner
 from mikupatches.ui.console import Console
 
 
@@ -431,6 +432,62 @@ class Bundler:
         return icon_dest if os.path.exists(icon_dest) else None
 
     @classmethod
+    def get_apk_architectures(cls, apk_path: str) -> List[str]:
+        """Returns the list of native architectures present in lib/ directory of an APK."""
+        if not os.path.isfile(apk_path):
+            return []
+        try:
+            with zipfile.ZipFile(apk_path, "r") as zf:
+                arches = set()
+                for name in zf.namelist():
+                    if name.startswith("lib/"):
+                        parts = name.split("/")
+                        if len(parts) > 2 and parts[1]:
+                            arches.add(parts[1])
+                return sorted(list(arches))
+        except Exception:
+            return []
+
+    @classmethod
+    def create_arch_specific_apk(
+        cls,
+        source_apk: str,
+        target_apk: str,
+        target_arch: str,
+        build_staging: str,
+        options: BuildOptions,
+    ) -> str:
+        """
+        Creates an architecture-isolated APK from a multi-arch APK by stripping all
+        native libraries that do not match target_arch, then zipaligning and signing.
+        This minimizes APK size and ensures 64-bit APK contains no 32-bit code, and vice-versa.
+        """
+        unaligned_tmp = os.path.join(build_staging, f"unaligned_stripped_{target_arch}.apk")
+        with zipfile.ZipFile(source_apk, "r") as zin, zipfile.ZipFile(unaligned_tmp, "w", zipfile.ZIP_DEFLATED) as zout:
+            for item in zin.infolist():
+                if item.filename.startswith("lib/"):
+                    parts = item.filename.split("/")
+                    if len(parts) > 2 and parts[1] != target_arch:
+                        continue  # Strip non-target architectures!
+                zout.writestr(item, zin.read(item.filename))
+
+        # Zipalign & Sign stripped APK
+        os.makedirs(os.path.dirname(target_apk), exist_ok=True)
+        ApkSigner.align_and_sign(
+            input_apk=unaligned_tmp,
+            output_apk=target_apk,
+            keystore_path=options.keystore_path,
+            ks_pass=options.ks_pass,
+            ks_alias=options.ks_alias,
+            key_pass=options.key_pass,
+            v1=not options.v2_only and not options.v3_only,
+            v2=not options.v1_only and not options.v3_only,
+            v3=not options.v1_only and not options.v2_only and not options.no_v3,
+            verbose=options.verbose,
+        )
+        return target_apk
+
+    @classmethod
     def assemble_bundles(
         cls,
         staged_base_apk: str,
@@ -467,30 +524,7 @@ class Bundler:
         formats = [f.lower() for f in options.output_formats]
         build_all = "all" in formats
 
-        # 1. Output Standalone Base APK and Named Release APK
-        if build_all or "apk" in formats:
-            base_out_name = f"{options.output_name}.apk" if options.output_name else "base.apk"
-            final_base = os.path.join(app_output_dir, base_out_name)
-            shutil.copyfile(staged_base_apk, final_base)
-            generated_files.append({
-                "path": final_base,
-                "rel_path": os.path.relpath(final_base, options.output_dir),
-                "size": os.path.getsize(final_base),
-                "type": "Standalone APK",
-            })
-
-            # Also create named APK for easy file manager navigation
-            if not options.output_name:
-                named_apk = os.path.join(app_output_dir, f"{app_dirname}-v{ver_name}-[{variant_slug}].apk")
-                shutil.copyfile(staged_base_apk, named_apk)
-                generated_files.append({
-                    "path": named_apk,
-                    "rel_path": os.path.relpath(named_apk, options.output_dir),
-                    "size": os.path.getsize(named_apk),
-                    "type": "Named Release APK",
-                })
-
-        # Generate simple PATCHES.txt summary in output folder
+        # 1. Generate simple PATCHES.txt summary in output folder
         patches_txt_path = os.path.join(app_output_dir, "PATCHES.txt")
         patches_txt_content = cls.generate_patches_summary(
             app_profile=app_profile,
@@ -565,129 +599,239 @@ class Bundler:
                 "type": "Application Icon",
             })
 
-        # 2. Output Universal APKM & APKS
-        if build_all or "apkm" in formats:
-            univ_apkm_name = f"{options.output_name}.apkm" if options.output_name else "universal.apkm"
-            univ_apkm_path = os.path.join(app_output_dir, univ_apkm_name)
-            univ_apkm_files = [(staged_base_apk, "base.apk")]
-            if os.path.exists(info_json_path):
-                univ_apkm_files.append((info_json_path, "info.json"))
-            if icon_path and os.path.exists(icon_path):
-                univ_apkm_files.append((icon_path, "icon.png"))
-            univ_apkm_files.extend([(path, fname) for fname, path in staged_splits.items()])
+        # 2. Native Architecture Detection & Isolation
+        native_arches_in_base = cls.get_apk_architectures(staged_base_apk)
+        split_arch_map = {arch: fname for arch, fname in ARCH_SPLIT_MAP.items() if fname in staged_splits}
+        arches_in_splits = list(split_arch_map.keys())
+        all_available_arches = list(dict.fromkeys(native_arches_in_base + arches_in_splits))
 
-            cls.create_zip(univ_apkm_files, univ_apkm_path)
-            generated_files.append({
-                "path": univ_apkm_path,
-                "rel_path": os.path.relpath(univ_apkm_path, options.output_dir),
-                "size": os.path.getsize(univ_apkm_path),
-                "type": "Universal APKM Bundle",
-            })
-
-            # Also create named APKM for easy distribution
-            if not options.output_name:
-                named_apkm = os.path.join(app_output_dir, f"{app_dirname}-v{ver_name}-[{variant_slug}].apkm")
-                shutil.copyfile(univ_apkm_path, named_apkm)
-                generated_files.append({
-                    "path": named_apkm,
-                    "rel_path": os.path.relpath(named_apkm, options.output_dir),
-                    "size": os.path.getsize(named_apkm),
-                    "type": "Named Release APKM",
-                })
-
-        if build_all or "apks" in formats:
-            univ_apks_name = f"{options.output_name}.apks" if options.output_name else "universal.apks"
-            univ_apks_path = os.path.join(app_output_dir, univ_apks_name)
-            univ_apks_files = [(staged_base_apk, "base.apk")] + [
-                (path, fname) for fname, path in staged_splits.items()
-            ]
-            cls.create_zip(univ_apks_files, univ_apks_path)
-            generated_files.append({
-                "path": univ_apks_path,
-                "rel_path": os.path.relpath(univ_apks_path, options.output_dir),
-                "size": os.path.getsize(univ_apks_path),
-                "type": "Universal APKS Bundle",
-            })
-
-        # 3. Dynamic Architecture Split Bundles
         target_arches = options.arches or SUPPORTED_ARCHITECTURES
+        selected_arches = [arch for arch in target_arches if arch in all_available_arches] if all_available_arches else []
+
         non_arch_splits = {
             fname: path for fname, path in staged_splits.items()
             if fname not in ARCH_SPLIT_MAP.values()
         }
 
-        available_arches_in_bundle = [
-            arch for arch, split_name in ARCH_SPLIT_MAP.items()
-            if split_name in staged_splits
-        ]
+        # Multi-architecture output: Generate architecture-isolated APKMs for each selected architecture.
+        # Non-target architectures are stripped so 64-bit APK contains NO 32-bit code, and vice versa.
+        if len(selected_arches) > 1:
+            for arch in selected_arches:
+                arch_dir = os.path.join(app_output_dir, arch)
+                os.makedirs(arch_dir, exist_ok=True)
 
-        selected_arches = [
-            arch for arch in target_arches
-            if arch in available_arches_in_bundle
-        ]
+                if len(native_arches_in_base) > 1:
+                    arch_base_apk = os.path.join(build_staging, f"base_{arch}.apk")
+                    cls.create_arch_specific_apk(staged_base_apk, arch_base_apk, arch, build_staging, options)
+                else:
+                    arch_base_apk = staged_base_apk
 
-        for arch in selected_arches:
-            arch_split_fname = ARCH_SPLIT_MAP.get(arch)
-            if not arch_split_fname or arch_split_fname not in staged_splits:
-                continue
+                arch_splits = dict(non_arch_splits)
+                if arch in split_arch_map:
+                    arch_splits[split_arch_map[arch]] = staged_splits[split_arch_map[arch]]
 
-            arch_dir = os.path.join(app_output_dir, arch)
-            os.makedirs(arch_dir, exist_ok=True)
+                arch_info = Extractor.generate_dynamic_info_json(
+                    pkg_name=app_profile.package_name,
+                    app_title=app_profile.app_title,
+                    ver_name=ver_name,
+                    ver_code=ver_code,
+                    arches=[arch],
+                    arch_variant=arch,
+                )
+                arch_info_path = os.path.join(build_staging, f"info_{arch}.json")
+                with open(arch_info_path, "w", encoding="utf-8") as f:
+                    json.dump(arch_info, f, indent=4)
 
-            arch_info = Extractor.generate_dynamic_info_json(
-                pkg_name=app_profile.package_name,
-                app_title=app_profile.app_title,
-                ver_name=ver_name,
-                ver_code=ver_code,
-                arches=[arch],
-                arch_variant=arch,
-            )
+                # APKM Bundle (Primary format)
+                if build_all or "apkm" in formats:
+                    arch_apkm_path = os.path.join(arch_dir, f"{arch}.apkm")
+                    arch_apkm_files = [(arch_base_apk, "base.apk"), (arch_info_path, "info.json")]
+                    if icon_path and os.path.exists(icon_path):
+                        arch_apkm_files.append((icon_path, "icon.png"))
+                    arch_apkm_files.extend([(path, fname) for fname, path in arch_splits.items()])
 
-            arch_info_path = os.path.join(build_staging, f"info_{arch}.json")
-            with open(arch_info_path, "w", encoding="utf-8") as f:
-                json.dump(arch_info, f, indent=4)
+                    cls.create_zip(arch_apkm_files, arch_apkm_path)
+                    generated_files.append({
+                        "path": arch_apkm_path,
+                        "rel_path": os.path.relpath(arch_apkm_path, options.output_dir),
+                        "size": os.path.getsize(arch_apkm_path),
+                        "type": f"{arch} APKM Bundle",
+                    })
 
-            arch_specific_splits = dict(non_arch_splits)
-            arch_specific_splits[arch_split_fname] = staged_splits[arch_split_fname]
+                    named_base_title = options.output_name if options.output_name else f"{app_dirname}-v{ver_name}-[{variant_slug}]"
+                    named_arch_apkm = os.path.join(app_output_dir, f"{named_base_title}-{arch}.apkm")
+                    shutil.copyfile(arch_apkm_path, named_arch_apkm)
+                    generated_files.append({
+                        "path": named_arch_apkm,
+                        "rel_path": os.path.relpath(named_arch_apkm, options.output_dir),
+                        "size": os.path.getsize(named_arch_apkm),
+                        "type": f"Named {arch} Release APKM",
+                    })
 
+                # APKS Bundle (Only if explicitly requested)
+                if build_all or "apks" in formats:
+                    arch_apks_path = os.path.join(arch_dir, f"{arch}.apks")
+                    arch_apks_files = [(arch_base_apk, "base.apk")] + [
+                        (path, fname) for fname, path in arch_splits.items()
+                    ]
+                    cls.create_zip(arch_apks_files, arch_apks_path)
+                    generated_files.append({
+                        "path": arch_apks_path,
+                        "rel_path": os.path.relpath(arch_apks_path, options.output_dir),
+                        "size": os.path.getsize(arch_apks_path),
+                        "type": f"{arch} APKS Bundle",
+                    })
+
+                    named_base_title = options.output_name if options.output_name else f"{app_dirname}-v{ver_name}-[{variant_slug}]"
+                    named_arch_apks = os.path.join(app_output_dir, f"{named_base_title}-{arch}.apks")
+                    shutil.copyfile(arch_apks_path, named_arch_apks)
+                    generated_files.append({
+                        "path": named_arch_apks,
+                        "rel_path": os.path.relpath(named_arch_apks, options.output_dir),
+                        "size": os.path.getsize(named_arch_apks),
+                        "type": f"Named {arch} Release APKS",
+                    })
+
+                # Standalone APK (Only if explicitly requested)
+                if build_all or "apk" in formats:
+                    arch_apk_path = os.path.join(arch_dir, "base.apk")
+                    shutil.copyfile(arch_base_apk, arch_apk_path)
+                    generated_files.append({
+                        "path": arch_apk_path,
+                        "rel_path": os.path.relpath(arch_apk_path, options.output_dir),
+                        "size": os.path.getsize(arch_apk_path),
+                        "type": f"{arch} Standalone APK",
+                    })
+
+                    named_base_title = options.output_name if options.output_name else f"{app_dirname}-v{ver_name}-[{variant_slug}]"
+                    named_arch_apk = os.path.join(app_output_dir, f"{named_base_title}-{arch}.apk")
+                    shutil.copyfile(arch_base_apk, named_arch_apk)
+                    generated_files.append({
+                        "path": named_arch_apk,
+                        "rel_path": os.path.relpath(named_arch_apk, options.output_dir),
+                        "size": os.path.getsize(named_arch_apk),
+                        "type": f"Named {arch} Release APK",
+                    })
+
+            # Optional FAT universal bundle ONLY when explicitly requested
+            if build_all or "universal" in (options.arches or []):
+                if build_all or "apkm" in formats:
+                    univ_apkm_name = f"{options.output_name}.apkm" if options.output_name else "universal.apkm"
+                    univ_apkm_path = os.path.join(app_output_dir, univ_apkm_name)
+                    univ_apkm_files = [(staged_base_apk, "base.apk")]
+                    if os.path.exists(info_json_path):
+                        univ_apkm_files.append((info_json_path, "info.json"))
+                    if icon_path and os.path.exists(icon_path):
+                        univ_apkm_files.append((icon_path, "icon.png"))
+                    univ_apkm_files.extend([(path, fname) for fname, path in staged_splits.items()])
+                    cls.create_zip(univ_apkm_files, univ_apkm_path)
+                    generated_files.append({
+                        "path": univ_apkm_path,
+                        "rel_path": os.path.relpath(univ_apkm_path, options.output_dir),
+                        "size": os.path.getsize(univ_apkm_path),
+                        "type": "Universal FAT APKM Bundle",
+                    })
+
+        else:
+            # Single architecture target or pure Java application
+            target_arch = selected_arches[0] if selected_arches else None
+            if target_arch and len(native_arches_in_base) > 1:
+                arch_base_apk = os.path.join(build_staging, f"base_{target_arch}.apk")
+                cls.create_arch_specific_apk(staged_base_apk, arch_base_apk, target_arch, build_staging, options)
+            else:
+                arch_base_apk = staged_base_apk
+
+            arch_splits = dict(non_arch_splits)
+            if target_arch and target_arch in split_arch_map:
+                arch_splits[split_arch_map[target_arch]] = staged_splits[split_arch_map[target_arch]]
+            elif not target_arch:
+                arch_splits = dict(staged_splits)
+
+            if target_arch:
+                arch_info = Extractor.generate_dynamic_info_json(
+                    pkg_name=app_profile.package_name,
+                    app_title=app_profile.app_title,
+                    ver_name=ver_name,
+                    ver_code=ver_code,
+                    arches=[target_arch],
+                    arch_variant=target_arch,
+                )
+                arch_info_path = os.path.join(build_staging, f"info_{target_arch}.json")
+                with open(arch_info_path, "w", encoding="utf-8") as f:
+                    json.dump(arch_info, f, indent=4)
+            else:
+                arch_info_path = info_json_path
+
+            # Output APKM Bundle (Primary format)
             if build_all or "apkm" in formats:
-                arch_apkm_path = os.path.join(arch_dir, f"{arch}.apkm")
-                arch_apkm_files = [(staged_base_apk, "base.apk")]
+                univ_apkm_name = f"{options.output_name}.apkm" if options.output_name else "universal.apkm"
+                univ_apkm_path = os.path.join(app_output_dir, univ_apkm_name)
+                univ_apkm_files = [(arch_base_apk, "base.apk")]
                 if os.path.exists(arch_info_path):
-                    arch_apkm_files.append((arch_info_path, "info.json"))
+                    univ_apkm_files.append((arch_info_path, "info.json"))
                 if icon_path and os.path.exists(icon_path):
-                    arch_apkm_files.append((icon_path, "icon.png"))
-                arch_apkm_files.extend([(path, fname) for fname, path in arch_specific_splits.items()])
+                    univ_apkm_files.append((icon_path, "icon.png"))
+                univ_apkm_files.extend([(path, fname) for fname, path in arch_splits.items()])
 
-                cls.create_zip(arch_apkm_files, arch_apkm_path)
+                cls.create_zip(univ_apkm_files, univ_apkm_path)
                 generated_files.append({
-                    "path": arch_apkm_path,
-                    "rel_path": os.path.relpath(arch_apkm_path, options.output_dir),
-                    "size": os.path.getsize(arch_apkm_path),
-                    "type": f"{arch} APKM Bundle",
+                    "path": univ_apkm_path,
+                    "rel_path": os.path.relpath(univ_apkm_path, options.output_dir),
+                    "size": os.path.getsize(univ_apkm_path),
+                    "type": "Universal APKM Bundle",
                 })
 
+                # Named Release APKM
+                if not options.output_name:
+                    named_apkm = os.path.join(app_output_dir, f"{app_dirname}-v{ver_name}-[{variant_slug}].apkm")
+                    shutil.copyfile(univ_apkm_path, named_apkm)
+                    generated_files.append({
+                        "path": named_apkm,
+                        "rel_path": os.path.relpath(named_apkm, options.output_dir),
+                        "size": os.path.getsize(named_apkm),
+                        "type": "Named Release APKM",
+                    })
+
+                if target_arch:
+                    arch_dir = os.path.join(app_output_dir, target_arch)
+                    os.makedirs(arch_dir, exist_ok=True)
+                    shutil.copyfile(univ_apkm_path, os.path.join(arch_dir, f"{target_arch}.apkm"))
+
+            # Output APKS Bundle (Only if explicitly requested)
             if build_all or "apks" in formats:
-                arch_apks_path = os.path.join(arch_dir, f"{arch}.apks")
-                arch_apks_files = [(staged_base_apk, "base.apk")] + [
-                    (path, fname) for fname, path in arch_specific_splits.items()
+                univ_apks_name = f"{options.output_name}.apks" if options.output_name else "universal.apks"
+                univ_apks_path = os.path.join(app_output_dir, univ_apks_name)
+                univ_apks_files = [(arch_base_apk, "base.apk")] + [
+                    (path, fname) for fname, path in arch_splits.items()
                 ]
-                cls.create_zip(arch_apks_files, arch_apks_path)
+                cls.create_zip(univ_apks_files, univ_apks_path)
                 generated_files.append({
-                    "path": arch_apks_path,
-                    "rel_path": os.path.relpath(arch_apks_path, options.output_dir),
-                    "size": os.path.getsize(arch_apks_path),
-                    "type": f"{arch} APKS Bundle",
+                    "path": univ_apks_path,
+                    "rel_path": os.path.relpath(univ_apks_path, options.output_dir),
+                    "size": os.path.getsize(univ_apks_path),
+                    "type": "Universal APKS Bundle",
                 })
 
+            # Output Standalone APK (Only if explicitly requested)
             if build_all or "apk" in formats:
-                arch_base_path = os.path.join(arch_dir, "base.apk")
-                shutil.copyfile(staged_base_apk, arch_base_path)
+                base_out_name = f"{options.output_name}.apk" if options.output_name else "base.apk"
+                final_base = os.path.join(app_output_dir, base_out_name)
+                shutil.copyfile(arch_base_apk, final_base)
                 generated_files.append({
-                    "path": arch_base_path,
-                    "rel_path": os.path.relpath(arch_base_path, options.output_dir),
-                    "size": os.path.getsize(arch_base_path),
-                    "type": f"{arch} Standalone APK",
+                    "path": final_base,
+                    "rel_path": os.path.relpath(final_base, options.output_dir),
+                    "size": os.path.getsize(final_base),
+                    "type": "Standalone APK",
                 })
+
+                if not options.output_name:
+                    named_apk = os.path.join(app_output_dir, f"{app_dirname}-v{ver_name}-[{variant_slug}].apk")
+                    shutil.copyfile(arch_base_apk, named_apk)
+                    generated_files.append({
+                        "path": named_apk,
+                        "rel_path": os.path.relpath(named_apk, options.output_dir),
+                        "size": os.path.getsize(named_apk),
+                        "type": "Named Release APK",
+                    })
 
         return generated_files

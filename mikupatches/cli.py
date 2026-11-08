@@ -88,8 +88,8 @@ Examples:
     output_group.add_argument("-o", "--output-dir", default=DEFAULT_DIST_DIR, help=f"Directory to save generated outputs (default: '{DEFAULT_DIST_DIR}')")
     output_group.add_argument(
         "-O", "--output-format",
-        default="all",
-        help=f"Comma-separated list of output formats ({', '.join(SUPPORTED_OUTPUT_FORMATS)}, default: 'all')"
+        default="apkm",
+        help=f"Comma-separated list of output formats ({', '.join(SUPPORTED_OUTPUT_FORMATS)}, default: 'apkm')"
     )
     output_group.add_argument(
         "--arch", "--arches",
@@ -131,7 +131,7 @@ def parse_cli_options(args: Optional[List[str]] = None) -> Tuple[argparse.Namesp
     only_patches = [s.strip() for s in parsed.only_patches.split(",")] if parsed.only_patches else None
     skip_patches = [s.strip() for s in parsed.skip_patches.split(",")] if parsed.skip_patches else None
 
-    output_formats = [s.strip().lower() for s in parsed.output_format.split(",")] if parsed.output_format else ["all"]
+    output_formats = [s.strip().lower() for s in parsed.output_format.split(",")] if parsed.output_format else ["apkm"]
     arches = [s.strip().lower() for s in parsed.arches.split(",")] if parsed.arches else list(SUPPORTED_ARCHITECTURES)
 
     options = BuildOptions(

@@ -3,21 +3,17 @@ import shutil
 
 def apply_hook(decompiled_dir, app_profile, verbose=False):
     """
-    1. Strips redundant legacy 32-bit (armeabi-v7a) native libraries (~41 MB).
-    2. Strips dead modder watermarks, offline H5 ad archives, and push banner assets (~2.5 MB).
+    Strips dead modder watermarks, offline H5 ad archives, and push banner assets (~2.5 MB).
+    Architecture-specific code isolation (arm64-v8a vs armeabi-v7a) is handled automatically
+    during APKM packaging to produce standalone minimum-size packages for each architecture.
     """
-    # 1. Strip redundant 32-bit native libraries
-    armeabi_dir = os.path.join(decompiled_dir, "lib", "armeabi-v7a")
-    if os.path.exists(armeabi_dir):
-        shutil.rmtree(armeabi_dir)
-        print("  -> Stripped redundant 32-bit armeabi-v7a libraries (~41 MB saved)")
+    # 1. Strip modder watermark dummy library
+    for arch in ("arm64-v8a", "armeabi-v7a"):
+        elamods_so = os.path.join(decompiled_dir, "lib", arch, "El-a Mo-ds.so")
+        if os.path.exists(elamods_so):
+            os.remove(elamods_so)
 
-    # 2. Strip modder watermark dummy library
-    elamods_so = os.path.join(decompiled_dir, "lib", "arm64-v8a", "El-a Mo-ds.so")
-    if os.path.exists(elamods_so):
-        os.remove(elamods_so)
-
-    # 3. Strip dead assets and modder watermarks
+    # 2. Strip dead assets and modder watermarks
     dead_asset_paths = [
         "assets/mini_offline",
         "assets/elamods.png",

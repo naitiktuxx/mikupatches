@@ -39,6 +39,7 @@ ARCH_SPLIT_MAP = {
 # Input and Output Formats
 SUPPORTED_INPUT_EXTENSIONS = (".apkm", ".apks", ".xapk", ".zip", ".apk")
 SUPPORTED_OUTPUT_FORMATS = ["all", "apk", "apkm", "apks", "xapk", "splits"]
+DEFAULT_OUTPUT_FORMATS = ["apkm"]
 
 # ANSI Color Codes
 class Colors:
