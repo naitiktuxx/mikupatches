@@ -476,18 +476,6 @@
     }
   },
   {
-    "id": "player_preload_load_control",
-    "name": "Player: Aggressive Continuous Streaming Buffer & Auto-Purge Cache on Close",
-    "desc": "Expands ExoPlayer buffer to 100MB (targetBufferBytes), 180s deep buffer, 1.6GB disk cache, 4-thread Cronet networking, and automatically purges stream disk cache on player exit/destroy",
-    "default": true,
-    "files": {
-      "smali_classes5/co/h.smali": "Update ORExoPlayer LoadControl to 2s playback start, 180s maxBuffer, 60s minBuffer, 100MB targetBufferBytes, and hook release to auto-clear stream cache",
-      "smali_classes5/co/a.smali": "Expand SimpleCache to 1.6GB and upgrade CronetDataSource executor to 4-thread pool",
-      "smali/com/miku/stream/StreamCacheHelper.smali": "Helper to evict SimpleCache stream keys and physically delete .exo chunks asynchronously",
-      "smali/com/miku/stream/StreamCacheHelper$1.smali": "Background worker runnable for non-blocking stream cache cleanup"
-    }
-  },
-  {
     "id": "fix_api_gateway_signing_resilience",
     "name": "API Gateway Signing Resilience & Anti-Crash Fallback",
     "desc": "Ensures Transsion API Gateway HMAC signing always has a valid secret key and never throws NullPointerException in Base64 decode, preventing network request drops and Something went wrong errors",
