@@ -734,5 +734,18 @@
     "hooks": [
       "remove_home_screen_emojis.py"
     ]
+  },
+  {
+    "id": "dock_matte_pill",
+    "name": "Zero-Lag Matte Pill Dock",
+    "desc": "Converts the full-width bottom navigation panel into a floating Zero-Lag Matte Pill Dock with stadium corners (999dp), 1dp subtle border (#2A2A32), pure matte dark surface (#16161A), 24dp horizontal margins, and 16dp floating bottom margin",
+    "default": true,
+    "files": {
+      "res/drawable/bg_dock_matte_pill.xml": "Zero-lag matte dark pill background with stadium corners (999dp) and 1dp border",
+      "res/color/selector_dock_item.xml": "Color state selector switching between active Netflix Red and muted gray",
+      "res/layout/activity_main.xml": "Floating pill dock layout configuration with 24dp margins, 16dp bottom offset, and neutralized full-width background views",
+      "res/layout/tab_bottom.xml": "Vertically centered and packed tab item layout fitting inside the 62dp floating dock",
+      "smali_classes2/app/patches/ui/DockStylePatch.smali": "Java/Smali programmatic floating dock helper enforcing GradientDrawable, margins, and zero-elevation"
+    }
   }
 ]

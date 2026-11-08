@@ -4630,6 +4630,8 @@
 
     iget-object v0, v0, Lau/a;->m:Lcom/google/android/material/tabs/TabLayout;
 
+    invoke-static {v0}, Lapp/patches/ui/DockStylePatch;->applyMattePillDock(Landroid/view/View;)V
+
     new-instance v1, Lcom/transsion/subroom/activity/MainActivity$e;
 
     invoke-direct {v1, p0}, Lcom/transsion/subroom/activity/MainActivity$e;-><init>(Lcom/transsion/subroom/activity/MainActivity;)V
