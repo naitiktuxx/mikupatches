@@ -656,7 +656,13 @@
       "res/drawable/shape_video_detail_dialog_bg.xml": "Rounded (16dp) video detail dialog background",
       "res/drawable/post_detail_shape_short_tv_dialog_bottom_bg.xml": "Rounded (16dp) short TV episode dialog bottom background",
       "res/layout/fragment_episode.xml": "Rounded (10dp) episode All button and language/season dropdowns in video player",
-      "res/layout/fragment_resource_detector_layout.xml": "Rounded (10dp) episode All button and language/season dropdowns in resource detector"
+      "res/layout/fragment_resource_detector_layout.xml": "Rounded (10dp) episode All button and language/season dropdowns in resource detector",
+      "res/layout/fragment_all_episodes.xml": "Rounded (10dp) season switcher button and (16dp) top corners in All episodes dialog",
+      "res/layout/dialog_download_res_main.xml": "Match parent height for full-area download sub-dialogs",
+      "res/layout/fragment_download_audio_track.xml": "Full area coverage and rounded (16dp) top corners for download language selection",
+      "res/layout/fragment_seasons.xml": "Full area coverage and rounded (16dp) top corners for download seasons selection",
+      "res/layout/fragment_video_detail_seasons.xml": "Rounded (16dp) top corners for player season selection dialog",
+      "smali_classes5/com/transsion/baseui/dialog/BaseDialog.smali": "Prevent bottom padding gap injection under dialog action buttons"
     }
   },
   {
@@ -666,9 +672,12 @@
     "default": true,
     "files": {
       "res/layout/long_vod_view_player_middle.xml": "Center play/pause button, move duration counter to left, and extend seekbar to fullscreen button in portrait video player",
-      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth alpha fade-in, fade-out, and visibility transitions for player controls",
+      "res/layout/long_vod_view_player_land.xml": "Avoid display cutout/notch overlap for lock button, brand ad, and controls in landscape player",
+      "smali_classes6/com/transsion/player/longvideo/helper/j.smali": "Dynamic display cutout and safe inset manager for landscape notch handling on both rotation sides",
+      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth alpha fade-in, fade-out, visibility transitions, and safe notch insets",
       "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper$1.smali": "Animator listener for clean fade-out completion and state cleanup",
-      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates fade animation hooks into control visibility toggling and single-tap handling"
+      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates fade animation hooks and orientation change notch updates into player view",
+      "smali_classes6/com/transsion/postdetail/layer/local/u0.smali": "Applies safe notch insets for downloaded video player on both landscape rotation sides"
     }
   },
   {

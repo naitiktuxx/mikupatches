@@ -5874,12 +5874,6 @@
 
     move-result v6
 
-    invoke-virtual {v4}, Lcom/transsion/postdetail/util/o;->a()I
-
-    move-result v7
-
-    if-eq v7, v6, :cond_7
-
     invoke-virtual {v4, v6}, Lcom/transsion/postdetail/util/o;->c(I)V
 
     :cond_7
@@ -9428,6 +9422,16 @@
     sget-object v0, Lcom/transsion/player/longvideo/ui/LongVodUiType;->LAND:Lcom/transsion/player/longvideo/ui/LongVodUiType;
 
     iput-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->n:Lcom/transsion/player/longvideo/ui/LongVodUiType;
+
+    iget-object v1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->e0:Lcom/transsion/player/longvideo/helper/j;
+
+    if-eqz v1, :cond_notch_n0
+
+    const/4 v2, 0x0
+
+    invoke-virtual {v1, v0, v2}, Lcom/transsion/player/longvideo/helper/j;->d(Lcom/transsion/player/longvideo/ui/LongVodUiType;I)V
+
+    :cond_notch_n0
 
     invoke-virtual {p0}, Landroid/view/View;->getContext()Landroid/content/Context;
 
@@ -14830,5 +14834,24 @@
     invoke-virtual {p1, p3}, Lcom/transsion/postdetail/layer/local/c0;->O(Ljava/lang/String;)V
 
     :cond_2
+    return-void
+.end method
+
+.method protected onConfigurationChanged(Landroid/content/res/Configuration;)V
+    .locals 3
+
+    invoke-super {p0, p1}, Landroidx/constraintlayout/widget/ConstraintLayout;->onConfigurationChanged(Landroid/content/res/Configuration;)V
+
+    iget-object p1, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->e0:Lcom/transsion/player/longvideo/helper/j;
+
+    if-eqz p1, :cond_0
+
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LongVodPlayerView;->n:Lcom/transsion/player/longvideo/ui/LongVodUiType;
+
+    const/4 v1, 0x0
+
+    invoke-virtual {p1, v0, v1}, Lcom/transsion/player/longvideo/helper/j;->d(Lcom/transsion/player/longvideo/ui/LongVodUiType;I)V
+
+    :cond_0
     return-void
 .end method
