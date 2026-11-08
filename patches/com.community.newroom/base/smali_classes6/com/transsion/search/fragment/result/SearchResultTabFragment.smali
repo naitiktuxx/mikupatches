@@ -197,6 +197,8 @@
 
     invoke-static {p3, v0}, Lkotlin/jvm/internal/Intrinsics;->h(Ljava/lang/Object;Ljava/lang/String;)V
 
+    invoke-static {p3}, Lcom/miku/animation/BounceAnimationHelper;->animateBounce(Landroid/view/View;)V
+
     iget-object p2, p0, Lcom/transsion/search/fragment/result/SearchResultTabFragment;->e:Lcom/transsion/search/bean/TabItem;
 
     const/4 p3, 0x0

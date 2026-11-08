@@ -1176,6 +1176,8 @@
 .method private static final T0(Lcom/transsion/search_pugc/fragment/SearchSubjectFragment;Landroid/view/View;)V
     .locals 0
 
+    invoke-static {p1}, Lcom/miku/animation/BounceAnimationHelper;->animateBounce(Landroid/view/View;)V
+
     invoke-direct {p0}, Lcom/transsion/search_pugc/fragment/SearchSubjectFragment;->D0()V
 
     return-void

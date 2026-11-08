@@ -738,15 +738,33 @@
   {
     "id": "dock_matte_pill",
     "name": "Compact Floating Frosted-Glass Dock",
-    "desc": "Converts bottom navigation into a sleek 212dp x 52dp floating frosted-glass pill dock with tight icon spacing, real-time blur, 1dp specular rim (#38FFFFFF), and tab touch spring bounce physics (Overshoot 3.2f)",
+    "desc": "Converts bottom navigation into a sleek 180dp x 48dp floating frosted-glass pill dock with symmetrical icon spacing, hidden labels, real-time dynamic blur, Apple macOS specular gradient rim, and spring bounce physics",
     "default": true,
     "files": {
-      "res/drawable/bg_dock_matte_pill.xml": "Zero-lag matte dark pill background with stadium corners (999dp) and 1dp border",
+      "res/drawable/bg_dock_matte_pill.xml": "Zero-lag frosted glass pill background with stadium corners (999dp) and macOS specular border",
       "res/drawable/bg_red_notice.xml": "Neutralized transparent notification badge drawable",
       "res/color/selector_dock_item.xml": "Color state selector switching between active Netflix Red and muted gray",
-      "res/layout/activity_main.xml": "Compact floating pill dock layout configuration with 212dp width, 52dp height, and 18dp bottom offset",
-      "res/layout/tab_bottom.xml": "Vertically centered and packed tab item layout fitting inside the 52dp compact floating dock",
-      "smali_classes2/app/patches/ui/DockStylePatch.smali": "Single-file compact floating frosted-glass dock engine with real-time blur, specular border, and spring bounce physics"
+      "res/layout/activity_main.xml": "Compact floating pill dock layout configuration with 180dp width, 48dp height, and 18dp bottom offset",
+      "res/layout/tab_bottom.xml": "Vertically and horizontally centered tab icon layout without text labels for the 48dp floating dock",
+      "smali_classes2/app/patches/ui/DockStylePatch.smali": "Single-file compact floating frosted-glass dock engine with dynamic blur, macOS specular gradient outline, and spring bounce physics"
+    }
+  },
+  {
+    "id": "filter_tab_bounce_animation",
+    "name": "Filter & Tab Interactive Bounce Animation",
+    "desc": "Adds a lively, responsive bounce-up and bounce-back spring animation when tapping category tabs, search filter chips, and navigation buttons",
+    "default": true,
+    "files": {
+      "smali_classes6/com/miku/animation/BounceAnimationHelper.smali": "Central helper orchestrating physical upward bounce (-7dp, 1.08x) and spring overshoot settle (220ms)",
+      "smali_classes6/com/miku/animation/BounceAnimationHelper$1.smali": "Phase 2 spring overshoot settle animator",
+      "smali_classes5/com/transsion/home/fragment/home/HomeSearchViewManager$a$b.smali": "Interactive bounce animation hook for Home category tabs (Movie, Anime, TV, Kids)",
+      "smali_classes5/com/transsion/home/activity/MovieFilterActivity$c$a.smali": "Interactive bounce animation hook for Movie filter category tabs",
+      "smali_classes6/com/transsion/search/fragment/result/SearchResultTabFragment.smali": "Interactive bounce animation hook for search result filter tabs (All, Movie, TV/Series, ShortTV)",
+      "smali_classes6/com/transsion/search_pugc/fragment/result/SearchResultTabFragment.smali": "Interactive bounce animation hook for PUGC search result filter tabs",
+      "smali_classes6/com/transsion/search/fragment/SearchSubjectFragment.smali": "Interactive bounce animation hook for search navigation back button",
+      "smali_classes6/com/transsion/search_pugc/fragment/SearchSubjectFragment.smali": "Interactive bounce animation hook for PUGC search navigation back button",
+      "smali_classes5/com/transsion/home/view/filter/linear/FilterView.smali": "Interactive bounce animation hook for horizontal filter category items",
+      "smali_classes5/com/transsion/home/view/filter/expand/TabExpandView.smali": "Interactive bounce animation hook for expand filter category items"
     }
   }
 ]

@@ -6,7 +6,6 @@
 .implements Landroid/view/View$OnTouchListener;
 .implements Landroid/view/ViewTreeObserver$OnPreDrawListener;
 .implements Landroid/view/ViewTreeObserver$OnScrollChangedListener;
-.implements Landroid/animation/ValueAnimator$AnimatorUpdateListener;
 
 
 # instance fields
@@ -26,8 +25,6 @@
 
 .field private final dockMarginBottomPx:I
 
-.field private final dockPaddingSidePx:I
-
 .field private final dockView:Landroid/view/View;
 
 .field private final dockWidthPx:I
@@ -38,7 +35,11 @@
 
 .field private isCapturingBlur:Z
 
-.field private needsBlurUpdate:Z
+.field private lastBlurTime:J
+
+.field private lastH:I
+
+.field private lastW:I
 
 .field private outputBitmap:Landroid/graphics/Bitmap;
 
@@ -57,10 +58,10 @@
 .method private constructor <init>(Landroid/view/View;)V
     .registers 7
 
-    .line 56
+    .line 61
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
-    .line 42
+    .line 45
     new-instance v0, Landroid/graphics/Paint;
 
     const/4 v1, 0x1
@@ -69,59 +70,67 @@
 
     iput-object v0, p0, Lapp/patches/ui/DockStylePatch;->glassPaint:Landroid/graphics/Paint;
 
-    .line 43
+    .line 46
     new-instance v2, Landroid/graphics/Paint;
 
     invoke-direct {v2, v1}, Landroid/graphics/Paint;-><init>(I)V
 
     iput-object v2, p0, Lapp/patches/ui/DockStylePatch;->borderPaint:Landroid/graphics/Paint;
 
-    .line 44
-    new-instance v3, Landroid/graphics/Paint;
-
-    const/4 v4, 0x2
-
-    invoke-direct {v3, v4}, Landroid/graphics/Paint;-><init>(I)V
-
-    iput-object v3, p0, Lapp/patches/ui/DockStylePatch;->filterPaint:Landroid/graphics/Paint;
-
-    .line 45
-    new-instance v3, Landroid/graphics/Path;
-
-    invoke-direct {v3}, Landroid/graphics/Path;-><init>()V
-
-    iput-object v3, p0, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
-
-    .line 46
-    new-instance v3, Landroid/graphics/RectF;
-
-    invoke-direct {v3}, Landroid/graphics/RectF;-><init>()V
-
-    iput-object v3, p0, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
-
     .line 47
-    const/4 v3, 0x0
+    new-instance v1, Landroid/graphics/Paint;
 
-    iput-boolean v3, p0, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
+    const/4 v3, 0x2
+
+    invoke-direct {v1, v3}, Landroid/graphics/Paint;-><init>(I)V
+
+    iput-object v1, p0, Lapp/patches/ui/DockStylePatch;->filterPaint:Landroid/graphics/Paint;
 
     .line 48
-    iput-boolean v1, p0, Lapp/patches/ui/DockStylePatch;->needsBlurUpdate:Z
+    new-instance v1, Landroid/graphics/Path;
+
+    invoke-direct {v1}, Landroid/graphics/Path;-><init>()V
+
+    iput-object v1, p0, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
 
     .line 49
-    iput-boolean v3, p0, Lapp/patches/ui/DockStylePatch;->tabsAttached:Z
+    new-instance v1, Landroid/graphics/RectF;
 
-    .line 57
+    invoke-direct {v1}, Landroid/graphics/RectF;-><init>()V
+
+    iput-object v1, p0, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+
+    .line 50
+    const/4 v1, 0x0
+
+    iput-boolean v1, p0, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
+
+    .line 51
+    iput-boolean v1, p0, Lapp/patches/ui/DockStylePatch;->tabsAttached:Z
+
+    .line 52
+    const-wide/16 v3, 0x0
+
+    iput-wide v3, p0, Lapp/patches/ui/DockStylePatch;->lastBlurTime:J
+
+    .line 53
+    iput v1, p0, Lapp/patches/ui/DockStylePatch;->lastW:I
+
+    .line 54
+    iput v1, p0, Lapp/patches/ui/DockStylePatch;->lastH:I
+
+    .line 62
     iput-object p1, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    .line 58
+    .line 63
     invoke-virtual {p1}, Landroid/view/View;->getContext()Landroid/content/Context;
 
     move-result-object p1
 
     iput-object p1, p0, Lapp/patches/ui/DockStylePatch;->ctx:Landroid/content/Context;
 
-    .line 61
-    const/high16 p1, 0x43540000    # 212.0f
+    .line 66
+    const/high16 p1, 0x43340000    # 180.0f
 
     invoke-direct {p0, p1}, Lapp/patches/ui/DockStylePatch;->dpToPx(F)I
 
@@ -129,8 +138,8 @@
 
     iput p1, p0, Lapp/patches/ui/DockStylePatch;->dockWidthPx:I
 
-    .line 62
-    const/high16 p1, 0x42500000    # 52.0f
+    .line 67
+    const/high16 p1, 0x42400000    # 48.0f
 
     invoke-direct {p0, p1}, Lapp/patches/ui/DockStylePatch;->dpToPx(F)I
 
@@ -138,7 +147,7 @@
 
     iput p1, p0, Lapp/patches/ui/DockStylePatch;->dockHeightPx:I
 
-    .line 63
+    .line 68
     const/high16 p1, 0x41900000    # 18.0f
 
     invoke-direct {p0, p1}, Lapp/patches/ui/DockStylePatch;->dpToPx(F)I
@@ -147,16 +156,7 @@
 
     iput p1, p0, Lapp/patches/ui/DockStylePatch;->dockMarginBottomPx:I
 
-    .line 64
-    const/high16 p1, 0x41200000    # 10.0f
-
-    invoke-direct {p0, p1}, Lapp/patches/ui/DockStylePatch;->dpToPx(F)I
-
-    move-result p1
-
-    iput p1, p0, Lapp/patches/ui/DockStylePatch;->dockPaddingSidePx:I
-
-    .line 65
+    .line 69
     const p1, 0x4479c000    # 999.0f
 
     invoke-direct {p0, p1}, Lapp/patches/ui/DockStylePatch;->dpToPx(F)I
@@ -167,8 +167,8 @@
 
     iput p1, p0, Lapp/patches/ui/DockStylePatch;->cornerRadiusPx:F
 
-    .line 66
-    const/high16 p1, 0x3f800000    # 1.0f
+    .line 70
+    const p1, 0x3f99999a    # 1.2f
 
     invoke-direct {p0, p1}, Lapp/patches/ui/DockStylePatch;->dpToPx(F)I
 
@@ -178,72 +178,72 @@
 
     iput p1, p0, Lapp/patches/ui/DockStylePatch;->strokeWidthPx:F
 
-    .line 68
+    .line 73
     sget-object v1, Landroid/graphics/Paint$Style;->FILL:Landroid/graphics/Paint$Style;
 
     invoke-virtual {v0, v1}, Landroid/graphics/Paint;->setStyle(Landroid/graphics/Paint$Style;)V
 
-    .line 69
-    const v1, -0x47edede8
+    .line 74
+    const v1, 0x66101014
 
     invoke-virtual {v0, v1}, Landroid/graphics/Paint;->setColor(I)V
 
-    .line 71
+    .line 77
     sget-object v0, Landroid/graphics/Paint$Style;->STROKE:Landroid/graphics/Paint$Style;
 
     invoke-virtual {v2, v0}, Landroid/graphics/Paint;->setStyle(Landroid/graphics/Paint$Style;)V
 
-    .line 72
+    .line 78
     invoke-virtual {v2, p1}, Landroid/graphics/Paint;->setStrokeWidth(F)V
 
-    .line 73
-    const p1, 0x38ffffff
+    .line 79
+    const p1, 0x55ffffff    # 3.518437E13f
 
     invoke-virtual {v2, p1}, Landroid/graphics/Paint;->setColor(I)V
 
-    .line 74
+    .line 80
     return-void
 .end method
 
 .method private applyDockGeometry()V
     .registers 3
 
-    .line 104
+    .line 128
     iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v0}, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
 
     move-result-object v0
 
-    .line 105
+    .line 129
     instance-of v1, v0, Landroid/view/ViewGroup$MarginLayoutParams;
 
     if-eqz v1, :cond_1d
 
-    .line 106
+    .line 130
     check-cast v0, Landroid/view/ViewGroup$MarginLayoutParams;
 
-    .line 107
+    .line 131
     iget v1, p0, Lapp/patches/ui/DockStylePatch;->dockWidthPx:I
 
     iput v1, v0, Landroid/view/ViewGroup$MarginLayoutParams;->width:I
 
-    .line 108
+    .line 132
     iget v1, p0, Lapp/patches/ui/DockStylePatch;->dockHeightPx:I
 
     iput v1, v0, Landroid/view/ViewGroup$MarginLayoutParams;->height:I
 
-    .line 109
+    .line 133
     iget v1, p0, Lapp/patches/ui/DockStylePatch;->dockMarginBottomPx:I
 
     iput v1, v0, Landroid/view/ViewGroup$MarginLayoutParams;->bottomMargin:I
 
-    .line 110
+    .line 134
     iget-object v1, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v1, v0}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
 
-    .line 112
+    .line 136
     :cond_1d
     return-void
 .end method
@@ -251,12 +251,12 @@
 .method public static applyMattePillDock(Landroid/view/View;)V
     .registers 2
 
-    .line 52
+    .line 57
     if-nez p0, :cond_3
 
     return-void
 
-    .line 53
+    .line 58
     :cond_3
     new-instance v0, Lapp/patches/ui/DockStylePatch;
 
@@ -264,105 +264,17 @@
 
     invoke-direct {v0}, Lapp/patches/ui/DockStylePatch;->init()V
 
-    .line 54
-    return-void
-.end method
-
-.method private attachTabTouchListenersIfNeeded()V
-    .registers 5
-
-    .line 115
-    iget-boolean v0, p0, Lapp/patches/ui/DockStylePatch;->tabsAttached:Z
-
-    if-nez v0, :cond_3a
-
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
-
-    instance-of v1, v0, Landroid/view/ViewGroup;
-
-    if-nez v1, :cond_b
-
-    goto :goto_3a
-
-    .line 116
-    :cond_b
-    check-cast v0, Landroid/view/ViewGroup;
-
-    .line 117
-    invoke-virtual {v0}, Landroid/view/ViewGroup;->getChildCount()I
-
-    move-result v1
-
-    if-lez v1, :cond_39
-
-    const/4 v1, 0x0
-
-    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
-
-    move-result-object v2
-
-    instance-of v2, v2, Landroid/view/ViewGroup;
-
-    if-eqz v2, :cond_39
-
-    .line 118
-    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
-
-    move-result-object v0
-
-    check-cast v0, Landroid/view/ViewGroup;
-
-    .line 119
-    invoke-virtual {v0}, Landroid/view/ViewGroup;->getChildCount()I
-
-    move-result v2
-
-    .line 120
-    const/4 v3, 0x3
-
-    if-lt v2, v3, :cond_39
-
-    .line 121
-    nop
-
-    :goto_2a
-    if-ge v1, v2, :cond_36
-
-    .line 122
-    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
-
-    move-result-object v3
-
-    invoke-virtual {v3, p0}, Landroid/view/View;->setOnTouchListener(Landroid/view/View$OnTouchListener;)V
-
-    .line 121
-    add-int/lit8 v1, v1, 0x1
-
-    goto :goto_2a
-
-    .line 124
-    :cond_36
-    const/4 v0, 0x1
-
-    iput-boolean v0, p0, Lapp/patches/ui/DockStylePatch;->tabsAttached:Z
-
-    .line 127
-    :cond_39
-    return-void
-
-    .line 115
-    :cond_3a
-    :goto_3a
+    .line 59
     return-void
 .end method
 
 .method private dpToPx(F)I
     .registers 4
 
-    .line 274
+    .line 348
     iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->ctx:Landroid/content/Context;
 
-    .line 275
+    .line 349
     invoke-virtual {v0}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
 
     move-result-object v0
@@ -371,7 +283,7 @@
 
     move-result-object v0
 
-    .line 274
+    .line 348
     const/4 v1, 0x1
 
     invoke-static {v1, p1, v0}, Landroid/util/TypedValue;->applyDimension(IFLandroid/util/DisplayMetrics;)F
@@ -386,24 +298,24 @@
 .method private static fastBoxBlur(Landroid/graphics/Bitmap;I)V
     .registers 19
 
-    .line 246
+    .line 320
     move/from16 v0, p1
 
     invoke-virtual/range {p0 .. p0}, Landroid/graphics/Bitmap;->getWidth()I
 
     move-result v9
 
-    .line 247
+    .line 321
     invoke-virtual/range {p0 .. p0}, Landroid/graphics/Bitmap;->getHeight()I
 
     move-result v10
 
-    .line 248
+    .line 322
     mul-int v1, v9, v10
 
     new-array v11, v1, [I
 
-    .line 249
+    .line 323
     const/4 v3, 0x0
 
     const/4 v5, 0x0
@@ -422,7 +334,7 @@
 
     invoke-virtual/range {v1 .. v8}, Landroid/graphics/Bitmap;->getPixels([IIIIIII)V
 
-    .line 251
+    .line 325
     const/4 v1, 0x0
 
     const/4 v2, 0x0
@@ -432,22 +344,22 @@
 
     if-ge v2, v3, :cond_8d
 
-    .line 252
+    .line 326
     const/4 v3, 0x0
 
     :goto_20
     if-ge v3, v10, :cond_88
 
-    .line 253
+    .line 327
     const/4 v4, 0x0
 
     :goto_23
     if-ge v4, v9, :cond_83
 
-    .line 254
+    .line 328
     nop
 
-    .line 255
+    .line 329
     neg-int v5, v0
 
     move v6, v5
@@ -463,7 +375,7 @@
     :goto_2c
     if-gt v6, v0, :cond_6d
 
-    .line 256
+    .line 330
     add-int/lit8 v14, v10, -0x1
 
     add-int v15, v3, v6
@@ -476,13 +388,13 @@
 
     move-result v14
 
-    .line 257
+    .line 331
     move v15, v5
 
     :goto_3b
     if-gt v15, v0, :cond_66
 
-    .line 258
+    .line 332
     add-int/lit8 v0, v9, -0x1
 
     move/from16 v16, v5
@@ -497,36 +409,36 @@
 
     move-result v0
 
-    .line 259
+    .line 333
     mul-int v5, v14, v9
 
     add-int/2addr v5, v0
 
     aget v0, v11, v5
 
-    .line 260
+    .line 334
     shr-int/lit8 v5, v0, 0x10
 
     and-int/lit16 v5, v5, 0xff
 
     add-int/2addr v7, v5
 
-    .line 261
+    .line 335
     shr-int/lit8 v5, v0, 0x8
 
     and-int/lit16 v5, v5, 0xff
 
     add-int/2addr v12, v5
 
-    .line 262
+    .line 336
     and-int/lit16 v0, v0, 0xff
 
     add-int/2addr v13, v0
 
-    .line 263
+    .line 337
     add-int/lit8 v8, v8, 0x1
 
-    .line 257
+    .line 331
     add-int/lit8 v15, v15, 0x1
 
     move/from16 v0, p1
@@ -535,7 +447,7 @@
 
     goto :goto_3b
 
-    .line 255
+    .line 329
     :cond_66
     move/from16 v16, v5
 
@@ -545,7 +457,7 @@
 
     goto :goto_2c
 
-    .line 266
+    .line 340
     :cond_6d
     mul-int v0, v3, v9
 
@@ -571,14 +483,14 @@
 
     aput v5, v11, v0
 
-    .line 253
+    .line 327
     add-int/lit8 v4, v4, 0x1
 
     move/from16 v0, p1
 
     goto :goto_23
 
-    .line 252
+    .line 326
     :cond_83
     add-int/lit8 v3, v3, 0x1
 
@@ -586,7 +498,7 @@
 
     goto :goto_20
 
-    .line 251
+    .line 325
     :cond_88
     add-int/lit8 v2, v2, 0x1
 
@@ -594,7 +506,7 @@
 
     goto :goto_1c
 
-    .line 270
+    .line 344
     :cond_8d
     const/4 v2, 0x0
 
@@ -614,17 +526,223 @@
 
     invoke-virtual/range {v0 .. v7}, Landroid/graphics/Bitmap;->setPixels([IIIIIII)V
 
-    .line 271
+    .line 345
+    return-void
+.end method
+
+.method private formatTabsAndAttachTouch()V
+    .registers 8
+
+    .line 150
+    invoke-direct {p0}, Lapp/patches/ui/DockStylePatch;->removeTabMinWidthRestrictions()V
+
+    .line 151
+    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+
+    invoke-direct {p0, v0}, Lapp/patches/ui/DockStylePatch;->hideAllText(Landroid/view/View;)V
+
+    .line 153
+    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+
+    instance-of v1, v0, Landroid/view/ViewGroup;
+
+    if-nez v1, :cond_f
+
+    return-void
+
+    .line 154
+    :cond_f
+    check-cast v0, Landroid/view/ViewGroup;
+
+    .line 155
+    invoke-virtual {v0}, Landroid/view/ViewGroup;->getChildCount()I
+
+    move-result v1
+
+    if-lez v1, :cond_74
+
+    const/4 v1, 0x0
+
+    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+
+    move-result-object v2
+
+    instance-of v2, v2, Landroid/view/ViewGroup;
+
+    if-eqz v2, :cond_74
+
+    .line 156
+    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+
+    move-result-object v0
+
+    check-cast v0, Landroid/view/ViewGroup;
+
+    .line 157
+    invoke-virtual {v0, v1, v1, v1, v1}, Landroid/view/ViewGroup;->setPadding(IIII)V
+
+    .line 158
+    invoke-virtual {v0}, Landroid/view/ViewGroup;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
+
+    move-result-object v2
+
+    instance-of v2, v2, Landroid/view/ViewGroup$MarginLayoutParams;
+
+    if-eqz v2, :cond_3d
+
+    .line 159
+    invoke-virtual {v0}, Landroid/view/ViewGroup;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
+
+    move-result-object v2
+
+    check-cast v2, Landroid/view/ViewGroup$MarginLayoutParams;
+
+    .line 160
+    invoke-virtual {v2, v1, v1, v1, v1}, Landroid/view/ViewGroup$MarginLayoutParams;->setMargins(IIII)V
+
+    .line 161
+    invoke-virtual {v0, v2}, Landroid/view/ViewGroup;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
+
+    .line 163
+    :cond_3d
+    invoke-virtual {v0}, Landroid/view/ViewGroup;->getChildCount()I
+
+    move-result v2
+
+    .line 164
+    const/4 v3, 0x3
+
+    if-lt v2, v3, :cond_74
+
+    .line 165
+    const/4 v3, 0x0
+
+    :goto_45
+    if-ge v3, v2, :cond_71
+
+    .line 166
+    invoke-virtual {v0, v3}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+
+    move-result-object v4
+
+    .line 167
+    invoke-virtual {v4, v1}, Landroid/view/View;->setMinimumWidth(I)V
+
+    .line 168
+    invoke-virtual {v4, v1, v1, v1, v1}, Landroid/view/View;->setPadding(IIII)V
+
+    .line 169
+    invoke-virtual {v4}, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
+
+    move-result-object v5
+
+    .line 170
+    instance-of v6, v5, Landroid/widget/LinearLayout$LayoutParams;
+
+    if-eqz v6, :cond_67
+
+    .line 171
+    check-cast v5, Landroid/widget/LinearLayout$LayoutParams;
+
+    .line 172
+    iput v1, v5, Landroid/widget/LinearLayout$LayoutParams;->width:I
+
+    .line 173
+    const/high16 v6, 0x3f800000    # 1.0f
+
+    iput v6, v5, Landroid/widget/LinearLayout$LayoutParams;->weight:F
+
+    .line 174
+    invoke-virtual {v5, v1, v1, v1, v1}, Landroid/widget/LinearLayout$LayoutParams;->setMargins(IIII)V
+
+    .line 175
+    invoke-virtual {v4, v5}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
+
+    .line 177
+    :cond_67
+    iget-boolean v5, p0, Lapp/patches/ui/DockStylePatch;->tabsAttached:Z
+
+    if-nez v5, :cond_6e
+
+    .line 178
+    invoke-virtual {v4, p0}, Landroid/view/View;->setOnTouchListener(Landroid/view/View$OnTouchListener;)V
+
+    .line 165
+    :cond_6e
+    add-int/lit8 v3, v3, 0x1
+
+    goto :goto_45
+
+    .line 181
+    :cond_71
+    const/4 v0, 0x1
+
+    iput-boolean v0, p0, Lapp/patches/ui/DockStylePatch;->tabsAttached:Z
+
+    .line 184
+    :cond_74
+    return-void
+.end method
+
+.method private hideAllText(Landroid/view/View;)V
+    .registers 4
+
+    .line 139
+    instance-of v0, p1, Landroid/widget/TextView;
+
+    if-eqz v0, :cond_a
+
+    .line 140
+    const/16 v0, 0x8
+
+    invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
+
+    goto :goto_21
+
+    .line 141
+    :cond_a
+    instance-of v0, p1, Landroid/view/ViewGroup;
+
+    if-eqz v0, :cond_21
+
+    .line 142
+    check-cast p1, Landroid/view/ViewGroup;
+
+    .line 143
+    const/4 v0, 0x0
+
+    :goto_11
+    invoke-virtual {p1}, Landroid/view/ViewGroup;->getChildCount()I
+
+    move-result v1
+
+    if-ge v0, v1, :cond_21
+
+    .line 144
+    invoke-virtual {p1, v0}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+
+    move-result-object v1
+
+    invoke-direct {p0, v1}, Lapp/patches/ui/DockStylePatch;->hideAllText(Landroid/view/View;)V
+
+    .line 143
+    add-int/lit8 v0, v0, 0x1
+
+    goto :goto_11
+
+    .line 147
+    :cond_21
+    :goto_21
     return-void
 .end method
 
 .method private init()V
-    .registers 4
+    .registers 3
 
-    .line 78
+    .line 84
     invoke-direct {p0}, Lapp/patches/ui/DockStylePatch;->applyDockGeometry()V
 
-    .line 79
+    .line 85
     iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     const/high16 v1, 0x41200000    # 10.0f
@@ -637,16 +755,14 @@
 
     invoke-virtual {v0, v1}, Landroid/view/View;->setElevation(F)V
 
-    .line 80
+    .line 86
     iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    iget v1, p0, Lapp/patches/ui/DockStylePatch;->dockPaddingSidePx:I
+    const/4 v1, 0x0
 
-    const/4 v2, 0x0
+    invoke-virtual {v0, v1, v1, v1, v1}, Landroid/view/View;->setPadding(IIII)V
 
-    invoke-virtual {v0, v1, v2, v1, v2}, Landroid/view/View;->setPadding(IIII)V
-
-    .line 83
+    .line 89
     iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v0}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
@@ -655,9 +771,9 @@
 
     instance-of v0, v0, Landroid/view/ViewGroup;
 
-    if-eqz v0, :cond_32
+    if-eqz v0, :cond_30
 
-    .line 84
+    .line 90
     iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v0}, Landroid/view/View;->getParent()Landroid/view/ViewParent;
@@ -666,520 +782,731 @@
 
     check-cast v0, Landroid/view/ViewGroup;
 
-    .line 85
-    invoke-virtual {v0, v2}, Landroid/view/ViewGroup;->setClipToPadding(Z)V
-
-    .line 86
-    invoke-virtual {v0, v2}, Landroid/view/ViewGroup;->setClipChildren(Z)V
-
-    .line 87
-    invoke-virtual {v0, v2}, Landroid/view/ViewGroup;->setBackgroundColor(I)V
-
     .line 91
-    :cond_32
-    invoke-direct {p0}, Lapp/patches/ui/DockStylePatch;->attachTabTouchListenersIfNeeded()V
+    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->setClipToPadding(Z)V
 
-    .line 94
+    .line 92
+    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->setClipChildren(Z)V
+
+    .line 93
+    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;->setBackgroundColor(I)V
+
+    .line 97
+    :cond_30
+    invoke-direct {p0}, Lapp/patches/ui/DockStylePatch;->removeTabMinWidthRestrictions()V
+
+    .line 100
+    invoke-direct {p0}, Lapp/patches/ui/DockStylePatch;->formatTabsAndAttachTouch()V
+
+    .line 103
     iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v0}, Landroid/view/View;->getViewTreeObserver()Landroid/view/ViewTreeObserver;
 
     move-result-object v0
 
-    .line 95
+    .line 104
     invoke-virtual {v0}, Landroid/view/ViewTreeObserver;->isAlive()Z
 
     move-result v1
 
-    if-eqz v1, :cond_47
+    if-eqz v1, :cond_48
 
-    .line 96
+    .line 105
     invoke-virtual {v0, p0}, Landroid/view/ViewTreeObserver;->addOnPreDrawListener(Landroid/view/ViewTreeObserver$OnPreDrawListener;)V
 
-    .line 97
+    .line 106
     invoke-virtual {v0, p0}, Landroid/view/ViewTreeObserver;->addOnScrollChangedListener(Landroid/view/ViewTreeObserver$OnScrollChangedListener;)V
 
-    .line 100
+    .line 108
+    :cond_48
+    return-void
+.end method
+
+.method private removeTabMinWidthRestrictions()V
+    .registers 9
+
+    .line 111
+    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+
+    invoke-virtual {v0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    move-result-object v0
+
+    .line 112
+    :goto_6
+    if-eqz v0, :cond_4f
+
+    const-class v1, Ljava/lang/Object;
+
+    if-eq v0, v1, :cond_4f
+
+    .line 113
+    invoke-virtual {v0}, Ljava/lang/Class;->getDeclaredFields()[Ljava/lang/reflect/Field;
+
+    move-result-object v1
+
+    array-length v2, v1
+
+    const/4 v3, 0x0
+
+    const/4 v4, 0x0
+
+    :goto_13
+    if-ge v4, v2, :cond_4a
+
+    aget-object v5, v1, v4
+
+    .line 114
+    invoke-virtual {v5}, Ljava/lang/reflect/Field;->getName()Ljava/lang/String;
+
+    move-result-object v6
+
+    .line 115
+    const-string v7, "requestedTabMinWidth"
+
+    invoke-virtual {v6, v7}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v7
+
+    if-nez v7, :cond_3b
+
+    const-string v7, "scrollableTabMinWidth"
+
+    invoke-virtual {v6, v7}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v7
+
+    if-nez v7, :cond_3b
+
+    .line 116
+    const-string v7, "tabMinWidth"
+
+    invoke-virtual {v6, v7}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v7
+
+    if-nez v7, :cond_3b
+
+    const-string v7, "defaultTabMinWidth"
+
+    invoke-virtual {v6, v7}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v6
+
+    if-eqz v6, :cond_47
+
+    .line 118
+    :cond_3b
+    const/4 v6, 0x1
+
+    :try_start_3c
+    invoke-virtual {v5, v6}, Ljava/lang/reflect/Field;->setAccessible(Z)V
+
+    .line 119
+    iget-object v6, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+
+    invoke-virtual {v5, v6, v3}, Ljava/lang/reflect/Field;->setInt(Ljava/lang/Object;I)V
+    :try_end_44
+    .catchall {:try_start_3c .. :try_end_44} :catchall_45
+
+    goto :goto_46
+
+    .line 120
+    :catchall_45
+    move-exception v5
+
+    :goto_46
+    nop
+
+    .line 113
     :cond_47
-    const/4 v0, 0x1
+    add-int/lit8 v4, v4, 0x1
 
-    iput-boolean v0, p0, Lapp/patches/ui/DockStylePatch;->needsBlurUpdate:Z
+    goto :goto_13
 
-    .line 101
+    .line 123
+    :cond_4a
+    invoke-virtual {v0}, Ljava/lang/Class;->getSuperclass()Ljava/lang/Class;
+
+    move-result-object v0
+
+    goto :goto_6
+
+    .line 125
+    :cond_4f
     return-void
 .end method
 
 
 # virtual methods
-.method public onAnimationUpdate(Landroid/animation/ValueAnimator;)V
-    .registers 2
-
-    .line 159
-    return-void
-.end method
-
 .method public onPreDraw()Z
-    .registers 13
+    .registers 19
 
-    .line 164
-    invoke-direct {p0}, Lapp/patches/ui/DockStylePatch;->attachTabTouchListenersIfNeeded()V
+    .line 218
+    move-object/from16 v1, p0
 
-    .line 166
-    iget-boolean v0, p0, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
+    invoke-direct/range {p0 .. p0}, Lapp/patches/ui/DockStylePatch;->formatTabsAndAttachTouch()V
 
-    const/4 v1, 0x1
+    .line 220
+    iget-boolean v0, v1, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
 
-    if-nez v0, :cond_15f
+    const/4 v2, 0x1
 
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+    if-nez v0, :cond_1a4
+
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v0}, Landroid/view/View;->getVisibility()I
 
     move-result v0
 
-    if-eqz v0, :cond_12
+    if-eqz v0, :cond_14
 
-    goto/16 :goto_15f
+    goto/16 :goto_1a4
 
-    .line 168
-    :cond_12
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+    .line 222
+    :cond_14
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v0}, Landroid/view/View;->getWidth()I
 
-    move-result v0
+    move-result v3
 
-    .line 169
-    iget-object v2, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+    .line 223
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    invoke-virtual {v2}, Landroid/view/View;->getHeight()I
-
-    move-result v2
-
-    .line 170
-    if-lez v0, :cond_15e
-
-    if-gtz v2, :cond_24
-
-    goto/16 :goto_15e
-
-    .line 172
-    :cond_24
-    iget-boolean v3, p0, Lapp/patches/ui/DockStylePatch;->needsBlurUpdate:Z
-
-    if-nez v3, :cond_2d
-
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputDrawable:Landroid/graphics/drawable/BitmapDrawable;
-
-    if-eqz v3, :cond_2d
-
-    .line 173
-    return v1
-
-    .line 176
-    :cond_2d
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
-
-    invoke-virtual {v3}, Landroid/view/View;->getRootView()Landroid/view/View;
-
-    move-result-object v3
-
-    .line 177
-    if-nez v3, :cond_36
-
-    return v1
-
-    .line 179
-    :cond_36
-    nop
-
-    .line 180
-    div-int/lit8 v4, v0, 0x8
-
-    invoke-static {v1, v4}, Ljava/lang/Math;->max(II)I
+    invoke-virtual {v0}, Landroid/view/View;->getHeight()I
 
     move-result v4
 
-    .line 181
-    div-int/lit8 v5, v2, 0x8
+    .line 224
+    if-lez v3, :cond_1a3
 
-    invoke-static {v1, v5}, Ljava/lang/Math;->max(II)I
+    if-gtz v4, :cond_26
 
-    move-result v5
+    goto/16 :goto_1a3
 
-    .line 183
-    iget-object v6, p0, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
+    .line 226
+    :cond_26
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    if-eqz v6, :cond_55
+    invoke-virtual {v0}, Landroid/view/View;->getRootView()Landroid/view/View;
 
-    invoke-virtual {v6}, Landroid/graphics/Bitmap;->getWidth()I
+    move-result-object v0
 
-    move-result v6
+    .line 227
+    if-nez v0, :cond_2f
 
-    if-ne v6, v4, :cond_55
+    return v2
 
-    iget-object v6, p0, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
+    .line 230
+    :cond_2f
+    invoke-static {}, Landroid/os/SystemClock;->uptimeMillis()J
 
-    invoke-virtual {v6}, Landroid/graphics/Bitmap;->getHeight()I
+    move-result-wide v5
 
-    move-result v6
+    .line 231
+    iget-object v7, v1, Lapp/patches/ui/DockStylePatch;->outputDrawable:Landroid/graphics/drawable/BitmapDrawable;
 
-    if-eq v6, v5, :cond_66
+    if-eqz v7, :cond_42
 
-    .line 184
-    :cond_55
-    sget-object v6, Landroid/graphics/Bitmap$Config;->ARGB_8888:Landroid/graphics/Bitmap$Config;
+    iget-wide v7, v1, Lapp/patches/ui/DockStylePatch;->lastBlurTime:J
 
-    invoke-static {v4, v5, v6}, Landroid/graphics/Bitmap;->createBitmap(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;
+    sub-long v7, v5, v7
 
-    move-result-object v4
+    const-wide/16 v9, 0x21
 
-    iput-object v4, p0, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
+    cmp-long v11, v7, v9
 
-    .line 185
-    new-instance v4, Landroid/graphics/Canvas;
+    if-gez v11, :cond_42
 
-    iget-object v5, p0, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
+    .line 232
+    return v2
 
-    invoke-direct {v4, v5}, Landroid/graphics/Canvas;-><init>(Landroid/graphics/Bitmap;)V
+    .line 234
+    :cond_42
+    iput-wide v5, v1, Lapp/patches/ui/DockStylePatch;->lastBlurTime:J
 
-    iput-object v4, p0, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
+    .line 236
+    nop
 
-    .line 188
-    :cond_66
-    const/4 v4, 0x2
+    .line 237
+    div-int/lit8 v5, v3, 0x8
 
-    new-array v5, v4, [I
-
-    .line 189
-    iget-object v6, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
-
-    invoke-virtual {v6, v5}, Landroid/view/View;->getLocationOnScreen([I)V
-
-    .line 190
-    new-array v4, v4, [I
-
-    .line 191
-    invoke-virtual {v3, v4}, Landroid/view/View;->getLocationOnScreen([I)V
-
-    .line 193
-    const/4 v6, 0x0
-
-    aget v7, v5, v6
-
-    aget v8, v4, v6
-
-    sub-int/2addr v7, v8
-
-    int-to-float v7, v7
-
-    .line 194
-    aget v5, v5, v1
-
-    aget v4, v4, v1
-
-    sub-int/2addr v5, v4
-
-    int-to-float v4, v5
-
-    .line 196
-    iput-boolean v1, p0, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
-
-    .line 197
-    iget-object v5, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
-
-    const/4 v8, 0x0
-
-    invoke-virtual {v5, v8}, Landroid/view/View;->setAlpha(F)V
-
-    .line 199
-    iget-object v5, p0, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
-
-    invoke-virtual {v5}, Landroid/graphics/Canvas;->save()I
+    invoke-static {v2, v5}, Ljava/lang/Math;->max(II)I
 
     move-result v5
 
-    .line 200
-    iget-object v9, p0, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
+    .line 238
+    div-int/lit8 v6, v4, 0x8
 
-    const/16 v10, 0x8
+    invoke-static {v2, v6}, Ljava/lang/Math;->max(II)I
 
-    int-to-float v10, v10
+    move-result v6
 
-    const/high16 v11, 0x3f800000    # 1.0f
+    .line 240
+    iget-object v7, v1, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
 
-    div-float v10, v11, v10
+    if-eqz v7, :cond_63
 
-    invoke-virtual {v9, v10, v10}, Landroid/graphics/Canvas;->scale(FF)V
+    invoke-virtual {v7}, Landroid/graphics/Bitmap;->getWidth()I
 
-    .line 201
-    iget-object v9, p0, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
+    move-result v7
 
-    neg-float v7, v7
+    if-ne v7, v5, :cond_63
 
-    neg-float v4, v4
+    iget-object v7, v1, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
 
-    invoke-virtual {v9, v7, v4}, Landroid/graphics/Canvas;->translate(FF)V
+    invoke-virtual {v7}, Landroid/graphics/Bitmap;->getHeight()I
 
-    .line 202
-    iget-object v4, p0, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
+    move-result v7
 
-    invoke-virtual {v3, v4}, Landroid/view/View;->draw(Landroid/graphics/Canvas;)V
+    if-eq v7, v6, :cond_74
 
-    .line 203
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
+    .line 241
+    :cond_63
+    sget-object v7, Landroid/graphics/Bitmap$Config;->ARGB_8888:Landroid/graphics/Bitmap$Config;
 
-    invoke-virtual {v3, v5}, Landroid/graphics/Canvas;->restoreToCount(I)V
+    invoke-static {v5, v6, v7}, Landroid/graphics/Bitmap;->createBitmap(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;
 
-    .line 205
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+    move-result-object v5
 
-    invoke-virtual {v3, v11}, Landroid/view/View;->setAlpha(F)V
+    iput-object v5, v1, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
 
-    .line 206
-    iput-boolean v6, p0, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
+    .line 242
+    new-instance v5, Landroid/graphics/Canvas;
 
-    .line 209
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
+    iget-object v6, v1, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
 
-    const/4 v4, 0x3
+    invoke-direct {v5, v6}, Landroid/graphics/Canvas;-><init>(Landroid/graphics/Bitmap;)V
 
-    invoke-static {v3, v4}, Lapp/patches/ui/DockStylePatch;->fastBoxBlur(Landroid/graphics/Bitmap;I)V
+    iput-object v5, v1, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
 
-    .line 212
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+    .line 245
+    :cond_74
+    const/4 v5, 0x2
 
-    if-eqz v3, :cond_ca
+    new-array v6, v5, [I
 
-    invoke-virtual {v3}, Landroid/graphics/Bitmap;->getWidth()I
+    .line 246
+    iget-object v7, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    move-result v3
+    invoke-virtual {v7, v6}, Landroid/view/View;->getLocationOnScreen([I)V
 
-    if-ne v3, v0, :cond_ca
+    .line 247
+    new-array v5, v5, [I
 
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+    .line 248
+    invoke-virtual {v0, v5}, Landroid/view/View;->getLocationOnScreen([I)V
 
-    invoke-virtual {v3}, Landroid/graphics/Bitmap;->getHeight()I
+    .line 250
+    const/4 v7, 0x0
 
-    move-result v3
+    aget v8, v6, v7
 
-    if-eq v3, v2, :cond_ea
+    aget v9, v5, v7
 
-    .line 213
-    :cond_ca
-    sget-object v3, Landroid/graphics/Bitmap$Config;->ARGB_8888:Landroid/graphics/Bitmap$Config;
+    sub-int/2addr v8, v9
 
-    invoke-static {v0, v2, v3}, Landroid/graphics/Bitmap;->createBitmap(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;
+    int-to-float v8, v8
 
-    move-result-object v3
+    .line 251
+    aget v6, v6, v2
 
-    iput-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+    aget v5, v5, v2
 
-    .line 214
-    new-instance v3, Landroid/graphics/Canvas;
+    sub-int/2addr v6, v5
 
-    iget-object v4, p0, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+    int-to-float v5, v6
 
-    invoke-direct {v3, v4}, Landroid/graphics/Canvas;-><init>(Landroid/graphics/Bitmap;)V
+    .line 253
+    iput-boolean v2, v1, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
 
-    iput-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+    .line 254
+    iget-object v6, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    .line 215
-    new-instance v3, Landroid/graphics/drawable/BitmapDrawable;
+    const/4 v9, 0x0
 
-    iget-object v4, p0, Lapp/patches/ui/DockStylePatch;->ctx:Landroid/content/Context;
+    invoke-virtual {v6, v9}, Landroid/view/View;->setAlpha(F)V
 
-    invoke-virtual {v4}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
+    .line 257
+    const/high16 v6, 0x3f800000    # 1.0f
 
-    move-result-object v4
+    :try_start_98
+    iget-object v10, v1, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
 
-    iget-object v5, p0, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+    invoke-virtual {v10}, Landroid/graphics/Canvas;->save()I
 
-    invoke-direct {v3, v4, v5}, Landroid/graphics/drawable/BitmapDrawable;-><init>(Landroid/content/res/Resources;Landroid/graphics/Bitmap;)V
+    move-result v10
 
-    iput-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputDrawable:Landroid/graphics/drawable/BitmapDrawable;
+    .line 258
+    iget-object v11, v1, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
 
-    .line 218
-    :cond_ea
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+    const/16 v12, 0x8
 
-    invoke-virtual {v3, v6}, Landroid/graphics/Bitmap;->eraseColor(I)V
+    int-to-float v12, v12
 
-    .line 220
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+    div-float v12, v6, v12
 
-    int-to-float v0, v0
+    invoke-virtual {v11, v12, v12}, Landroid/graphics/Canvas;->scale(FF)V
 
-    int-to-float v2, v2
+    .line 259
+    iget-object v11, v1, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
 
-    invoke-virtual {v3, v8, v8, v0, v2}, Landroid/graphics/RectF;->set(FFFF)V
+    neg-float v8, v8
 
-    .line 221
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
+    neg-float v5, v5
 
-    invoke-virtual {v3}, Landroid/graphics/Path;->reset()V
+    invoke-virtual {v11, v8, v5}, Landroid/graphics/Canvas;->translate(FF)V
 
-    .line 222
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
+    .line 260
+    iget-object v5, v1, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
 
-    iget-object v4, p0, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+    invoke-virtual {v0, v5}, Landroid/view/View;->draw(Landroid/graphics/Canvas;)V
 
-    iget v5, p0, Lapp/patches/ui/DockStylePatch;->cornerRadiusPx:F
+    .line 261
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->blurCanvas:Landroid/graphics/Canvas;
+
+    invoke-virtual {v0, v10}, Landroid/graphics/Canvas;->restoreToCount(I)V
+    :try_end_b9
+    .catchall {:try_start_98 .. :try_end_b9} :catchall_ba
+
+    goto :goto_bb
+
+    .line 262
+    :catchall_ba
+    move-exception v0
+
+    .line 264
+    :goto_bb
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+
+    invoke-virtual {v0, v6}, Landroid/view/View;->setAlpha(F)V
+
+    .line 265
+    iput-boolean v7, v1, Lapp/patches/ui/DockStylePatch;->isCapturingBlur:Z
+
+    .line 266
+    nop
+
+    .line 269
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
+
+    const/4 v5, 0x3
+
+    invoke-static {v0, v5}, Lapp/patches/ui/DockStylePatch;->fastBoxBlur(Landroid/graphics/Bitmap;I)V
+
+    .line 273
+    iget v0, v1, Lapp/patches/ui/DockStylePatch;->lastW:I
+
+    if-ne v3, v0, :cond_d1
+
+    iget v0, v1, Lapp/patches/ui/DockStylePatch;->lastH:I
+
+    if-eq v4, v0, :cond_fa
+
+    .line 274
+    :cond_d1
+    iput v3, v1, Lapp/patches/ui/DockStylePatch;->lastW:I
+
+    .line 275
+    iput v4, v1, Lapp/patches/ui/DockStylePatch;->lastH:I
+
+    .line 276
+    new-instance v0, Landroid/graphics/LinearGradient;
+
+    const/4 v11, 0x0
+
+    const/4 v12, 0x0
+
+    const/4 v13, 0x0
+
+    int-to-float v14, v4
+
+    const v6, 0x35ffffff
+
+    const v8, 0x18ffffff
+
+    const v10, -0x7f000001
+
+    filled-new-array {v10, v6, v8}, [I
+
+    move-result-object v15
+
+    new-array v5, v5, [F
+
+    fill-array-data v5, :array_1a6
+
+    sget-object v17, Landroid/graphics/Shader$TileMode;->CLAMP:Landroid/graphics/Shader$TileMode;
+
+    move-object v10, v0
+
+    move-object/from16 v16, v5
+
+    invoke-direct/range {v10 .. v17}, Landroid/graphics/LinearGradient;-><init>(FFFF[I[FLandroid/graphics/Shader$TileMode;)V
+
+    .line 282
+    iget-object v5, v1, Lapp/patches/ui/DockStylePatch;->borderPaint:Landroid/graphics/Paint;
+
+    invoke-virtual {v5, v0}, Landroid/graphics/Paint;->setShader(Landroid/graphics/Shader;)Landroid/graphics/Shader;
+
+    .line 286
+    :cond_fa
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+
+    if-eqz v0, :cond_10c
+
+    invoke-virtual {v0}, Landroid/graphics/Bitmap;->getWidth()I
+
+    move-result v0
+
+    if-ne v0, v3, :cond_10c
+
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+
+    invoke-virtual {v0}, Landroid/graphics/Bitmap;->getHeight()I
+
+    move-result v0
+
+    if-eq v0, v4, :cond_12c
+
+    .line 287
+    :cond_10c
+    sget-object v0, Landroid/graphics/Bitmap$Config;->ARGB_8888:Landroid/graphics/Bitmap$Config;
+
+    invoke-static {v3, v4, v0}, Landroid/graphics/Bitmap;->createBitmap(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;
+
+    move-result-object v0
+
+    iput-object v0, v1, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+
+    .line 288
+    new-instance v0, Landroid/graphics/Canvas;
+
+    iget-object v5, v1, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+
+    invoke-direct {v0, v5}, Landroid/graphics/Canvas;-><init>(Landroid/graphics/Bitmap;)V
+
+    iput-object v0, v1, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+
+    .line 289
+    new-instance v0, Landroid/graphics/drawable/BitmapDrawable;
+
+    iget-object v5, v1, Lapp/patches/ui/DockStylePatch;->ctx:Landroid/content/Context;
+
+    invoke-virtual {v5}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
+
+    move-result-object v5
+
+    iget-object v6, v1, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+
+    invoke-direct {v0, v5, v6}, Landroid/graphics/drawable/BitmapDrawable;-><init>(Landroid/content/res/Resources;Landroid/graphics/Bitmap;)V
+
+    iput-object v0, v1, Lapp/patches/ui/DockStylePatch;->outputDrawable:Landroid/graphics/drawable/BitmapDrawable;
+
+    .line 292
+    :cond_12c
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->outputBitmap:Landroid/graphics/Bitmap;
+
+    invoke-virtual {v0, v7}, Landroid/graphics/Bitmap;->eraseColor(I)V
+
+    .line 294
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+
+    int-to-float v3, v3
+
+    int-to-float v4, v4
+
+    invoke-virtual {v0, v9, v9, v3, v4}, Landroid/graphics/RectF;->set(FFFF)V
+
+    .line 295
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
+
+    invoke-virtual {v0}, Landroid/graphics/Path;->reset()V
+
+    .line 296
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
+
+    iget-object v5, v1, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+
+    iget v6, v1, Lapp/patches/ui/DockStylePatch;->cornerRadiusPx:F
 
     sget-object v7, Landroid/graphics/Path$Direction;->CW:Landroid/graphics/Path$Direction;
 
-    invoke-virtual {v3, v4, v5, v5, v7}, Landroid/graphics/Path;->addRoundRect(Landroid/graphics/RectF;FFLandroid/graphics/Path$Direction;)V
+    invoke-virtual {v0, v5, v6, v6, v7}, Landroid/graphics/Path;->addRoundRect(Landroid/graphics/RectF;FFLandroid/graphics/Path$Direction;)V
 
-    .line 223
-    iget-object v3, p0, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+    .line 297
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
 
-    invoke-virtual {v3}, Landroid/graphics/Canvas;->save()I
+    invoke-virtual {v0}, Landroid/graphics/Canvas;->save()I
 
-    move-result v3
+    move-result v0
 
-    .line 224
-    iget-object v4, p0, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+    .line 298
+    iget-object v5, v1, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
 
-    iget-object v5, p0, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
+    iget-object v6, v1, Lapp/patches/ui/DockStylePatch;->clipPath:Landroid/graphics/Path;
 
-    invoke-virtual {v4, v5}, Landroid/graphics/Canvas;->clipPath(Landroid/graphics/Path;)Z
+    invoke-virtual {v5, v6}, Landroid/graphics/Canvas;->clipPath(Landroid/graphics/Path;)Z
 
-    .line 226
-    new-instance v4, Landroid/graphics/RectF;
+    .line 300
+    new-instance v5, Landroid/graphics/RectF;
 
-    invoke-direct {v4, v8, v8, v0, v2}, Landroid/graphics/RectF;-><init>(FFFF)V
+    invoke-direct {v5, v9, v9, v3, v4}, Landroid/graphics/RectF;-><init>(FFFF)V
 
-    .line 227
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+    .line 301
+    iget-object v3, v1, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
 
-    iget-object v2, p0, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
+    iget-object v4, v1, Lapp/patches/ui/DockStylePatch;->blurBitmap:Landroid/graphics/Bitmap;
 
-    const/4 v5, 0x0
+    const/4 v6, 0x0
 
-    iget-object v7, p0, Lapp/patches/ui/DockStylePatch;->filterPaint:Landroid/graphics/Paint;
+    iget-object v7, v1, Lapp/patches/ui/DockStylePatch;->filterPaint:Landroid/graphics/Paint;
 
-    invoke-virtual {v0, v2, v5, v4, v7}, Landroid/graphics/Canvas;->drawBitmap(Landroid/graphics/Bitmap;Landroid/graphics/Rect;Landroid/graphics/RectF;Landroid/graphics/Paint;)V
+    invoke-virtual {v3, v4, v6, v5, v7}, Landroid/graphics/Canvas;->drawBitmap(Landroid/graphics/Bitmap;Landroid/graphics/Rect;Landroid/graphics/RectF;Landroid/graphics/Paint;)V
 
-    .line 228
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+    .line 302
+    iget-object v3, v1, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
 
-    iget-object v2, p0, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+    iget-object v4, v1, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
 
-    iget v4, p0, Lapp/patches/ui/DockStylePatch;->cornerRadiusPx:F
+    iget v5, v1, Lapp/patches/ui/DockStylePatch;->cornerRadiusPx:F
 
-    iget-object v5, p0, Lapp/patches/ui/DockStylePatch;->glassPaint:Landroid/graphics/Paint;
+    iget-object v6, v1, Lapp/patches/ui/DockStylePatch;->glassPaint:Landroid/graphics/Paint;
 
-    invoke-virtual {v0, v2, v4, v4, v5}, Landroid/graphics/Canvas;->drawRoundRect(Landroid/graphics/RectF;FFLandroid/graphics/Paint;)V
+    invoke-virtual {v3, v4, v5, v5, v6}, Landroid/graphics/Canvas;->drawRoundRect(Landroid/graphics/RectF;FFLandroid/graphics/Paint;)V
 
-    .line 230
-    iget v0, p0, Lapp/patches/ui/DockStylePatch;->strokeWidthPx:F
+    .line 304
+    iget v3, v1, Lapp/patches/ui/DockStylePatch;->strokeWidthPx:F
 
-    const/high16 v2, 0x3f000000    # 0.5f
+    const/high16 v4, 0x3f000000    # 0.5f
 
-    mul-float v0, v0, v2
+    mul-float v3, v3, v4
 
-    .line 231
-    iget-object v2, p0, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+    .line 305
+    iget-object v4, v1, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
 
-    invoke-virtual {v2, v0, v0}, Landroid/graphics/RectF;->inset(FF)V
+    invoke-virtual {v4, v3, v3}, Landroid/graphics/RectF;->inset(FF)V
 
-    .line 232
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+    .line 306
+    iget-object v3, v1, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
 
-    iget-object v2, p0, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
+    iget-object v4, v1, Lapp/patches/ui/DockStylePatch;->rectF:Landroid/graphics/RectF;
 
-    iget v4, p0, Lapp/patches/ui/DockStylePatch;->cornerRadiusPx:F
+    iget v5, v1, Lapp/patches/ui/DockStylePatch;->cornerRadiusPx:F
 
-    iget-object v5, p0, Lapp/patches/ui/DockStylePatch;->borderPaint:Landroid/graphics/Paint;
+    iget-object v6, v1, Lapp/patches/ui/DockStylePatch;->borderPaint:Landroid/graphics/Paint;
 
-    invoke-virtual {v0, v2, v4, v4, v5}, Landroid/graphics/Canvas;->drawRoundRect(Landroid/graphics/RectF;FFLandroid/graphics/Paint;)V
+    invoke-virtual {v3, v4, v5, v5, v6}, Landroid/graphics/Canvas;->drawRoundRect(Landroid/graphics/RectF;FFLandroid/graphics/Paint;)V
 
-    .line 233
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
+    .line 307
+    iget-object v3, v1, Lapp/patches/ui/DockStylePatch;->outputCanvas:Landroid/graphics/Canvas;
 
-    invoke-virtual {v0, v3}, Landroid/graphics/Canvas;->restoreToCount(I)V
+    invoke-virtual {v3, v0}, Landroid/graphics/Canvas;->restoreToCount(I)V
 
-    .line 235
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+    .line 309
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
     invoke-virtual {v0}, Landroid/view/View;->getBackground()Landroid/graphics/drawable/Drawable;
 
     move-result-object v0
 
-    iget-object v2, p0, Lapp/patches/ui/DockStylePatch;->outputDrawable:Landroid/graphics/drawable/BitmapDrawable;
+    iget-object v3, v1, Lapp/patches/ui/DockStylePatch;->outputDrawable:Landroid/graphics/drawable/BitmapDrawable;
 
-    if-eq v0, v2, :cond_158
+    if-eq v0, v3, :cond_19a
 
-    .line 236
-    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+    .line 310
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    invoke-virtual {v0, v2}, Landroid/view/View;->setBackground(Landroid/graphics/drawable/Drawable;)V
+    invoke-virtual {v0, v3}, Landroid/view/View;->setBackground(Landroid/graphics/drawable/Drawable;)V
 
-    goto :goto_15b
+    goto :goto_1a2
 
-    .line 238
-    :cond_158
-    invoke-virtual {v2}, Landroid/graphics/drawable/BitmapDrawable;->invalidateSelf()V
+    .line 312
+    :cond_19a
+    invoke-virtual {v3}, Landroid/graphics/drawable/BitmapDrawable;->invalidateSelf()V
 
-    .line 241
-    :goto_15b
-    iput-boolean v6, p0, Lapp/patches/ui/DockStylePatch;->needsBlurUpdate:Z
+    .line 313
+    iget-object v0, v1, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
 
-    .line 242
-    return v1
+    invoke-virtual {v0}, Landroid/view/View;->invalidate()V
 
-    .line 170
-    :cond_15e
-    :goto_15e
-    return v1
+    .line 316
+    :goto_1a2
+    return v2
 
-    .line 166
-    :cond_15f
-    :goto_15f
-    return v1
+    .line 224
+    :cond_1a3
+    :goto_1a3
+    return v2
+
+    .line 220
+    :cond_1a4
+    :goto_1a4
+    return v2
+
+    nop
+
+    :array_1a6
+    .array-data 4
+        0x0
+        0x3ee66666    # 0.45f
+        0x3f800000    # 1.0f
+    .end array-data
 .end method
 
 .method public onScrollChanged()V
-    .registers 2
+    .registers 3
 
-    .line 153
-    const/4 v0, 0x1
+    .line 211
+    const-wide/16 v0, 0x0
 
-    iput-boolean v0, p0, Lapp/patches/ui/DockStylePatch;->needsBlurUpdate:Z
+    iput-wide v0, p0, Lapp/patches/ui/DockStylePatch;->lastBlurTime:J
 
-    .line 154
+    .line 212
+    iget-object v0, p0, Lapp/patches/ui/DockStylePatch;->dockView:Landroid/view/View;
+
+    invoke-virtual {v0}, Landroid/view/View;->invalidate()V
+
+    .line 213
     return-void
 .end method
 
 .method public onTouch(Landroid/view/View;Landroid/view/MotionEvent;)Z
     .registers 5
 
-    .line 132
+    .line 189
+    const-wide/16 v0, 0x0
+
+    iput-wide v0, p0, Lapp/patches/ui/DockStylePatch;->lastBlurTime:J
+
+    .line 190
     invoke-virtual {p2}, Landroid/view/MotionEvent;->getActionMasked()I
 
     move-result p2
 
-    .line 133
-    if-nez p2, :cond_28
+    .line 191
+    if-nez p2, :cond_2c
 
-    .line 134
+    .line 192
     invoke-virtual {p1}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 135
+    .line 193
     const p2, 0x3f51eb85    # 0.82f
 
     invoke-virtual {p1, p2}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 136
+    .line 194
     invoke-virtual {p1, p2}, Landroid/view/ViewPropertyAnimator;->scaleY(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 137
+    .line 195
     const-wide/16 v0, 0x55
 
     invoke-virtual {p1, v0, v1}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
@@ -1190,45 +1517,45 @@
 
     invoke-direct {p2}, Landroid/view/animation/DecelerateInterpolator;-><init>()V
 
-    .line 138
+    .line 196
     invoke-virtual {p1, p2}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 139
+    .line 197
     invoke-virtual {p1}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    goto :goto_51
+    goto :goto_55
 
-    .line 140
-    :cond_28
+    .line 198
+    :cond_2c
     const/4 v0, 0x1
 
-    if-eq p2, v0, :cond_2e
+    if-eq p2, v0, :cond_32
 
     const/4 v0, 0x3
 
-    if-ne p2, v0, :cond_51
+    if-ne p2, v0, :cond_55
 
-    .line 141
-    :cond_2e
+    .line 199
+    :cond_32
     invoke-virtual {p1}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 142
+    .line 200
     const/high16 p2, 0x3f800000    # 1.0f
 
     invoke-virtual {p1, p2}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 143
+    .line 201
     invoke-virtual {p1, p2}, Landroid/view/ViewPropertyAnimator;->scaleY(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 144
+    .line 202
     const-wide/16 v0, 0x140
 
     invoke-virtual {p1, v0, v1}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
@@ -1241,17 +1568,17 @@
 
     invoke-direct {p2, v0}, Landroid/view/animation/OvershootInterpolator;-><init>(F)V
 
-    .line 145
+    .line 203
     invoke-virtual {p1, p2}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
 
     move-result-object p1
 
-    .line 146
+    .line 204
     invoke-virtual {p1}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    .line 148
-    :cond_51
-    :goto_51
+    .line 206
+    :cond_55
+    :goto_55
     const/4 p1, 0x0
 
     return p1
