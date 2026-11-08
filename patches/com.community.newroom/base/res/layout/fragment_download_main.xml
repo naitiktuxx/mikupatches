@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.transsion.ad.view.ScrollDetectFrameLayout android:orientation="vertical" android:id="@id/clRootView" android:fitsSystemWindows="true" android:background="@color/bg_01" android:focusable="true" android:clickable="true" android:layout_width="match_parent" android:layout_height="match_parent"
+<com.transsion.ad.view.ScrollDetectFrameLayout android:orientation="vertical" android:id="@id/clRootView" android:background="@color/bg_01" android:focusable="true" android:clickable="true" android:layout_width="match_parent" android:layout_height="match_parent"
   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.transsion.wrapperad.view.DownloadTopIrregularView android:id="@id/topIrregularView" android:visibility="gone" android:layout_width="0.0dp" android:layout_height="0.0dp" app:layout_constraintBottom_toTopOf="@id/v_top_bg" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" />
     <androidx.constraintlayout.widget.ConstraintLayout android:id="@id/clContent" android:background="@color/bg_01" android:layout_width="match_parent" android:layout_height="match_parent">
