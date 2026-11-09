@@ -394,6 +394,27 @@ def handle_adb_install_menu(dist_dir: str):
     return True
 
 
+def prompt_post_build_install(output_dir: str):
+    """Prompt user to optionally install newly built app via ADB right away."""
+    if Toolchain.is_docker_env() or not sys.stdin.isatty():
+        prompt_back_to_menu()
+        return
+
+    if not Toolchain.get_adb():
+        prompt_back_to_menu()
+        return
+
+    try:
+        ans = input(
+            f"{Colors.CYAN}[?] Install built application on connected Android device via ADB now? [Y/n]: {Colors.RESET}"
+        ).strip().lower()
+        if ans in ("", "y", "yes"):
+            handle_adb_install_menu(output_dir)
+        prompt_back_to_menu()
+    except (EOFError, KeyboardInterrupt):
+        prompt_back_to_menu()
+
+
 def main():
     parsed, options = parse_cli_options()
 
@@ -480,7 +501,7 @@ def main():
             )
             res = BuildEngine.run_pipeline(opts)
             if res.success:
-                prompt_back_to_menu()
+                prompt_post_build_install(options.output_dir)
 
         elif choice == '2':
             # Option 2: Custom Patch Selection
@@ -498,7 +519,7 @@ def main():
             )
             res = BuildEngine.run_pipeline(opts)
             if res.success:
-                prompt_back_to_menu()
+                prompt_post_build_install(options.output_dir)
 
         elif choice == '3':
             # Option 3: Build for Specific Arch
@@ -533,7 +554,7 @@ def main():
             )
             res = BuildEngine.run_pipeline(opts)
             if res.success:
-                prompt_back_to_menu()
+                prompt_post_build_install(options.output_dir)
 
         elif choice == '4':
             # Option 4: Install App to Phone via ADB

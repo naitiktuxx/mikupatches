@@ -122,7 +122,7 @@ class BuildOptions:
     output_dir: str = DEFAULT_DIST_DIR
     staging_dir: str = DEFAULT_STAGING_DIR
     framework_dir: str = DEFAULT_FRAMEWORK_DIR
-    output_formats: List[str] = field(default_factory=lambda: ["apkm"])
+    output_formats: List[str] = field(default_factory=lambda: ["apkm", "apk"])
     arches: List[str] = field(default_factory=lambda: list(SUPPORTED_ARCHITECTURES))
     output_name: Optional[str] = None
     force: bool = False

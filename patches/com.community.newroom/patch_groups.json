@@ -272,9 +272,17 @@
       "smali_classes7/lj/b.smali": "Change gallery and download root storage folder from MovieBox to Miku",
       "smali_classes7/com/transsnet/downloader/y.smali": "Set MediaStore export relative path and album destination folder to Miku",
       "smali_classes5/com/transsion/baselib/db/download/DownloadBean.smali": "Update isSaved() check to verify downloaded file presence in DCIM/Miku",
-      "smali_classes6/com/transsion/ninegridview/helper/FileHelper.smali": "Update image and media gallery save directory to Miku"
+      "smali_classes6/com/transsion/ninegridview/helper/FileHelper.smali": "Update image and media gallery save directory to Miku",
+      "res/drawable/push_small_logo.xml": "Miku white silhouette vector small icon for Android status bar and download notifications",
+      "res/mipmap-hdpi/player_ic_push_small_logo.png": "Miku white silhouette small icon for player notifications (hdpi)",
+      "res/mipmap-xxhdpi/player_ic_push_small_logo.png": "Miku white silhouette small icon for player notifications (xxhdpi)",
+      "res/drawable/tpush_notify_icon.png": "Miku white silhouette small icon for push notifications",
+      "res/mipmap-xhdpi/logo_about_us.webp": "Miku app logo for download and system notification cards (xhdpi)",
+      "res/mipmap-xhdpi/ic_notification_logo.png": "Miku app logo for push notification cards (xhdpi)",
+      "res/mipmap-hdpi/player_ic_notification_icon.png": "Miku app logo for player notification media art (hdpi)",
+      "res/mipmap-xxhdpi/player_ic_notification_icon.png": "Miku app logo for player notification media art (xxhdpi)"
     },
-    "desc": "Renames app to Miku, updates package name to com.mikuplayer.tux, and replaces launcher icons with custom Miku icons"
+    "desc": "Renames app to Miku, updates package name to com.mikuplayer.tux, and replaces launcher and status bar notification icons with custom Miku icons"
   },
   {
     "id": "disable_push_notifications",

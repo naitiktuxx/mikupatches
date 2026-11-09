@@ -781,4 +781,22 @@ class Bundler:
                     "type": f"{target_arch or 'Standalone'} APK",
                 })
 
+        # Ensure base.apk is always copied directly in the app output directory
+        dest_base_apk = os.path.join(app_output_dir, "base.apk")
+        if not os.path.exists(dest_base_apk):
+            shutil.copyfile(staged_base_apk, dest_base_apk)
+            generated_files.append({
+                "path": dest_base_apk,
+                "rel_path": os.path.relpath(dest_base_apk, options.output_dir),
+                "size": os.path.getsize(dest_base_apk),
+                "type": "Primary Base APK",
+            })
+
+        # Also provide a root-level base.apk in dist/ for direct convenience
+        root_base_apk = os.path.join(options.output_dir, "base.apk")
+        try:
+            shutil.copyfile(staged_base_apk, root_base_apk)
+        except Exception:
+            pass
+
         return generated_files

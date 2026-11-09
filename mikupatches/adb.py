@@ -150,6 +150,38 @@ class AdbManager:
         return devices[0][0]
 
     @classmethod
+    def _handle_signature_mismatch(
+        cls,
+        target_path: Union[str, List[str]],
+        target_device: str,
+        reinstall: bool,
+        verbose: bool,
+    ) -> bool:
+        Console.warn(
+            "Signature Mismatch: An existing version of this app is installed with a different signature.\n"
+            "Android security blocks overwriting with a different signature unless the old version is uninstalled (or App Clone --clone is used)."
+        )
+        if sys.stdin.isatty():
+            try:
+                ans = input(
+                    f"{Colors.YELLOW}[?] Uninstall old version on device and install new patched version? [y/N]: {Colors.RESET}"
+                ).strip().lower()
+                if ans in ("y", "yes"):
+                    from mikupatches.extractor import Extractor
+                    pkg = None
+                    if isinstance(target_path, str):
+                        pkg = Extractor.detect_package_name(target_path)
+                    elif isinstance(target_path, list) and target_path:
+                        pkg = Extractor.detect_package_name(target_path[0])
+                    if pkg:
+                        Console.step(f"Uninstalling conflicting package '{pkg}' from [{target_device}]...")
+                        cls.uninstall(pkg, device_serial=target_device, verbose=verbose)
+                        return cls.install(target_path, device_serial=target_device, reinstall=reinstall, verbose=verbose)
+            except (EOFError, KeyboardInterrupt):
+                pass
+        return False
+
+    @classmethod
     def install(
         cls,
         target_path: Union[str, List[str]],
@@ -239,6 +271,8 @@ class AdbManager:
                 res = Toolchain.run_cmd(cmd, check=False, verbose=verbose)
                 out = (res.stdout + " " + res.stderr).strip()
                 if res.returncode != 0 or "Failure [" in out or "INSTALL_FAILED_" in out:
+                    if "INSTALL_FAILED_UPDATE_INCOMPATIBLE" in out:
+                        return cls._handle_signature_mismatch(target_path, target_device, reinstall, verbose)
                     Console.error(f"ADB bundle installation failed: {out or f'Exit code {res.returncode}'}")
                     return False
                 Console.success(f"Successfully installed multi-split package on [{target_device}]!")
@@ -256,6 +290,8 @@ class AdbManager:
         res = Toolchain.run_cmd(cmd, check=False, verbose=verbose)
         out = (res.stdout + " " + res.stderr).strip()
         if res.returncode != 0 or "Failure [" in out or "INSTALL_FAILED_" in out:
+            if "INSTALL_FAILED_UPDATE_INCOMPATIBLE" in out:
+                return cls._handle_signature_mismatch(target_path, target_device, reinstall, verbose)
             if "INSTALL_FAILED_MISSING_SPLIT" in out:
                 Console.error(f"Missing Split APK Error: This app was compiled expecting split APKs.")
                 # Check if bundle exists in same directory
