@@ -140,7 +140,7 @@ class BuildEngine:
                 Console.error("No supported applications configured in patches directory.")
                 return BuildResult(success=False, error_message="No supported apps found")
 
-            input_file = prompt_download(target_profile, DEFAULT_INPUT_DIR)
+            input_file = prompt_download(target_profile, DEFAULT_INPUT_DIR, non_interactive=options.yes)
             if not input_file:
                 return BuildResult(success=False, error_message=f"Missing input package for '{target_profile.app_title}'")
 
@@ -194,6 +194,21 @@ class BuildEngine:
         pkg_name, ver_name, ver_code = ApktoolRunner.parse_package_and_version(decompiled_dir)
         if not pkg_name and options.target_app:
             pkg_name = options.target_app
+
+        if options.target_app:
+            target_profile = AppManager.find_app_profile(options.target_app)
+            if target_profile and pkg_name and pkg_name.lower() != target_profile.package_name.lower():
+                Console.error("APPLICATION PACKAGE MISMATCH DETECTED!")
+                print("------------------------------------------------------------------------")
+                print(f"  Target application selected : {target_profile.app_title} ({target_profile.package_name})")
+                print(f"  Input package contains      : {pkg_name}")
+                print(f"\n  [!] The input package does not match the application you selected to build.")
+                print(f"      Aborting build to prevent corrupting the app with incompatible patches.")
+                print("------------------------------------------------------------------------")
+                return BuildResult(
+                    success=False,
+                    error_message=f"Package mismatch: expected '{target_profile.package_name}', but found '{pkg_name}'",
+                )
 
         app_profile = AppManager.find_app_profile(pkg_name or "")
         if not app_profile:

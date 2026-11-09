@@ -367,7 +367,7 @@ def show_main_menu(default_idx: int = 0, status_lines: Optional[List[str]] = Non
     return idx, items[idx][0]
 
 
-def prompt_download(app_profile: AppProfile, input_dir: str) -> Optional[str]:
+def prompt_download(app_profile: AppProfile, input_dir: str, non_interactive: bool = False) -> Optional[str]:
     """Prompts user to download missing target package from APKMirror with auto-detection."""
     print("\n" + "=" * 76)
     print(f"{Colors.RED}{Colors.BOLD} [Notice] Target Package File Missing{Colors.RESET}")
@@ -384,7 +384,7 @@ def prompt_download(app_profile: AppProfile, input_dir: str) -> Optional[str]:
     else:
         osc8_link = apkmirror_url
 
-    if not sys.stdin.isatty():
+    if non_interactive or not sys.stdin.isatty():
         infile = Extractor.find_input_file(input_dir=input_dir, target_pkg=app_profile.package_name)
         if infile:
             return infile
