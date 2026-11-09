@@ -6,7 +6,58 @@ Modular multi app patch build engine for Android applications. It automatically 
 
 ## Supported Applications & Patches
 
-> Latest Release: [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · Branch: `main` · 8 patches across 2 applications
+> Latest Release: [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · Branch: `main` · 47 patches across 3 applications
+
+<details>
+<summary><b>MovieBox</b> (39 patches)</summary>
+
+<br>
+
+**Supported Version:** `4.0.02.0903.02` (code `90020128`) · **Download:** [MEGA](https://mega.nz/file/QygA3agA#r0-814No0zey6JLFbwYLz18GqHWNm3K9MlTP8ulIY-4)
+
+| Patch | Description | Options |
+|---|---|---|
+| [Block Ads](patches/com.community.newroom/patch_groups.json) | Disables in-app ad loading, neutralizes AdMob/Hisavana/Vungle/Mintegral/ByteDance, and eliminates interstitial delays. | None |
+| [Unlock 1080p Video Quality](patches/com.community.newroom/patch_groups.json) | Unlocks high-resolution / HD video streams and skips playback interception ads without watching ads. | None |
+| [Disable Tracking & Analytics](patches/com.community.newroom/patch_groups.json) | Disables Firebase Analytics user tracking and crash reporting. | None |
+| [Remove Unneeded Permissions](patches/com.community.newroom/patch_groups.json) | Removes 18 intrusive permissions (location, camera, audio, calendar) and disables 26 background ad/tinker/push services. | None |
+| [Remove Login & Account Prompts](patches/com.community.newroom/patch_groups.json) | Completely removes 'Log in to your account' card, login button, and neutralizes all login/sign-up activities. | None |
+| [Clean Profile Screen](patches/com.community.newroom/patch_groups.json) | Removes floating cash/chest widget, Premium TV Pro VIP banner in Me section, and fission rewards. | None |
+| [Remove Community & Study Section](patches/com.community.newroom/patch_groups.json) | Removes Community, My Activity, Study Mode, TV/Web link, feedback dialogs, and auto-finishes all community and feedback activities. | None |
+| [Clean Settings Menu](patches/com.community.newroom/patch_groups.json) | Removes Check for Updates, About Us, Privacy Policy, User Agreement, and Login/Sign Up from Settings; disables Athena analytics, periodic reporting, install referrer, and push trackers. | None |
+| [Remove QR Scanner](patches/com.community.newroom/patch_groups.json) | Removes the Scan (QR code) icon from the top-right corner of the Me panel, neutralizes the router navigation, and auto-finishes ProfileQRCodeActivity. | None |
+| [Remove Premium Tab & Floating Coins](patches/com.community.newroom/patch_groups.json) | Removes the Premium tab from bottom navigation (retaining only Home, Downloads, Me) and completely removes the floating cash/chest widget and its web view launcher. | None |
+| [Clean Downloads Page](patches/com.community.newroom/patch_groups.json) | Removes transfer/share options, local files player access/scanning, For You recommendations, and Win Big Prizes button from Downloads tab. | None |
+| [Clean Video Details Page](patches/com.community.newroom/patch_groups.json) | Removes TV/Help buttons, Ads skipped for Premium banner, Share button, Resources line (title, uploader, info), For You suggestions, Comments section, + Post button, and neutralizes all post/publishing activities. | None |
+| [Miku Branding & App Icon](patches/com.community.newroom/patch_groups.json) | Renames app to Miku, updates package name to `com.mikuplayer.tux`, and replaces launcher icons with custom Miku icons. | None |
+| [Disable Push Notifications](patches/com.community.newroom/patch_groups.json) | Completely disables server push notifications (FCM), promotional messages (TPush, MPush, Sunflower), and background push workers while preserving download notifications. | None |
+| [Netflix Dark Theme](patches/com.community.newroom/patch_groups.json) | Applies permanent AMOLED dark mode (`#0B0B0F`, `#141414`, `#181818`), Netflix Red (`#E50914`) accents, neutralizes aqua background glow, and removes all green/teal/mint colors. | None |
+| [Disable Interests Popup](patches/com.community.newroom/patch_groups.json) | Completely removes 'Tell us about your interests' popup dialogs in Education and Home tabs. | None |
+| [Clean Search Page](patches/com.community.newroom/patch_groups.json) | Removes prefilled search suggestions, mic button, 'Everyone is searching' section, and hot tabs/rankings while preserving search functionality and recent searches. | None |
+| [Secure App File Storage](patches/com.community.newroom/patch_groups.json) | Removes dangerous root filesystem path from FileProvider in `util_code_provider_paths.xml` to eliminate sandbox escape risks. | None |
+| [Lock Hidden App Activities](patches/com.community.newroom/patch_groups.json) | Sets `android:exported=false` on internal payment, rewards, and UGC activities to prevent unauthorized external access. | None |
+| [Disable In-App WebViews](patches/com.community.newroom/patch_groups.json) | Neutralizes web views and pre-warming caches to save RAM and eliminate WebView attack surface without breaking native video streaming. | None |
+| [Hide Playback Toast Messages](patches/com.community.newroom/patch_groups.json) | Hides 'Analysing from server' and 'Last played time' overlay toasts during video playback across all orientations. | None |
+| [Optimize APK Size (ARM64 Only)](patches/com.community.newroom/patch_groups.json) | Strips duplicate legacy 32-bit (armeabi-v7a) native libraries, offline H5 ad bundles, push banners, and modder watermarks down to ~88MB for modern 64-bit devices. | None |
+| [Hide VIP Badges](patches/com.community.newroom/patch_groups.json) | Removes VIP/Premium crown badges and golden borders from buttons, episode lists, and resolution selectors. | None |
+| [Remove NovelHub & Web Novels](patches/com.community.newroom/patch_groups.json) | Maintains strict UI consistency without large buttons, Hot Novels cards, or ShortTV tabs, and wipes NovelHub MiniApp logic. | None |
+| [Fix Server Connection & Crash Protection](patches/com.community.newroom/patch_groups.json) | Ensures Transsion API Gateway HMAC signing always has a valid secret key and never throws NullPointerException in Base64 decode, preventing network request drops. | None |
+| [Randomize Device ID](patches/com.community.newroom/patch_groups.json) | Generates unique random GAID, device_id, and ANDROID_ID per app install/data clear stored in private app storage to isolate guest watchlists. | None |
+| [Hide Trending Banners & Promos](patches/com.community.newroom/patch_groups.json) | Removes promotional community/VIP slides from the hero carousel while preserving regular trending movies. | None |
+| [Block NSFW Search Suggestions](patches/com.community.newroom/patch_groups.json) | Blocks adult/NSFW search suggestions, autocomplete terms, and queries across standard and UGC search backends using multi-lingual blocklists and leetspeak normalization. | None |
+| [Set Anime as Default Tab](patches/com.community.newroom/patch_groups.json) | Removes unwanted tabs from Home top bar, centers slider with evenly spaced tabs, and sets Anime as the primary default tab. | None |
+| [Always-On Family Safe Mode](patches/com.community.newroom/patch_groups.json) | Permanently locks Family Mode to ON across all movie/video content interception and hides Family Mode rows and toggles. | None |
+| [Movies & Series Only Search](patches/com.community.newroom/patch_groups.json) | Removes category filter tabs from search results, eliminates sports/game vertical rank cards, and restricts search to movies and series. | None |
+| [Modern Rounded Corners UI](patches/com.community.newroom/patch_groups.json) | Rounds search bars into smooth capsules (18dp) and softens square-cornered option overlays, dialogs, menus, and action buttons into slight rounded shapes (10-16dp). | None |
+| [Smooth Player Controls Fade](patches/com.community.newroom/patch_groups.json) | Adds smooth, subtle fade-in and fade-out animations when showing or hiding player controls by tapping or timeout in both online streaming and downloaded video playback. | None |
+| [Fast Video Buffering](patches/com.community.newroom/patch_groups.json) | Reduces streaming buffering and stalls by optimizing AliPlayer buffer settings: 2.5s start buffer, 8s high buffer, 1024MB cache, 10s preload. | None |
+| [Keep Only English & Hindi](patches/com.community.newroom/patch_groups.json) | Removes unused language resource bundles, keeping only English and Hindi in UI language selection while keeping audio/subtitle tracks intact. | None |
+| [Remove Emojis from Titles](patches/com.community.newroom/patch_groups.json) | Strips emojis, symbols, and redundant spaces from section headers and category titles across all tabs on the Home screen. | None |
+| [Floating Frosted-Glass Bottom Bar](patches/com.community.newroom/patch_groups.json) | Converts bottom navigation into a sleek 180dp x 48dp floating frosted-glass pill dock with symmetrical icon spacing, hidden labels, real-time dynamic blur, Apple macOS specular gradient rim, and spring bounce physics. | None |
+| [Tab Bounce Animation](patches/com.community.newroom/patch_groups.json) | Adds tactile press-back compression and spring overshoot rebound animation when tapping category tabs, search filter chips, and navigation buttons. | None |
+| [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the original app by renaming package name to `com.community.newroom.tux` and isolating ContentProvider authorities. | Clone suffix, Custom package |
+
+</details>
 
 <details>
 <summary><b>Truecaller: Trusted Caller ID</b> (2 patches)</summary>
@@ -99,6 +150,9 @@ Running with Docker is the fastest method because all dependencies (Java JDK, Ap
 You can pass CLI arguments directly without opening the interactive menu:
 
 ```bash
+# Build MovieBox with all default patches
+docker compose run --rm mikupatches --app com.community.newroom --all
+
 # Build Truecaller with all default patches
 docker compose run --rm mikupatches --app com.truecaller --all
 
@@ -187,6 +241,9 @@ Available menu actions:
 
 **Build non interactively:**
 ```bash
+# MovieBox (v4.0.02.0903.02) with all default patches:
+python3 build.py input/MovieBox_4.0.apk -y
+
 # Truecaller (v26.31.5) with ad removal:
 python3 build.py input/truecaller.apkm -y
 
@@ -196,28 +253,31 @@ python3 build.py -a io.appground.blek -y
 
 **Build with App Clone enabled (dual parallel install):**
 ```bash
+python3 build.py input/MovieBox_4.0.apk --clone -y
 python3 build.py input/truecaller.apkm --clone -y
 ```
 
 **Build for a specific architecture and install via ADB:**
 ```bash
-python3 build.py input/truecaller.apkm --arch arm64-v8a -I --launch
+python3 build.py input/MovieBox_4.0.apk --arch arm64-v8a -I --launch
 ```
 
 **Apply specific patch modules only:**
 ```bash
+python3 build.py -a com.community.newroom --only-patches block_ads,smooth_player_fade -y
 python3 build.py -a com.truecaller --only-patches remove_ads -y
 python3 build.py -a io.appground.blek --only-patches pairip,pro_unlock -y
 ```
 
 **Dry run (validate targets without compiling):**
 ```bash
-python3 build.py input/truecaller.apkm --dry-run
+python3 build.py input/MovieBox_4.0.apk --dry-run
 ```
 
 **List supported applications and patch modules:**
 ```bash
 python3 build.py --list-apps
+python3 build.py --list-patches -a com.community.newroom
 python3 build.py --list-patches -a com.truecaller
 python3 build.py --list-patches -a io.appground.blek
 ```
