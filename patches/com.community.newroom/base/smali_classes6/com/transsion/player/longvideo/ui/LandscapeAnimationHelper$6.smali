@@ -8,7 +8,7 @@
 
 # annotations
 .annotation system Ldalvik/annotation/EnclosingMethod;
-    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePanelSlideOut(Landroid/view/View;Ljava/lang/Runnable;)V
+    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateDelayValueChange(Landroid/widget/TextView;Ljava/lang/CharSequence;)V
 .end annotation
 
 .annotation system Ldalvik/annotation/InnerClass;
@@ -18,11 +18,13 @@
 
 
 # instance fields
-.field final synthetic val$onComplete:Ljava/lang/Runnable;
+.field final synthetic val$newText:Ljava/lang/CharSequence;
+
+.field final synthetic val$textView:Landroid/widget/TextView;
 
 
 # direct methods
-.method constructor <init>(Ljava/lang/Runnable;)V
+.method constructor <init>(Landroid/widget/TextView;Ljava/lang/CharSequence;)V
     .locals 0
     .annotation system Ldalvik/annotation/Signature;
         value = {
@@ -30,8 +32,10 @@
         }
     .end annotation
 
-    .line 459
-    iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$onComplete:Ljava/lang/Runnable;
+    .line 482
+    iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$textView:Landroid/widget/TextView;
+
+    iput-object p2, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$newText:Ljava/lang/CharSequence;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
@@ -41,16 +45,46 @@
 
 # virtual methods
 .method public run()V
-    .locals 1
+    .locals 3
 
-    .line 462
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$onComplete:Ljava/lang/Runnable;
+    .line 485
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$textView:Landroid/widget/TextView;
 
-    if-eqz v0, :cond_0
+    iget-object v1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$newText:Ljava/lang/CharSequence;
 
-    invoke-interface {v0}, Ljava/lang/Runnable;->run()V
+    invoke-virtual {v0, v1}, Landroid/widget/TextView;->setText(Ljava/lang/CharSequence;)V
 
-    .line 463
-    :cond_0
+    .line 486
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$6;->val$textView:Landroid/widget/TextView;
+
+    invoke-virtual {v0}, Landroid/widget/TextView;->animate()Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v0
+
+    .line 487
+    const/high16 v1, 0x3f800000    # 1.0f
+
+    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->alpha(F)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v0
+
+    .line 488
+    const/4 v1, 0x0
+
+    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->translationY(F)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v0
+
+    .line 489
+    const-wide/16 v1, 0x4b
+
+    invoke-virtual {v0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v0
+
+    .line 490
+    invoke-virtual {v0}, Landroid/view/ViewPropertyAnimator;->start()V
+
+    .line 491
     return-void
 .end method

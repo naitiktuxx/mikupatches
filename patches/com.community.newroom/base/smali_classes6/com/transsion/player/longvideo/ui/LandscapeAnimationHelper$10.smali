@@ -3,12 +3,12 @@
 .source "LandscapeAnimationHelper.java"
 
 # interfaces
-.implements Ljava/lang/Runnable;
+.implements Landroid/animation/ValueAnimator$AnimatorUpdateListener;
 
 
 # annotations
 .annotation system Ldalvik/annotation/EnclosingMethod;
-    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateResolutionSelection(Landroid/view/View;Landroid/view/View;Landroid/view/View;)V
+    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateTextColor(Landroid/widget/TextView;IIJ)V
 .end annotation
 
 .annotation system Ldalvik/annotation/InnerClass;
@@ -18,11 +18,11 @@
 
 
 # instance fields
-.field final synthetic val$mainLabel:Landroid/view/View;
+.field final synthetic val$textView:Landroid/widget/TextView;
 
 
 # direct methods
-.method constructor <init>(Landroid/view/View;)V
+.method constructor <init>(Landroid/widget/TextView;)V
     .locals 0
     .annotation system Ldalvik/annotation/Signature;
         value = {
@@ -30,8 +30,8 @@
         }
     .end annotation
 
-    .line 586
-    iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$10;->val$mainLabel:Landroid/view/View;
+    .line 592
+    iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$10;->val$textView:Landroid/widget/TextView;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
@@ -40,30 +40,24 @@
 
 
 # virtual methods
-.method public run()V
-    .locals 3
+.method public onAnimationUpdate(Landroid/animation/ValueAnimator;)V
+    .locals 1
 
-    .line 589
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$10;->val$mainLabel:Landroid/view/View;
+    .line 595
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$10;->val$textView:Landroid/widget/TextView;
 
-    invoke-virtual {v0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
+    invoke-virtual {p1}, Landroid/animation/ValueAnimator;->getAnimatedValue()Ljava/lang/Object;
 
-    move-result-object v0
+    move-result-object p1
 
-    const/high16 v1, 0x3f800000    # 1.0f
+    check-cast p1, Ljava/lang/Integer;
 
-    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->alpha(F)Landroid/view/ViewPropertyAnimator;
+    invoke-virtual {p1}, Ljava/lang/Integer;->intValue()I
 
-    move-result-object v0
+    move-result p1
 
-    const-wide/16 v1, 0x5a
+    invoke-virtual {v0, p1}, Landroid/widget/TextView;->setTextColor(I)V
 
-    invoke-virtual {v0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
-
-    move-result-object v0
-
-    invoke-virtual {v0}, Landroid/view/ViewPropertyAnimator;->start()V
-
-    .line 590
+    .line 596
     return-void
 .end method

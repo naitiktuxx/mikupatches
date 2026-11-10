@@ -8139,6 +8139,10 @@
     :cond_7
     invoke-virtual {p0, v3}, Lcom/transsion/baseui/fragment/PageStatusFragment;->setMViewBinding(Lg4/a;)V
 
+    sget-object v0, Lcom/transsion/player/mediasession/h;->a:Lcom/transsion/player/mediasession/h;
+
+    invoke-virtual {v0}, Lcom/transsion/player/mediasession/h;->p()V
+
     return-void
 .end method
 

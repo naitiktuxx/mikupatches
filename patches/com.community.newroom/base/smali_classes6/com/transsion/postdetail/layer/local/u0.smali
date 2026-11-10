@@ -116,83 +116,10 @@
 .end method
 
 .method private final A3(ZZ)V
-    .locals 2
+    .locals 0
 
-    iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->b0:Landroidx/fragment/app/Fragment;
+    invoke-static {p0, p1, p2}, Lcom/transsion/player/longvideo/ui/DoubleTapHelper;->onDoubleTapSkip(Ljava/lang/Object;ZZ)V
 
-    instance-of v1, v0, Lcom/transsion/postdetail/ui/fragment/LocalVideoDetailFragment;
-
-    if-eqz v1, :cond_0
-
-    check-cast v0, Lcom/transsion/postdetail/ui/fragment/LocalVideoDetailFragment;
-
-    goto :goto_0
-
-    :cond_0
-    const/4 v0, 0x0
-
-    :goto_0
-    if-eqz v0, :cond_1
-
-    invoke-virtual {v0}, Lcom/transsion/postdetail/ui/fragment/LocalVideoDetailFragment;->d2()V
-
-    :cond_1
-    if-eqz p2, :cond_2
-
-    invoke-direct {p0}, Lcom/transsion/postdetail/layer/local/u0;->C3()Lcom/transsion/postdetail/layer/local/k0;
-
-    move-result-object p2
-
-    if-eqz p2, :cond_2
-
-    invoke-virtual {p2, p1}, Lcom/transsion/postdetail/layer/local/k0;->d(Z)V
-
-    :cond_2
-    const/16 p2, 0x2710
-
-    if-eqz p1, :cond_3
-
-    iget-wide v0, p0, Lcom/transsion/postdetail/layer/local/u0;->v0:J
-
-    int-to-long p1, p2
-
-    add-long/2addr v0, p1
-
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->n1()J
-
-    move-result-wide p1
-
-    invoke-static {v0, v1, p1, p2}, Lkotlin/ranges/RangesKt;->j(JJ)J
-
-    move-result-wide p1
-
-    goto :goto_1
-
-    :cond_3
-    iget-wide v0, p0, Lcom/transsion/postdetail/layer/local/u0;->v0:J
-
-    int-to-long p1, p2
-
-    sub-long/2addr v0, p1
-
-    const-wide/16 p1, 0x0
-
-    invoke-static {v0, v1, p1, p2}, Lkotlin/ranges/RangesKt;->g(JJ)J
-
-    move-result-wide p1
-
-    :goto_1
-    iput-wide p1, p0, Lcom/transsion/postdetail/layer/local/u0;->v0:J
-
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/BaseLayer;->H()Lcom/transsion/player/orplayer/g;
-
-    move-result-object v0
-
-    if-eqz v0, :cond_4
-
-    invoke-interface {v0, p1, p2}, Lcom/transsion/player/orplayer/g;->seekTo(J)V
-
-    :cond_4
     return-void
 .end method
 
@@ -1584,35 +1511,39 @@
 .end method
 
 .method protected J2(Z)V
-    .locals 2
+    .locals 7
 
     invoke-super {p0, p1}, Lcom/transsion/postdetail/layer/local/a0;->J2(Z)V
 
-    if-eqz p1, :cond_ccl_u0
-
     iget-object v0, p0, Lcom/transsion/postdetail/layer/local/u0;->c0:Lso/z;
 
-    if-eqz v0, :cond_ccl_u0
+    if-eqz v0, :cond_u0_done
 
     iget-object v0, v0, Lso/z;->b:Lbk/e;
 
-    if-eqz v0, :cond_ccl_u0
+    if-eqz v0, :cond_u0_done
+
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->A0()Landroid/view/View;
+
+    move-result-object v1
+
+    invoke-static {v1}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->areControlsVisible(Landroid/view/View;)Z
+
+    move-result v6
+
+    iget-object v2, v0, Lbk/e;->f:Landroid/widget/ProgressBar;
+
+    iget-object v3, v0, Lbk/e;->d:Landroidx/appcompat/widget/AppCompatImageView;
 
     invoke-virtual {v0}, Lbk/e;->b()Landroidx/constraintlayout/widget/ConstraintLayout;
 
-    move-result-object v0
+    move-result-object v4
 
-    if-eqz v0, :cond_ccl_u0
+    move v5, p1
 
-    const/4 v1, 0x0
+    invoke-static/range {v2 .. v6}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->onLoadingChanged(Landroid/view/View;Landroid/view/View;Landroid/view/View;ZZ)V
 
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
-
-    const/high16 v1, 0x3f800000    # 1.0f
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->setAlpha(F)V
-
-    :cond_ccl_u0
+    :cond_u0_done
     return-void
 .end method
 
@@ -3153,6 +3084,17 @@
     :goto_0
     invoke-virtual {v0, p1}, Landroidx/appcompat/widget/AppCompatImageView;->setImageResource(I)V
 
+    iget-boolean p1, p0, Lcom/transsion/postdetail/layer/local/a0;->z:Z
+
+    if-eqz p1, :cond_center_pause_anim
+
+    const/16 p1, 0x8
+
+    invoke-virtual {v0, p1}, Landroid/view/View;->setVisibility(I)V
+
+    goto :cond_1
+
+    :cond_center_pause_anim
     invoke-static {v0, v1}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animatePlayPause(Landroid/widget/ImageView;Z)V
 
     :cond_1

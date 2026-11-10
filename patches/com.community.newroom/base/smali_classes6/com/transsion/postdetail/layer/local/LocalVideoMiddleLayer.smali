@@ -980,64 +980,10 @@
 .end method
 
 .method private final y3(ZZ)V
-    .locals 2
+    .locals 0
 
-    if-eqz p2, :cond_0
+    invoke-static {p0, p1, p2}, Lcom/transsion/player/longvideo/ui/DoubleTapHelper;->onDoubleTapSkip(Ljava/lang/Object;ZZ)V
 
-    invoke-direct {p0}, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->A3()Lcom/transsion/postdetail/layer/local/w0;
-
-    move-result-object p2
-
-    if-eqz p2, :cond_0
-
-    invoke-virtual {p2, p1}, Lcom/transsion/postdetail/layer/local/w0;->d(Z)V
-
-    :cond_0
-    const/16 p2, 0x2710
-
-    if-eqz p1, :cond_1
-
-    iget-wide v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->e0:J
-
-    int-to-long p1, p2
-
-    add-long/2addr v0, p1
-
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->n1()J
-
-    move-result-wide p1
-
-    invoke-static {v0, v1, p1, p2}, Lkotlin/ranges/RangesKt;->j(JJ)J
-
-    move-result-wide p1
-
-    goto :goto_0
-
-    :cond_1
-    iget-wide v0, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->e0:J
-
-    int-to-long p1, p2
-
-    sub-long/2addr v0, p1
-
-    const-wide/16 p1, 0x0
-
-    invoke-static {v0, v1, p1, p2}, Lkotlin/ranges/RangesKt;->g(JJ)J
-
-    move-result-wide p1
-
-    :goto_0
-    iput-wide p1, p0, Lcom/transsion/postdetail/layer/local/LocalVideoMiddleLayer;->e0:J
-
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/BaseLayer;->H()Lcom/transsion/player/orplayer/g;
-
-    move-result-object v0
-
-    if-eqz v0, :cond_2
-
-    invoke-interface {v0, p1, p2}, Lcom/transsion/player/orplayer/g;->seekTo(J)V
-
-    :cond_2
     return-void
 .end method
 

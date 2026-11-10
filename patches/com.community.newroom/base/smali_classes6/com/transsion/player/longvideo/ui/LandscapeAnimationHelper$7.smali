@@ -8,7 +8,7 @@
 
 # annotations
 .annotation system Ldalvik/annotation/EnclosingMethod;
-    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateDelayValueChange(Landroid/widget/TextView;Ljava/lang/CharSequence;)V
+    value = Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->animateColorOptionSelect(Landroid/view/View;Landroid/view/View;)V
 .end annotation
 
 .annotation system Ldalvik/annotation/InnerClass;
@@ -18,13 +18,11 @@
 
 
 # instance fields
-.field final synthetic val$newText:Ljava/lang/CharSequence;
-
-.field final synthetic val$textView:Landroid/widget/TextView;
+.field final synthetic val$newColorView:Landroid/view/View;
 
 
 # direct methods
-.method constructor <init>(Landroid/widget/TextView;Ljava/lang/CharSequence;)V
+.method constructor <init>(Landroid/view/View;)V
     .locals 0
     .annotation system Ldalvik/annotation/Signature;
         value = {
@@ -32,10 +30,8 @@
         }
     .end annotation
 
-    .line 494
-    iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$textView:Landroid/widget/TextView;
-
-    iput-object p2, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$newText:Ljava/lang/CharSequence;
+    .line 513
+    iput-object p1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$newColorView:Landroid/view/View;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
@@ -47,44 +43,44 @@
 .method public run()V
     .locals 3
 
-    .line 497
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$textView:Landroid/widget/TextView;
+    .line 516
+    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$newColorView:Landroid/view/View;
 
-    iget-object v1, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$newText:Ljava/lang/CharSequence;
-
-    invoke-virtual {v0, v1}, Landroid/widget/TextView;->setText(Ljava/lang/CharSequence;)V
-
-    .line 498
-    iget-object v0, p0, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper$7;->val$textView:Landroid/widget/TextView;
-
-    invoke-virtual {v0}, Landroid/widget/TextView;->animate()Landroid/view/ViewPropertyAnimator;
+    invoke-virtual {v0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 499
+    .line 517
     const/high16 v1, 0x3f800000    # 1.0f
 
-    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->alpha(F)Landroid/view/ViewPropertyAnimator;
+    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->scaleX(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 500
-    const/4 v1, 0x0
-
-    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->translationY(F)Landroid/view/ViewPropertyAnimator;
+    .line 518
+    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->scaleY(F)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 501
-    const-wide/16 v1, 0x4b
+    .line 519
+    const-wide/16 v1, 0x5a
 
     invoke-virtual {v0, v1, v2}, Landroid/view/ViewPropertyAnimator;->setDuration(J)Landroid/view/ViewPropertyAnimator;
 
     move-result-object v0
 
-    .line 502
+    invoke-static {}, Lcom/transsion/player/longvideo/ui/LandscapeAnimationHelper;->-$$Nest$sfgetDECEL()Landroid/view/animation/DecelerateInterpolator;
+
+    move-result-object v1
+
+    .line 520
+    invoke-virtual {v0, v1}, Landroid/view/ViewPropertyAnimator;->setInterpolator(Landroid/animation/TimeInterpolator;)Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v0
+
+    .line 521
     invoke-virtual {v0}, Landroid/view/ViewPropertyAnimator;->start()V
 
-    .line 503
+    .line 522
     return-void
 .end method

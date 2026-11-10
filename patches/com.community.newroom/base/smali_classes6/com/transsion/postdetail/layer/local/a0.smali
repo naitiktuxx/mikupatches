@@ -103,7 +103,7 @@
 
 .field private y:Z
 
-.field private z:Z
+.field public z:Z
 
 
 # direct methods
@@ -2375,6 +2375,8 @@
 
     iput-boolean p1, p0, Lcom/transsion/postdetail/layer/local/a0;->A:Z
 
+    if-eqz p1, :cond_0
+
     iget-object v1, p0, Lcom/transsion/postdetail/layer/local/a0;->B:Landroid/view/View;
 
     if-eqz v1, :cond_0
@@ -2397,6 +2399,16 @@
     move-result-object p1
 
     if-eqz p1, :cond_1
+
+    invoke-virtual {p1}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Landroid/view/ViewPropertyAnimator;->cancel()V
+
+    const/high16 v2, 0x3f800000    # 1.0f
+
+    invoke-virtual {p1, v2}, Landroid/view/View;->setAlpha(F)V
 
     invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
 
@@ -2484,6 +2496,16 @@
     move-result-object p1
 
     if-eqz p1, :cond_7
+
+    invoke-virtual {p1}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Landroid/view/ViewPropertyAnimator;->cancel()V
+
+    const-string v2, ""
+
+    invoke-virtual {p1, v2}, Landroid/widget/TextView;->setText(Ljava/lang/CharSequence;)V
 
     invoke-virtual {p1, v1}, Landroid/view/View;->setVisibility(I)V
 
@@ -3831,6 +3853,20 @@
 .method public x1()V
     .locals 2
 
+    iget-boolean v0, p0, Lcom/transsion/postdetail/layer/local/a0;->r:Z
+
+    if-eqz v0, :cond_check_p
+
+    return-void
+
+    :cond_check_p
+    iget-boolean v0, p0, Lcom/transsion/postdetail/layer/local/a0;->P:Z
+
+    if-eqz v0, :cond_check_c0
+
+    return-void
+
+    :cond_check_c0
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->C0()Z
 
     move-result v0
@@ -3859,50 +3895,51 @@
 
     move-result-object v0
 
-    if-eqz v0, :cond_pause
+    if-eqz v0, :cond_top_back
 
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
-    :cond_pause
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->Z2()Landroidx/constraintlayout/widget/Group;
-
-    move-result-object v0
-
-    if-eqz v0, :cond_group
-
-    const/16 v1, 0x8
-
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
-
-    :cond_group
+    :cond_top_back
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->A0()Landroid/view/View;
 
     move-result-object v0
 
-    if-eqz v0, :cond_2
+    if-eqz v0, :cond_top_title
 
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
-    :cond_2
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->I0()Landroid/widget/TextView;
+    :cond_top_title
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->W2()Landroid/widget/TextView;
 
     move-result-object v0
 
-    if-eqz v0, :cond_title
+    if-eqz v0, :cond_center_prog
 
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
-    :cond_title
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->E0()Landroid/view/ViewGroup;
+    :cond_center_prog
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->I0()Landroid/widget/TextView;
 
     move-result-object v0
 
     if-eqz v0, :cond_3
 
-    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
+    invoke-virtual {v0}, Landroid/view/View;->animate()Landroid/view/ViewPropertyAnimator;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Landroid/view/ViewPropertyAnimator;->cancel()V
+
+    const-string v1, ""
+
+    invoke-virtual {v0, v1}, Landroid/widget/TextView;->setText(Ljava/lang/CharSequence;)V
+
+    const/16 v1, 0x8
+
+    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
 
     :cond_3
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->g2()Landroid/view/ViewGroup;
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->E0()Landroid/view/ViewGroup;
 
     move-result-object v0
 
@@ -3911,7 +3948,7 @@
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
     :cond_4
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->r1()Landroid/view/View;
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->g2()Landroid/view/ViewGroup;
 
     move-result-object v0
 
@@ -3920,7 +3957,7 @@
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
     :cond_5
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->q1()Landroid/view/View;
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->r1()Landroid/view/View;
 
     move-result-object v0
 
@@ -3929,7 +3966,7 @@
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
     :cond_6
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->b1()Landroid/view/View;
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->q1()Landroid/view/View;
 
     move-result-object v0
 
@@ -3938,6 +3975,15 @@
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
 
     :cond_7
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->b1()Landroid/view/View;
+
+    move-result-object v0
+
+    if-eqz v0, :cond_8
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeOut(Landroid/view/View;)V
+
+    :cond_8
     return-void
 .end method
 
@@ -4257,18 +4303,9 @@
 
     move-result-object v0
 
-    if-eqz v0, :cond_fade_group
-
-    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
-
-    :cond_fade_group
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->Z2()Landroidx/constraintlayout/widget/Group;
-
-    move-result-object v0
-
     if-eqz v0, :cond_fade_r1
 
-    invoke-virtual {v0, v1}, Landroid/view/View;->setVisibility(I)V
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
 
     :cond_fade_r1
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->r1()Landroid/view/View;
@@ -4284,12 +4321,12 @@
 
     move-result-object v0
 
-    if-eqz v0, :cond_fade_title
+    if-eqz v0, :cond_fade_prog
 
     invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
 
-    :cond_fade_title
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->I0()Landroid/widget/TextView;
+    :cond_fade_prog
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->g2()Landroid/view/ViewGroup;
 
     move-result-object v0
 
@@ -4308,6 +4345,15 @@
 
     :cond_fade_a0
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->A0()Landroid/view/View;
+
+    move-result-object v0
+
+    if-eqz v0, :cond_fade_w2
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->fadeIn(Landroid/view/View;)V
+
+    :cond_fade_w2
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->W2()Landroid/widget/TextView;
 
     move-result-object v0
 
@@ -4387,7 +4433,7 @@
 .end method
 
 .method protected J2(Z)V
-    .locals 1
+    .locals 7
 
     iget-boolean v0, p0, Lcom/transsion/postdetail/layer/local/a0;->z:Z
 
@@ -4400,40 +4446,47 @@
 
     if-eqz p1, :cond_2
 
-    iget-boolean p1, p0, Lcom/transsion/postdetail/layer/local/a0;->A:Z
-
-    if-nez p1, :cond_1
-
-    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->F0()Landroid/view/View;
-
-    move-result-object p1
-
-    if-eqz p1, :cond_1
-
-    const/4 v0, 0x0
-
-    invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
-
-    :cond_1
     invoke-direct {p0}, Lcom/transsion/postdetail/layer/local/a0;->K2()V
 
-    goto :goto_0
+    goto :goto_loading_changed
 
     :cond_2
     invoke-direct {p0}, Lcom/transsion/postdetail/layer/local/a0;->M2()V
 
+    :goto_loading_changed
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->a3()Lcom/transsion/postdetail/layer/local/LocalUiType;
+
+    move-result-object v0
+
+    sget-object v1, Lcom/transsion/postdetail/layer/local/LocalUiType;->LAND:Lcom/transsion/postdetail/layer/local/LocalUiType;
+
+    if-ne v0, v1, :cond_portrait_loading
+
+    return-void
+
+    :cond_portrait_loading
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->A0()Landroid/view/View;
+
+    move-result-object v0
+
+    invoke-static {v0}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->areControlsVisible(Landroid/view/View;)Z
+
+    move-result v5
+
     invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->F0()Landroid/view/View;
 
-    move-result-object p1
+    move-result-object v1
 
-    if-eqz p1, :cond_3
+    invoke-virtual {p0}, Lcom/transsion/postdetail/layer/local/a0;->f2()Landroid/widget/ImageView;
 
-    const/16 v0, 0x8
+    move-result-object v2
 
-    invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
+    const/4 v3, 0x0
 
-    :cond_3
-    :goto_0
+    move v4, p1
+
+    invoke-static/range {v1 .. v5}, Lcom/transsion/player/longvideo/ui/PlayerAnimationHelper;->onLoadingChanged(Landroid/view/View;Landroid/view/View;Landroid/view/View;ZZ)V
+
     return-void
 .end method
 
@@ -5290,6 +5343,8 @@
 
 .method protected final d2(Landroid/view/MotionEvent;Z)V
     .locals 4
+
+    if-eqz p2, :cond_1
 
     sget-object v0, Lcom/transsion/baseui/util/c;->a:Lcom/transsion/baseui/util/c;
 

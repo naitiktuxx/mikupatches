@@ -681,7 +681,9 @@
       "res/layout/fragment_video_detail_seasons.xml": "Rounded (16dp) top corners for player season selection dialog",
       "smali_classes5/com/transsion/baseui/dialog/BaseDialog.smali": "Prevent bottom padding gap injection under dialog action buttons",
       "smali_classes7/com/transsnet/downloader/fragment/DownloadReDetectorBaseFragment.smali": "Calculate exact full area height for download dialog without status/nav bar shrinkage",
-      "smali_classes7/com/transsnet/downloader/widget/DownloadResolutionTabView.smali": "Permanently hide horizontal divider line in download resolution tab"
+      "smali_classes7/com/transsnet/downloader/widget/DownloadResolutionTabView.smali": "Permanently hide horizontal divider line in download resolution tab",
+      "res/drawable/bg_radius4_black60.xml": "Rounded pill (999dp) 2x speed overlay badge across online and offline video players",
+      "res/layout/view_ugc_imm_video_detail_item.xml": "Rounded pill (12dp) 2x speed overlay badge in UGC video player"
     },
     "desc": "Rounds search bars on Home and Search screens into smooth capsules (18dp) and evenly softens square-cornered option overlays, dialogs, menus, and action buttons into slight rounded shapes (10-16dp) while strictly preserving video cards"
   },
@@ -690,37 +692,41 @@
     "name": "Smooth Player Controls Fade",
     "default": true,
     "files": {
-      "res/layout/long_vod_view_player_middle.xml": "Center play/pause button, move duration counter to left, and extend seekbar to fullscreen button in portrait video player",
+      "res/layout/long_vod_view_player_middle.xml": "Center play/pause button, move duration counter to left, extend seekbar to fullscreen button, and synchronize with loading state in portrait video player",
       "res/layout/long_vod_view_player_land.xml": "Avoid display cutout/notch overlap for lock button, brand ad, and controls in landscape player",
       "smali_classes5/com/tn/lib/view/SwitchButton.smali": "Smooth 200ms sliding toggle transition for subtitle, bilingual, shadow, and background switches",
       "smali_classes6/com/transsion/player/longvideo/helper/j.smali": "Dynamic display cutout and safe inset manager for landscape notch handling on both rotation sides",
       "smali_classes6/com/transsion/player/longvideo/ui/PlayPauseMorphDrawable.smali": "Zero-allocation vector morphing drawable for play and pause icon transitions",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper.smali": "Landscape player animations helper: play/pause morph, rewind/forward rotation, seekbar touch feedback, lock shackle, popups, and panels",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$1.smali": "Touch listener for seekbar enlargement and interactive track feedback",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$2.smali": "Exit animation complete callback helper",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$3.smali": "Speed selection scale restoration action",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$4.smali": "Speed selection main label alpha restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper.smali": "Landscape player animations helper: play/pause morph, rewind/forward rotation, lock shackle, popups, and panels",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$1.smali": "Exit animation complete callback helper",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$2.smali": "Speed selection scale restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$3.smali": "Speed selection main label alpha restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$4.smali": "Resolution selection item animation helper",
       "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$5.smali": "Subpanel slide-out complete callback helper",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$6.smali": "Subpanel slide-out end action helper",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$7.smali": "Text color transition animator update listener",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$8.smali": "Delay value change alpha transition listener",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$9.smali": "Resolution selection scale restoration action",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$10.smali": "Resolution selection main label alpha restoration action",
-      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$11.smali": "Color option scale restoration action",
-      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth coordinated fade-in, fade-out, 8dp slide transitions, and safe notch insets",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$6.smali": "Delay value change alpha transition listener",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$7.smali": "Color option scale restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$8.smali": "Resolution selection scale restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$9.smali": "Resolution selection main label alpha restoration action",
+      "smali_classes6/com/transsion/player/longvideo/ui/LandscapeAnimationHelper$10.smali": "Text color transition animator update listener",
+      "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper.smali": "Helper that manages smooth coordinated stationary fade-in and fade-out transitions without vertical shifts, loading exclusion, and safe notch insets",
       "smali_classes6/com/transsion/player/longvideo/ui/PlayerAnimationHelper$1.smali": "Animator listener for clean fade-out completion and state cleanup",
-      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates landscape animation hooks for play/pause morphing, seekbar feedback, rewind, forward, lock, fit/fill, and next episode",
+      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Integrates landscape animation hooks, play/pause state coordination with buffering, and notch updates into player view",
       "smali_classes6/com/transsion/player/longvideo/ui/dialog/LongVdPlayerConfigDialog.smali": "Popup enter animation and resolution selection highlight transition for video quality dialog",
-      "smali_classes6/com/transsion/postdetail/layer/local/a0.smali": "Offline player base layer smooth fade transitions and synchronized control visibility",
+      "smali_classes6/com/transsion/postdetail/layer/local/a0.smali": "Offline player base layer smooth fade transitions, loading change coordination, and synchronized control visibility",
       "smali_classes6/com/transsion/postdetail/layer/local/a0$b.smali": "Offline player single-tap control toggle with areControlsVisible check",
-      "smali_classes6/com/transsion/postdetail/layer/local/u0.smali": "Landscape animation hooks for downloaded video player play/pause morph, seekbar feedback, rewind, forward, and lock",
+      "smali_classes6/com/transsion/postdetail/layer/local/a0$c.smali": "Cancels auto-hide timer during seek scrubbing and maintains stationary bottom controller position",
+      "smali_classes6/com/transsion/postdetail/layer/local/u0.smali": "Landscape animation hooks for downloaded video player play/pause morph, seekbar feedback, rewind, forward, and buffering exclusion",
       "smali_classes6/com/transsion/postdetail/ui/view/ImmSpeedView.smali": "Playback speed button press scale feedback animation",
       "smali_classes6/com/transsion/postdetail/ui/dialog/SpeedConfigDialog.smali": "Popup enter animation and speed selection highlight transition for playback speed menu",
       "smali_classes6/com/transsion/subtitle/dialog/SubtitleMainDialog2.smali": "Popup enter animation and subpanel slide-in animations for subtitle style and sync adjust",
       "smali_classes6/com/transsion/subtitle/helper/j.smali": "Interactive press feedback for subtitle sync adjust minus and plus buttons",
-      "smali_classes6/com/transsion/subtitle/view/SubtitleOptionsView.smali": "Interactive seekbar feedback and font color selection animations in subtitle style options"
+      "smali_classes6/com/transsion/subtitle/view/SubtitleOptionsView.smali": "Interactive seekbar feedback and font color selection animations in subtitle style options",
+      "smali_classes6/com/transsion/player/longvideo/ui/DoubleTapHelper.smali": "Cumulative double-tap to skip engine with gesture interception, accumulation, and overlay updating",
+      "smali_classes6/com/transsion/player/longvideo/ui/DoubleTapHelper$1.smali": "Reset runnable for cumulative double-tap session",
+      "smali_classes5/com/transsion/baseui/widget/f.smali": "Offline player gesture detector touch listener with cumulative double tap skip interception",
+      "smali_classes7/eo/e.smali": "Online player gesture detector touch listener with cumulative double tap skip interception"
     },
-    "desc": "Adds smooth, subtle fade-in and fade-out animations when showing or hiding player controls by tapping or timeout in both online streaming and downloaded video playback"
+    "desc": "Adds smooth, subtle fade-in and fade-out animations when showing or hiding player controls by tapping or timeout in both online streaming and downloaded video playback, while preventing center play/pause controls from colliding with buffering spinners"
   },
   {
     "id": "fast_video_buffering",
@@ -793,5 +799,25 @@
       "smali_classes5/com/transsion/home/view/filter/expand/TabExpandView.smali": "Interactive bounce animation hook for expand filter category items"
     },
     "desc": "Adds a tactile press-back compression and spring overshoot rebound animation when tapping category tabs, search filter chips, and navigation buttons"
+  },
+  {
+    "id": "fix_media_session_controls",
+    "name": "Fix Media Player Controls & Notification Status",
+    "default": true,
+    "files": {
+      "smali_classes6/com/transsion/player/mediasession/h.smali": "Dismiss media session and notification when stopped, add rewind and fast-forward notification actions",
+      "smali_classes6/com/transsion/player/mediasession/f.smali": "Real-time playback position, accurate pause speed (0.0f), 10s skip and rewind media session transport callbacks",
+      "smali_classes6/com/transsion/player/mediasession/MusicIntentReceiver.smali": "Map headset hook, play/pause toggle, rewind 10s, fast-forward 10s, and stop intent receivers",
+      "smali_classes6/com/transsion/player/mediasession/MediaBrowserCompatHelper.smali": "Implement 10s forward and 10s rewind IPC helpers",
+      "smali_classes6/com/transsion/player/mediasession/MediaService.smali": "Update media session supported action flags and dismiss notification on service destroy",
+      "smali_classes6/com/transsion/player/mediasession/MusicNotificationBroadcastReceiver.smali": "Dismiss media session and stop foreground service on notification swipe delete",
+      "smali_classes7/ko/a.smali": "Dismiss media session on video completion, release, reset, and playback error; guard progress reporting",
+      "smali/ko/l0.smali": "Dismiss media session and notification when active player releases focus",
+      "smali_classes6/com/transsion/postdetail/ui/activity/LocalVideoDetailActivity.smali": "Release player and dismiss media notification when exiting downloaded video player screen",
+      "smali_classes6/com/transsion/moviedetail/activity/MovieDetailActivity.smali": "Dismiss media notification when exiting online movie detail screen",
+      "smali_classes6/com/transsion/postdetail/ui/fragment/LocalVideoDetailFragment.smali": "Dismiss media notification when local video player fragment is destroyed",
+      "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Dismiss media notification when player view is released or destroyed"
+    },
+    "desc": "Corrects Android media player control mapping (rewind 10s, fast-forward 10s, play/pause toggle, position scrubbing) and ensures the Android media card and notification are immediately dismissed when a video is closed or playback finishes"
   }
 ]
