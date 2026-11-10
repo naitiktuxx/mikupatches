@@ -53,6 +53,15 @@ class TestAppProfiles(unittest.TestCase):
         self.assertIn("armeabi-v7a", profile.supported_arches)
         self.assertIn(AppCloner.CLONE_PATCH_ID, [g.id for g in profile.patch_groups])
 
+    def test_moviebox_disable_media_player_status_profile(self):
+        profile = AppManager.find_app_profile("com.community.newroom")
+        self.assertIsNotNone(profile)
+        group = profile.get_patch_group("disable_media_player_status")
+        self.assertIsNotNone(group)
+        self.assertTrue(group.default)
+        self.assertEqual(group.files, {})
+        self.assertEqual(group.hooks, ["disable_media_player_status.py"])
+
 
 class TestDynamicMetadata(unittest.TestCase):
     def test_dynamic_info_json_generation(self):
@@ -449,6 +458,223 @@ class TestPatchEngine(unittest.TestCase):
         self.assertIsNotNone(profile)
         active_status = {g.id: g.default for g in profile.patch_groups}
         self.assertFalse(active_status.get(AppCloner.CLONE_PATCH_ID, True))
+
+    def _create_mock_mediasession_tree(self, smali_dir_name: str = "smali_classes6"):
+        ms_dir = os.path.join(
+            self.temp_dir, smali_dir_name, "com", "transsion", "player", "mediasession"
+        )
+        os.makedirs(ms_dir, exist_ok=True)
+
+        files = {
+            "MediaBrowserCompatHelper.smali": (
+                ".class public final Lcom/transsion/player/mediasession/MediaBrowserCompatHelper;\n"
+                ".super Ljava/lang/Object;\n\n"
+                ".method private final w(Lkotlin/jvm/functions/Function1;)V\n"
+                "    .locals 0\n    invoke-virtual {p0, p1}, Lcom/transsion/player/mediasession/MediaBrowserCompatHelper;->p(Lkotlin/jvm/functions/Function1;)V\n    return-void\n.end method\n\n"
+                ".method public final p(Lkotlin/jvm/functions/Function1;)V\n"
+                "    .locals 1\n    new-instance v0, Landroid/support/v4/media/MediaBrowserCompat;\n    return-void\n.end method\n\n"
+                ".method public final r(Lcom/transsion/player/mediasession/MediaItem;)V\n"
+                "    .locals 1\n    invoke-direct {p0, p1}, Lcom/transsion/player/mediasession/MediaBrowserCompatHelper;->w(Lkotlin/jvm/functions/Function1;)V\n    return-void\n.end method\n\n"
+                ".method public final t(Lcom/transsion/player/mediasession/MediaItem;)V\n"
+                "    .locals 1\n    invoke-direct {p0, p1}, Lcom/transsion/player/mediasession/MediaBrowserCompatHelper;->w(Lkotlin/jvm/functions/Function1;)V\n    return-void\n.end method\n"
+            ),
+            "MediaService.smali": (
+                ".class public final Lcom/transsion/player/mediasession/MediaService;\n"
+                ".super Landroidx/media/MediaBrowserServiceCompat;\n\n"
+                ".method private final t()V\n"
+                "    .locals 1\n    new-instance v0, Landroid/support/v4/media/session/MediaSessionCompat;\n    return-void\n.end method\n\n"
+                ".method public f(Ljava/lang/String;ILandroid/os/Bundle;)Landroidx/media/MediaBrowserServiceCompat$e;\n"
+                "    .locals 0\n    new-instance p1, Landroidx/media/MediaBrowserServiceCompat$e;\n    return-object p1\n.end method\n\n"
+                ".method public onCreate()V\n"
+                "    .locals 0\n    invoke-super {p0}, Landroidx/media/MediaBrowserServiceCompat;->onCreate()V\n    invoke-direct {p0}, Lcom/transsion/player/mediasession/MediaService;->t()V\n    return-void\n.end method\n"
+            ),
+            "h.smali": (
+                ".class public final Lcom/transsion/player/mediasession/h;\n"
+                ".super Ljava/lang/Object;\n\n"
+                ".method private final m(Lcom/transsion/player/mediasession/MediaService;Lcom/transsion/player/mediasession/MediaItem;Ljava/lang/Integer;Landroid/support/v4/media/session/MediaSessionCompat;)V\n"
+                "    .locals 1\n    invoke-virtual {p1, v0, p3}, Landroid/app/Service;->startForeground(ILandroid/app/Notification;)V\n    return-void\n.end method\n\n"
+                ".method private final n()V\n"
+                "    .locals 1\n    invoke-static {}, Lcom/bumptech/glide/Glide;->with()V\n    return-void\n.end method\n\n"
+                ".method public final l()V\n"
+                "    .locals 1\n    invoke-static {}, Lm/c;->a()V\n    return-void\n.end method\n\n"
+                ".method public final o(Lcom/transsion/player/mediasession/MediaService;Lcom/transsion/player/mediasession/MediaItem;Ljava/lang/Integer;Landroid/support/v4/media/session/MediaSessionCompat;)V\n"
+                "    .locals 0\n    invoke-direct {p0, p1, p2, p3, p4}, Lcom/transsion/player/mediasession/h;->m(Lcom/transsion/player/mediasession/MediaService;Lcom/transsion/player/mediasession/MediaItem;Ljava/lang/Integer;Landroid/support/v4/media/session/MediaSessionCompat;)V\n    return-void\n.end method\n\n"
+                ".method public final p()V\n"
+                "    .locals 0\n    return-void\n.end method\n"
+            ),
+            "f.smali": (
+                ".class public final Lcom/transsion/player/mediasession/f;\n"
+                ".super Landroid/support/v4/media/session/MediaSessionCompat$b;\n\n"
+                ".method private final E(Landroid/support/v4/media/session/PlaybackStateCompat;)V\n"
+                "    .locals 0\n    sget-object p1, Lcom/transsion/player/mediasession/h;->a:Lcom/transsion/player/mediasession/h;\n    return-void\n.end method\n\n"
+                ".method public e(Ljava/lang/String;Landroid/os/Bundle;)V\n"
+                "    .locals 0\n    invoke-super {p0, p1, p2}, Landroid/support/v4/media/session/MediaSessionCompat$b;->e(Ljava/lang/String;Landroid/os/Bundle;)V\n    return-void\n.end method\n"
+            ),
+        }
+        for fname, body in files.items():
+            with open(os.path.join(ms_dir, fname), "w", encoding="utf-8") as fp:
+                fp.write(body)
+        return ms_dir
+
+    def test_disable_media_player_status_independent_hook(self):
+        ms_dir = self._create_mock_mediasession_tree(smali_dir_name="smali_classes7")
+        profile = AppManager.find_app_profile("com.community.newroom")
+        self.assertIsNotNone(profile)
+        active_status = {g.id: (g.id == "disable_media_player_status") for g in profile.patch_groups}
+
+        results = PatchEngine.apply_patches(
+            decompiled_dir=self.temp_dir,
+            app_profile=profile,
+            active_status=active_status,
+            dry_run=False,
+        )
+        applied = [r for r in results if r["applied"]]
+        self.assertEqual(len(applied), 1)
+        self.assertEqual(applied[0]["id"], "disable_media_player_status")
+        self.assertEqual(applied[0]["files"], [])
+        self.assertEqual(applied[0]["hook_results"], [("disable_media_player_status.py", True)])
+
+        with open(os.path.join(ms_dir, "MediaBrowserCompatHelper.smali"), "r", encoding="utf-8") as fp:
+            helper_smali = fp.read()
+        self.assertNotIn("MediaBrowserCompat;", helper_smali)
+
+        with open(os.path.join(ms_dir, "MediaService.smali"), "r", encoding="utf-8") as fp:
+            service_smali = fp.read()
+        self.assertNotIn("MediaSessionCompat;", service_smali)
+        self.assertIn("invoke-virtual {p0}, Landroid/app/Service;->stopSelf()V", service_smali)
+        self.assertIn("const/4 v0, 0x0\n\n    return-object v0", service_smali)
+
+        with open(os.path.join(ms_dir, "h.smali"), "r", encoding="utf-8") as fp:
+            h_smali = fp.read()
+        self.assertNotIn("startForeground", h_smali)
+        self.assertNotIn("Glide", h_smali)
+        self.assertIn("invoke-virtual {p0}, Lcom/transsion/player/mediasession/h;->p()V", h_smali)
+
+        with open(os.path.join(ms_dir, "f.smali"), "r", encoding="utf-8") as fp:
+            f_smali = fp.read()
+        self.assertNotIn("MediaSessionCompat$b;->e", f_smali)
+
+        # Idempotent re-application
+        results_again = PatchEngine.apply_patches(
+            decompiled_dir=self.temp_dir,
+            app_profile=profile,
+            active_status=active_status,
+            dry_run=False,
+        )
+        applied_again = [r for r in results_again if r["applied"]]
+        self.assertEqual(applied_again[0]["hook_results"], [("disable_media_player_status.py", True)])
+
+    def test_disable_media_player_status_missing_target_reports_failure(self):
+        profile = AppManager.find_app_profile("com.community.newroom")
+        self.assertIsNotNone(profile)
+        active_status = {g.id: (g.id == "disable_media_player_status") for g in profile.patch_groups}
+
+        results = PatchEngine.apply_patches(
+            decompiled_dir=self.temp_dir,
+            app_profile=profile,
+            active_status=active_status,
+            dry_run=False,
+        )
+        applied = [r for r in results if r["applied"]]
+        self.assertEqual(applied[0]["hook_results"], [("disable_media_player_status.py", False)])
+
+    def test_disable_media_player_status_hardens_receivers_and_manifest(self):
+        ms_dir = self._create_mock_mediasession_tree(smali_dir_name="smali_classes6")
+        extra_files = {
+            "MediaBrowserCompatHelper$b.smali": (
+                ".class public final Lcom/transsion/player/mediasession/MediaBrowserCompatHelper$b;\n"
+                ".super Landroid/support/v4/media/MediaBrowserCompat$c;\n\n"
+                ".method public a()V\n"
+                "    .locals 1\n    new-instance v0, Landroid/support/v4/media/session/MediaControllerCompat;\n    return-void\n.end method\n\n"
+                ".method public b()V\n"
+                "    .locals 0\n    invoke-super {p0}, Landroid/support/v4/media/MediaBrowserCompat$c;->b()V\n    return-void\n.end method\n\n"
+                ".method public c()V\n"
+                "    .locals 0\n    invoke-super {p0}, Landroid/support/v4/media/MediaBrowserCompat$c;->c()V\n    return-void\n.end method\n"
+            ),
+            "MusicIntentReceiver.smali": (
+                ".class public final Lcom/transsion/player/mediasession/MusicIntentReceiver;\n"
+                ".super Landroid/content/BroadcastReceiver;\n\n"
+                ".method public onReceive(Landroid/content/Context;Landroid/content/Intent;)V\n"
+                "    .locals 1\n    sget-object v0, Lko/l0;->a:Lko/l0;\n    return-void\n.end method\n"
+            ),
+            "MusicNotificationBroadcastReceiver.smali": (
+                ".class public final Lcom/transsion/player/mediasession/MusicNotificationBroadcastReceiver;\n"
+                ".super Landroid/content/BroadcastReceiver;\n\n"
+                ".method public onReceive(Landroid/content/Context;Landroid/content/Intent;)V\n"
+                "    .locals 1\n    const-string v0, \"swipe\"\n    return-void\n.end method\n"
+            ),
+        }
+        for fname, body in extra_files.items():
+            with open(os.path.join(ms_dir, fname), "w", encoding="utf-8") as fp:
+                fp.write(body)
+
+        with open(os.path.join(ms_dir, "MediaBrowserCompatHelper.smali"), "a", encoding="utf-8") as fp:
+            fp.write(
+                "\n.method public final x()V\n"
+                "    .locals 1\n    sget-object v0, Lko/l0;->a:Lko/l0;\n    return-void\n.end method\n"
+                "\n.method public final z()V\n"
+                "    .locals 1\n    sget-object v0, Lko/l0;->a:Lko/l0;\n    return-void\n.end method\n"
+            )
+
+        with open(os.path.join(ms_dir, "f.smali"), "a", encoding="utf-8") as fp:
+            fp.write(
+                "\n.method public r()V\n"
+                "    .locals 0\n    invoke-super {p0}, Landroid/support/v4/media/session/MediaSessionCompat$b;->r()V\n    return-void\n.end method\n"
+                "\n.method public z()V\n"
+                "    .locals 0\n    invoke-super {p0}, Landroid/support/v4/media/session/MediaSessionCompat$b;->z()V\n    return-void\n.end method\n"
+            )
+
+        manifest_path = os.path.join(self.temp_dir, "AndroidManifest.xml")
+        with open(manifest_path, "w", encoding="utf-8") as fp:
+            fp.write(
+                '<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n'
+                '    <application>\n'
+                '        <receiver android:exported="true" android:name="com.transsion.player.mediasession.MusicIntentReceiver">\n'
+                '            <intent-filter>\n'
+                '                <action android:name="android.intent.action.MEDIA_BUTTON" />\n'
+                '            </intent-filter>\n'
+                '        </receiver>\n'
+                '        <receiver android:exported="false" android:name="com.transsion.player.mediasession.MusicNotificationBroadcastReceiver" />\n'
+                '        <service android:enabled="true" android:exported="true" android:foregroundServiceType="mediaPlayback" android:name="com.transsion.player.mediasession.MediaService" />\n'
+                '        <service android:exported="false" android:name="com.transsnet.downloader.guard.DownloadGuardService" />\n'
+                '    </application>\n'
+                '</manifest>\n'
+            )
+
+        profile = AppManager.find_app_profile("com.community.newroom")
+        active_status = {g.id: (g.id == "disable_media_player_status") for g in profile.patch_groups}
+        results = PatchEngine.apply_patches(
+            decompiled_dir=self.temp_dir,
+            app_profile=profile,
+            active_status=active_status,
+            dry_run=False,
+        )
+        applied = [r for r in results if r["applied"]]
+        self.assertEqual(applied[0]["hook_results"], [("disable_media_player_status.py", True)])
+
+        with open(manifest_path, "r", encoding="utf-8") as fp:
+            manifest = fp.read()
+        self.assertNotIn("com.transsion.player.mediasession.MediaService", manifest)
+        self.assertNotIn("com.transsion.player.mediasession.MusicIntentReceiver", manifest)
+        self.assertNotIn("com.transsion.player.mediasession.MusicNotificationBroadcastReceiver", manifest)
+        self.assertIn("com.transsnet.downloader.guard.DownloadGuardService", manifest)
+
+        with open(os.path.join(ms_dir, "MusicIntentReceiver.smali"), "r", encoding="utf-8") as fp:
+            mir = fp.read()
+        self.assertNotIn("Lko/l0;", mir)
+
+        with open(os.path.join(ms_dir, "MusicNotificationBroadcastReceiver.smali"), "r", encoding="utf-8") as fp:
+            mnr = fp.read()
+        self.assertIn("Lcom/transsion/player/mediasession/h;->p()V", mnr)
+
+        with open(os.path.join(ms_dir, "MediaBrowserCompatHelper$b.smali"), "r", encoding="utf-8") as fp:
+            helper_cb = fp.read()
+        self.assertNotIn("MediaControllerCompat;", helper_cb)
+
+        with open(os.path.join(ms_dir, "f.smali"), "r", encoding="utf-8") as fp:
+            f_smali = fp.read()
+        self.assertNotIn("MediaSessionCompat$b;->r", f_smali)
+        self.assertNotIn("MediaSessionCompat$b;->z", f_smali)
 
 
 class TestHardeningAndEdgeCases(unittest.TestCase):

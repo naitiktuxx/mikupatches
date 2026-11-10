@@ -634,6 +634,8 @@
       "res/drawable/p_v2_resolution_ratio_3_bg.xml": "Rounded (10dp) download resolution ratio unselected background",
       "res/layout/layout_download_re_resolution_tab.xml": "Rounded (10dp) download language and season dropdown pills and card container",
       "res/drawable/selector_video_detail_episode_bg.xml": "Rounded (10dp) video detail episode tiles",
+      "res/drawable/selector_video_detail_episode_bg_2.xml": "Rounded (10dp) VIP/single-movie episode changer tile",
+      "res/drawable/shape_video_detail_download_status_bg.xml": "Match top-right (10dp) rounded corner on episode/movie download badge",
       "res/drawable/post_detail_episode_bg.xml": "Rounded (10dp) post detail episode tiles",
       "res/drawable/selector_download_episode_bg.xml": "Rounded (10dp) episode download selector tiles",
       "res/drawable/selector_video_seasons_bg.xml": "Rounded (10dp) season selector tiles",
@@ -819,5 +821,15 @@
       "smali_classes6/com/transsion/player/longvideo/ui/LongVodPlayerView.smali": "Dismiss media notification when player view is released or destroyed"
     },
     "desc": "Corrects Android media player control mapping (rewind 10s, fast-forward 10s, play/pause toggle, position scrubbing) and ensures the Android media card and notification are immediately dismissed when a video is closed or playback finishes"
+  },
+  {
+    "id": "disable_media_player_status",
+    "name": "Disable Media Player Playing Status",
+    "default": true,
+    "files": {},
+    "hooks": [
+      "disable_media_player_status.py"
+    ],
+    "desc": "Disables Android Control Center, lock screen, and notification media player playing status by neutralizing MediaBrowserCompatHelper, MediaService MediaSession initialization, and MediaStyle notification posting while preserving in-app video playback and controls"
   }
 ]
