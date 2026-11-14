@@ -1,0 +1,10 @@
+{
+  "package_name": "com.mpssdi.sarthak",
+  "app_title": "Sarthak",
+  "target_version_name": "8.0.1",
+  "target_version_code": "295",
+  "main_activity": "com.mpssdi.sarthak.view.splash.Splash",
+  "supported_arches": [
+    "arm64-v8a"
+  ]
+}

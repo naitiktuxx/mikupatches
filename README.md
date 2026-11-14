@@ -6,10 +6,10 @@ Modular multi app patch build engine for Android applications. It automatically 
 
 ## Supported Applications & Patches
 
-> Latest Release: [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · Branch: `main` · 47 patches across 3 applications
+> Latest Release: [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · Branch: `main` · 52 patches across 4 applications
 
 <details>
-<summary><b>MovieBox</b> (39 patches)</summary>
+<summary><b>MovieBox</b> (41 patches)</summary>
 
 <br>
 
@@ -55,7 +55,24 @@ Modular multi app patch build engine for Android applications. It automatically 
 | [Remove Emojis from Titles](patches/com.community.newroom/patch_groups.json) | Strips emojis, symbols, and redundant spaces from section headers and category titles across all tabs on the Home screen. | None |
 | [Floating Frosted-Glass Bottom Bar](patches/com.community.newroom/patch_groups.json) | Converts bottom navigation into a sleek 180dp x 48dp floating frosted-glass pill dock with symmetrical icon spacing, hidden labels, real-time dynamic blur, Apple macOS specular gradient rim, and spring bounce physics. | None |
 | [Tab Bounce Animation](patches/com.community.newroom/patch_groups.json) | Adds tactile press-back compression and spring overshoot rebound animation when tapping category tabs, search filter chips, and navigation buttons. | None |
+| [Fix Media Player Controls & Notification Status](patches/com.community.newroom/patch_groups.json) | Corrects Android media player control mapping (rewind 10s, fast-forward 10s, play/pause toggle, position scrubbing) and ensures the Android media card and notification are immediately dismissed when a video is closed or playback finishes. | None |
+| [Disable Media Player Playing Status](patches/com.community.newroom/patch_groups.json) | Disables Android Control Center, lock screen, and notification media player playing status by neutralizing MediaBrowserCompatHelper, MediaService MediaSession initialization, and MediaStyle notification posting while preserving in-app video playback and controls. | None |
 | [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the original app by renaming package name to `com.community.newroom.tux` and isolating ContentProvider authorities. | Clone suffix, Custom package |
+
+</details>
+
+<details>
+<summary><b>Sarthak</b> (3 patches)</summary>
+
+<br>
+
+**Supported Version:** `8.0.1` (code `295`) · **Package:** `com.mpssdi.sarthak`
+
+| Patch | Description | Options |
+|---|---|---|
+| [Bypass PairIP License & Signature Integrity](patches/com.mpssdi.sarthak/patch_groups.json) | Neutralizes SignatureCheck and LicenseClient verification while preserving VMRunner and libpairipcore native runtime execution. | None |
+| [Bypass Developer Options & Mock Location Checks](patches/com.mpssdi.sarthak/patch_groups.json) | Neutralizes developer options, debuggable flag, and mock location restrictions across Splash, GPS listener, and Attendance submission. | None |
+| [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the original app by renaming package name to `com.mpssdi.sarthak.tux` and isolating ContentProvider authorities. | Clone suffix, Custom package |
 
 </details>
 
@@ -153,6 +170,9 @@ You can pass CLI arguments directly without opening the interactive menu:
 # Build MovieBox with all default patches
 docker compose run --rm mikupatches --app com.community.newroom --all
 
+# Build Sarthak with all default patches
+docker compose run --rm mikupatches --app com.mpssdi.sarthak --all
+
 # Build Truecaller with all default patches
 docker compose run --rm mikupatches --app com.truecaller --all
 
@@ -244,6 +264,9 @@ Available menu actions:
 # MovieBox (v4.0.02.0903.02) with all default patches:
 python3 build.py input/MovieBox_4.0.apk -y
 
+# Sarthak (v8.0.1) with PairIP and dev options bypass:
+python3 build.py input/Sarthak.apks -y
+
 # Truecaller (v26.31.5) with ad removal:
 python3 build.py input/truecaller.apkm -y
 
@@ -254,6 +277,7 @@ python3 build.py -a io.appground.blek -y
 **Build with App Clone enabled (dual parallel install):**
 ```bash
 python3 build.py input/MovieBox_4.0.apk --clone -y
+python3 build.py input/Sarthak.apks --clone -y
 python3 build.py input/truecaller.apkm --clone -y
 ```
 
@@ -265,6 +289,7 @@ python3 build.py input/MovieBox_4.0.apk --arch arm64-v8a -I --launch
 **Apply specific patch modules only:**
 ```bash
 python3 build.py -a com.community.newroom --only-patches block_ads,smooth_player_fade -y
+python3 build.py -a com.mpssdi.sarthak --only-patches pairip,dev_options -y
 python3 build.py -a com.truecaller --only-patches remove_ads -y
 python3 build.py -a io.appground.blek --only-patches pairip,pro_unlock -y
 ```
@@ -272,12 +297,14 @@ python3 build.py -a io.appground.blek --only-patches pairip,pro_unlock -y
 **Dry run (validate targets without compiling):**
 ```bash
 python3 build.py input/MovieBox_4.0.apk --dry-run
+python3 build.py input/Sarthak.apks --dry-run
 ```
 
 **List supported applications and patch modules:**
 ```bash
 python3 build.py --list-apps
 python3 build.py --list-patches -a com.community.newroom
+python3 build.py --list-patches -a com.mpssdi.sarthak
 python3 build.py --list-patches -a com.truecaller
 python3 build.py --list-patches -a io.appground.blek
 ```

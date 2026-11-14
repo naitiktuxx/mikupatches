@@ -35,9 +35,13 @@ mikupatches/
 patches/
 ├── com.community.newroom/
 │   ├── config.json         # Package metadata, version target (v4.0.02.0903.02), and APK URL
-│   ├── patch_groups.json   # 39 patch module definitions & file mappings
+│   ├── patch_groups.json   # 41 patch module definitions & file mappings
 │   ├── base/               # Smali, layout, and resource overrides for MovieBox / Miku
-│   └── hooks/              # Dynamic patch hooks (patch_aliplayer_buffer.py)
+│   └── hooks/              # Dynamic patch hooks (patch_aliplayer_buffer.py, disable_media_player_status.py)
+├── com.mpssdi.sarthak/
+│   ├── config.json         # Package metadata, version target (v8.0.1)
+│   ├── patch_groups.json   # Patch module definitions & file mappings
+│   └── base/               # Smali overrides for PairIP integrity & dev options bypass
 ├── com.truecaller/
 │   ├── config.json         # Package metadata, version target (v26.31.5), and no_res flag
 │   ├── patch_groups.json   # Patch module definitions & file mappings
@@ -217,6 +221,17 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 3. **SMS & Insights Notification Ads (`AdsMsgIdConfig.smali`)**: Neutralizes `isAdEnabled()` to return `false`.
 4. **Multi Ad AutoScroll Remote Engine (`MultiAdRemoteConfigAutoScroll.smali`, `MultiAdAutoScrollRemote.smali`)**: Overrides `isEnabled()` to return `false`.
 5. **Binary Resource Preservation (`no_res: true`)**: Truecaller uses split dependent AndroidX `<bitmap>` drawables (such as voice notes `RecordView`). By configuring `"no_res": true` in `config.json`, Apktool leaves `resources.arsc` and all binary XML files 100% untouched, preventing resource corruption while allowing instant Smali bytecode patching.
+
+### 3. Sarthak (`com.mpssdi.sarthak` v8.0.1)
+
+| Patch ID | Name | Description | Key Files Modified |
+|---|---|---|---|
+| `pairip` | Bypass PairIP License & Signature Integrity | Neutralizes SignatureCheck and LicenseClient verification while preserving VMRunner and libpairipcore native runtime execution | `smali/com/pairip/SignatureCheck.smali`<br>`smali/com/pairip/licensecheck/LicenseClient.smali` |
+| `dev_options` | Bypass Developer Options & Mock Location Checks | Neutralizes developer options, debuggable flag, and mock location restrictions across Splash, GPS listener, and Attendance submission | `smali_classes2/a/e7.smali`<br>`smali_classes2/a/c7.smali`<br>`smali_classes2/com/mpssdi/sarthak/view/home/fragments/mark_attendance_new/MarkAttendanceNew.smali` |
+
+#### Architectural Breakdown:
+1. **PairIP Signature & License Bypass**: Overrides `verifySignatureMatches` to return `true` and clears `verifyIntegrity` exceptions in `SignatureCheck.smali`, while preventing `LicenseClient.smali` from triggering anti-tamper kills.
+2. **Developer Options & Mock Location Neutralization**: Overrides `isDeveloperOptionsEnabled` and `isDebuggable` in `a/e7.smali` to return `false`, and `isAppSecure` to return `true`. Patches location listener (`a/c7.smali`) and attendance submission fragment (`MarkAttendanceNew.smali`) to bypass mock location detection gates.
 
 ---
 

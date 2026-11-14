@@ -1,0 +1,23 @@
+[
+  {
+    "id": "pairip",
+    "name": "Bypass PairIP License & Signature Integrity",
+    "desc": "Neutralizes SignatureCheck and LicenseClient verification while preserving VMRunner and libpairipcore native runtime execution",
+    "default": true,
+    "files": {
+      "smali/com/pairip/SignatureCheck.smali": "PairIP Signature Integrity Verification Bypass",
+      "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License Check Neutralization"
+    }
+  },
+  {
+    "id": "dev_options",
+    "name": "Bypass Developer Options & Mock Location Checks",
+    "desc": "Neutralizes developer options, debuggable flag, and mock location restrictions across Splash, GPS listener, and Attendance submission",
+    "default": true,
+    "files": {
+      "smali_classes2/a/e7.smali": "Security Check & Developer Options Gate Neutralization",
+      "smali_classes2/a/c7.smali": "Location Listener Mock & Developer Mode Drop Suppression",
+      "smali_classes2/com/mpssdi/sarthak/view/home/fragments/mark_attendance_new/MarkAttendanceNew.smali": "Attendance Verification Developer Options Gate Bypass"
+    }
+  }
+]

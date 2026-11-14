@@ -62,6 +62,20 @@ class TestAppProfiles(unittest.TestCase):
         self.assertEqual(group.files, {})
         self.assertEqual(group.hooks, ["disable_media_player_status.py"])
 
+    def test_sarthak_profile(self):
+        profile = AppManager.find_app_profile("com.mpssdi.sarthak")
+        self.assertIsNotNone(profile)
+        self.assertEqual(profile.package_name, "com.mpssdi.sarthak")
+        self.assertEqual(profile.app_title, "Sarthak")
+        self.assertEqual(profile.target_version_name, "8.0.1")
+        self.assertEqual(profile.target_version_code, "295")
+        self.assertEqual(profile.supported_arches, ["arm64-v8a"])
+        self.assertGreaterEqual(len(profile.patch_groups), 3)
+        patch_ids = [g.id for g in profile.patch_groups]
+        self.assertIn("pairip", patch_ids)
+        self.assertIn("dev_options", patch_ids)
+        self.assertIn(AppCloner.CLONE_PATCH_ID, patch_ids)
+
 
 class TestDynamicMetadata(unittest.TestCase):
     def test_dynamic_info_json_generation(self):
@@ -393,7 +407,7 @@ class TestCLIParser(unittest.TestCase):
         self.assertFalse(options.force)
         self.assertFalse(options.dry_run)
         self.assertFalse(options.clone)
-        self.assertEqual(options.output_formats, ["apkm"])
+        self.assertEqual(options.output_formats, ["apkm", "apk"])
         self.assertEqual(set(options.arches), set(SUPPORTED_ARCHITECTURES))
 
     def test_custom_flags(self):
