@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="dark light">
-  <title>Miku — Clean & Ad-Free Streaming Player</title>
-  <meta name="description" content="Download the official Miku APK. Built with MikuPatches to provide ad-blocking, 1080p video, 1GB low-latency buffering, and clean UI for MovieBox.">
+  <title>Miku — Ad-Free Full HD Streaming Player for Android</title>
+  <meta name="description" content="Download Miku for Android. Clean, ad-free video streaming with up to 1080p Full HD playback, instant buffering, and offline downloads.">
   <link rel="icon" type="image/png" href="icon.png">
 
-  <!-- Google Fonts: Onest, JetBrains Mono, Material Symbols Rounded (Same as Morphe) -->
+  <!-- Google Fonts: Onest, JetBrains Mono, Material Symbols Rounded -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0&display=block">
 
   <script>
-    // Theme initialization before render to prevent FOUC
+    // Theme initialization before render to avoid FOUC
     !function() {
       let theme = 'dark';
       try {
@@ -31,7 +31,6 @@
   </script>
 
   <style>
-    /* Material Symbols setup */
     .material-symbols-rounded {
       font-family: 'Material Symbols Rounded';
       font-weight: normal;
@@ -51,33 +50,31 @@
       flex-shrink: 0;
     }
 
-    /* Morphe-Identical CSS Design System & Custom Properties */
+    /* Netflix / Cinematic Dark & Crimson Palette matching in-app UI (#E50914) */
     :root {
-      /* Brand Colors */
-      --primary-blue: #1E5AA8;
-      --primary-teal: #00AFAE;
-      --gradient-primary: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
-      --primary-light-blue: rgba(30, 90, 168, 0.06);
-      --accent: #00AFAE;
+      --primary-red: #E50914;
+      --primary-dark-red: #B80710;
+      --gradient-primary: linear-gradient(135deg, #E50914 0%, #B80710 100%);
+      --primary-light-red: rgba(229, 9, 20, 0.08);
+      --accent: #E50914;
+      --accent-glow: rgba(229, 9, 20, 0.35);
 
-      /* Neutrals - Light Mode Defaults */
+      /* Light Theme Defaults */
       --bg-page: #ffffff;
       --bg-card: #f9fafb;
       --bg-section: #f4f6fa;
-      --bg-glass: rgba(255, 255, 255, 0.85);
+      --bg-glass: rgba(255, 255, 255, 0.88);
       --bg-control: rgba(0, 0, 0, 0.05);
       --bg-control-hover: rgba(0, 0, 0, 0.09);
-      --section-divider: rgba(30, 90, 168, 0.1);
+      --section-divider: rgba(229, 9, 20, 0.1);
       --text-primary: #18181b;
       --text-secondary: #52525b;
       --text-tertiary: #a1a1aa;
       --border: #e4e4e7;
 
-      /* Typography */
       --font-sans: 'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
 
-      /* Spacing */
       --spacing-xs: 0.5rem;
       --spacing-sm: 0.75rem;
       --spacing-md: 1rem;
@@ -86,7 +83,6 @@
       --spacing-2xl: 3rem;
       --spacing-3xl: 4.5rem;
 
-      /* Radius */
       --radius-sm: 0.5rem;
       --radius-md: 0.625rem;
       --radius-lg: 0.875rem;
@@ -94,13 +90,11 @@
       --radius-2xl: 1.5rem;
       --radius-full: 9999px;
 
-      /* Shadows */
       --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.07);
       --shadow-md: 0 4px 10px -1px rgba(0, 0, 0, 0.08);
       --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.1);
-      --shadow-brand: 0 10px 28px -8px rgba(0, 175, 174, 0.45);
+      --shadow-brand: 0 10px 28px -8px rgba(229, 9, 20, 0.45);
 
-      /* Motion */
       --transition-base: 200ms ease;
       --transition-slow: 350ms ease;
       --spring: cubic-bezier(0.34, 1.35, 0.64, 1);
@@ -109,30 +103,31 @@
       color-scheme: light;
     }
 
-    /* Dark Theme Overrides (Default) */
+    /* Dark Theme Overrides (Default OLED Dark) */
     [data-theme="dark"] {
-      --primary-blue: #4A7FC8;
-      --primary-teal: #20CFCE;
-      --gradient-primary: linear-gradient(135deg, #1E5AA8 0%, #20CFCE 100%);
-      --primary-light-blue: rgba(74, 127, 200, 0.1);
-      --accent: #20CFCE;
+      --primary-red: #E50914;
+      --primary-dark-red: #B80710;
+      --gradient-primary: linear-gradient(135deg, #E50914 0%, #B80710 100%);
+      --primary-light-red: rgba(229, 9, 20, 0.12);
+      --accent: #E50914;
+      --accent-glow: rgba(229, 9, 20, 0.4);
 
-      --bg-page: #0d0e12;
-      --bg-card: #15171d;
-      --bg-section: #121318;
-      --bg-glass: rgba(13, 14, 18, 0.85);
+      --bg-page: #0b0b0f;
+      --bg-card: #141418;
+      --bg-section: #101014;
+      --bg-glass: rgba(11, 11, 15, 0.88);
       --bg-control: rgba(255, 255, 255, 0.06);
       --bg-control-hover: rgba(255, 255, 255, 0.12);
       --section-divider: rgba(255, 255, 255, 0.07);
       --text-primary: #fafafa;
       --text-secondary: #cbd5e1;
       --text-tertiary: #94a3b8;
-      --border: #242731;
+      --border: #23232b;
 
-      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 14px 30px -4px rgba(0, 0, 0, 0.6);
-      --shadow-brand: 0 10px 30px -8px rgba(32, 207, 206, 0.35);
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.6);
+      --shadow-lg: 0 14px 30px -4px rgba(0, 0, 0, 0.7);
+      --shadow-brand: 0 10px 30px -8px rgba(229, 9, 20, 0.45);
 
       color-scheme: dark;
     }
@@ -167,20 +162,25 @@
 
     .container {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1080px;
       margin: 0 auto;
       padding: 0 var(--spacing-lg);
     }
 
-    /* Gradient Text Highlight (Morphe Signature) */
+    /* Red Highlight Gradient (Morphe Style) */
     .gradient-text {
-      background: var(--gradient-primary);
+      background: linear-gradient(135deg, #ffffff 20%, #E50914 90%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: inline-block;
     }
+    [data-theme="light"] .gradient-text {
+      background: linear-gradient(135deg, #18181b 30%, #E50914 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-    /* Navigation Bar */
+    /* Navbar */
     .navbar {
       position: sticky;
       top: 0;
@@ -190,7 +190,6 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      transition: background var(--transition-base), border-color var(--transition-base);
     }
 
     .nav-container {
@@ -198,7 +197,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 1100px;
+      max-width: 1080px;
       margin: 0 auto;
       padding: 0 var(--spacing-lg);
     }
@@ -214,13 +213,14 @@
 
     /* Circular Cutout Logo in Nav */
     .nav-logo-icon {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       object-fit: cover;
+      aspect-ratio: 1 / 1;
       padding: 2px;
       background: var(--gradient-primary);
-      box-shadow: 0 4px 12px rgba(0, 175, 174, 0.25);
+      box-shadow: 0 2px 10px rgba(229, 9, 20, 0.3);
     }
 
     .nav-links {
@@ -228,7 +228,6 @@
       align-items: center;
       gap: var(--spacing-lg);
     }
-
     .nav-link {
       font-size: 0.95rem;
       font-weight: 600;
@@ -256,12 +255,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background var(--transition-base), border-color var(--transition-base);
+      transition: background var(--transition-base);
     }
     .theme-toggle:hover, .mobile-menu-toggle:hover {
       background: var(--bg-control-hover);
     }
-
     .mobile-menu-toggle {
       display: none;
     }
@@ -298,32 +296,26 @@
       flex-direction: column;
       align-items: center;
       gap: var(--spacing-md);
-      max-width: 820px;
+      max-width: 800px;
       margin: 0 auto;
     }
 
-    /* Circular Cutout App Logo with Morphe Spotlight Ring */
-    .hero-logo-wrapper {
+    /* Pure Round Circle Cutout App Logo */
+    .hero-logo-box {
       position: relative;
-      margin-bottom: var(--spacing-sm);
+      margin-bottom: var(--spacing-xs);
     }
 
     .hero-logo-ring {
-      width: 104px;
-      height: 104px;
+      width: 108px;
+      height: 108px;
       border-radius: 50%;
       padding: 3.5px;
-      background: conic-gradient(from 180deg, var(--primary-teal), var(--primary-blue), var(--primary-teal));
-      box-shadow: 0 12px 35px -8px rgba(0, 175, 174, 0.45);
+      background: conic-gradient(from 180deg, #E50914, #ff5252, #E50914);
+      box-shadow: 0 14px 38px -6px rgba(229, 9, 20, 0.45);
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: spinSubtle 12s linear infinite;
-    }
-
-    @keyframes spinSubtle {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
 
     .hero-logo-img {
@@ -331,17 +323,13 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
+      aspect-ratio: 1 / 1;
       background: var(--bg-card);
       border: 3px solid var(--bg-page);
-      animation: spinSubtleReverse 12s linear infinite;
+      display: block;
     }
 
-    @keyframes spinSubtleReverse {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(-360deg); }
-    }
-
-    /* Live Release Badge */
+    /* Official Version Badge */
     .badge-pill {
       display: inline-flex;
       align-items: center;
@@ -370,28 +358,28 @@
     }
 
     .hero-description {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-size: clamp(1.02rem, 2.5vw, 1.25rem);
       color: var(--text-secondary);
-      max-width: 640px;
+      max-width: 620px;
       line-height: 1.6;
     }
 
-    /* Architecture Detection Indicator */
+    /* Device Detection Pill */
     .arch-detect-box {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       font-family: var(--font-mono);
       font-size: 0.8rem;
-      color: var(--primary-teal);
-      background: rgba(32, 207, 206, 0.08);
-      border: 1px solid rgba(32, 207, 206, 0.25);
+      color: #ff5252;
+      background: rgba(229, 9, 20, 0.08);
+      border: 1px solid rgba(229, 9, 20, 0.25);
       padding: 4px 12px;
       border-radius: var(--radius-full);
       margin-top: 4px;
     }
 
-    /* Hero Buttons (Identical to Morphe layout) */
+    /* Hero Download Buttons */
     .hero-buttons {
       display: flex;
       gap: var(--spacing-md);
@@ -432,7 +420,7 @@
       box-shadow: var(--shadow-brand);
     }
     .btn-primary:hover {
-      box-shadow: 0 14px 32px -6px rgba(0, 175, 174, 0.55);
+      box-shadow: 0 14px 32px -6px rgba(229, 9, 20, 0.65);
     }
 
     .btn-secondary {
@@ -497,39 +485,6 @@
       border-bottom: 1px solid var(--section-divider);
     }
 
-    /* Pill Tabs (Morphe Style) */
-    .pill-tabs {
-      display: flex;
-      justify-content: center;
-      background: var(--bg-control);
-      padding: 4px;
-      border-radius: var(--radius-full);
-      gap: 4px;
-      margin: 0 auto var(--spacing-xl);
-      width: fit-content;
-      max-width: 100%;
-      overflow-x: auto;
-    }
-    .pill-tab {
-      padding: 8px 18px;
-      border-radius: var(--radius-full);
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: all var(--transition-base);
-      white-space: nowrap;
-    }
-    .pill-tab.active {
-      background: var(--bg-card);
-      color: var(--text-primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* Features Grid */
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
@@ -549,15 +504,15 @@
     .feature-card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-lg);
-      border-color: var(--primary-teal);
+      border-color: var(--primary-red);
     }
 
     .feature-icon-wrapper {
       width: 48px;
       height: 48px;
       border-radius: 12px;
-      background: color-mix(in srgb, var(--primary-teal) 14%, transparent);
-      color: var(--primary-teal);
+      background: color-mix(in srgb, var(--primary-red) 14%, transparent);
+      color: var(--primary-red);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -578,8 +533,8 @@
       line-height: 1.6;
     }
 
-    /* Patches & FAQ Section */
-    .patches-section {
+    /* FAQ Section */
+    .faq-section {
       padding: var(--spacing-3xl) 0;
       border-bottom: 1px solid var(--section-divider);
     }
@@ -600,7 +555,7 @@
       transition: border-color var(--transition-base);
     }
     .accordion-item:hover {
-      border-color: var(--primary-teal);
+      border-color: var(--primary-red);
     }
 
     .accordion-trigger {
@@ -624,7 +579,7 @@
     }
     .accordion-item.open .accordion-trigger .chevron {
       transform: rotate(180deg);
-      color: var(--primary-teal);
+      color: var(--primary-red);
     }
 
     .accordion-content {
@@ -645,22 +600,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Terminal Style Patch Log */
-    .patch-log-code {
-      margin-top: 10px;
-      background: #090a0f;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      color: #94a3b8;
-      max-height: 250px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
-
-    /* CTA Banner Section */
+    /* Bottom CTA Card */
     .cta-section {
       padding: var(--spacing-3xl) 0;
       text-align: center;
@@ -680,8 +620,8 @@
       gap: var(--spacing-md);
     }
     .cta-card .hero-logo-ring {
-      width: 72px;
-      height: 72px;
+      width: 74px;
+      height: 74px;
       padding: 2.5px;
     }
 
@@ -718,7 +658,7 @@
       gap: var(--spacing-lg);
     }
     .footer-links a:hover {
-      color: var(--primary-teal);
+      color: var(--primary-red);
     }
     .footer-bottom {
       border-top: 1px solid var(--border);
@@ -731,7 +671,7 @@
       gap: 8px;
     }
 
-    /* Scroll to Top Button */
+    /* Scroll to Top */
     .scroll-to-top {
       position: fixed;
       bottom: 24px;
@@ -762,7 +702,6 @@
       transform: translateY(-3px);
     }
 
-    /* Mobile & Tablet Responsive Rules (Matching Morphe) */
     @media (max-width: 768px) {
       .nav-links {
         display: none;
@@ -797,7 +736,7 @@
 </head>
 <body>
 
-  <!-- Sticky Navbar (Same as Morphe) -->
+  <!-- Sticky Navbar -->
   <nav class="navbar">
     <div class="nav-container">
       <a href="#home" class="nav-logo">
@@ -807,7 +746,7 @@
 
       <div class="nav-links">
         <a href="#features" class="nav-link">Features</a>
-        <a href="#patches" class="nav-link">Patches</a>
+        <a href="#faq" class="nav-link">FAQ</a>
         <a href="https://github.com/naitiktuxx/miku-release/releases" class="nav-link" target="_blank" rel="noopener">Releases</a>
         <a href="https://github.com/naitiktuxx/mikupatches" class="nav-link" target="_blank" rel="noopener">GitHub</a>
       </div>
@@ -822,12 +761,12 @@
       </div>
     </div>
 
-    <!-- Mobile Drawer Menu -->
+    <!-- Mobile Drawer -->
     <div class="mobile-drawer" id="mobileDrawer">
       <a href="#features" onclick="toggleMobileMenu()">Features</a>
-      <a href="#patches" onclick="toggleMobileMenu()">Patches</a>
+      <a href="#faq" onclick="toggleMobileMenu()">FAQ</a>
       <a href="https://github.com/naitiktuxx/miku-release/releases" target="_blank" rel="noopener">Releases</a>
-      <a href="https://github.com/naitiktuxx/mikupatches" target="_blank" rel="noopener">GitHub Repository</a>
+      <a href="https://github.com/naitiktuxx/mikupatches" target="_blank" rel="noopener">GitHub</a>
     </div>
   </nav>
 
@@ -836,37 +775,37 @@
     <div class="container">
       <div class="hero-content">
 
-        <!-- Round Cutout Logo with Animated Gradient Rim -->
-        <div class="hero-logo-wrapper">
+        <!-- Circular Cutout App Logo -->
+        <div class="hero-logo-box">
           <div class="hero-logo-ring">
-            <img src="icon.png" alt="Miku Cutout Logo" class="hero-logo-img">
+            <img src="icon.png" alt="Miku Logo" class="hero-logo-img">
           </div>
         </div>
 
-        <!-- Release & Status Badge -->
+        <!-- Official Release Badge -->
         <div class="badge-pill">
           <span class="status-dot"></span>
           <span id="version-badge">v4.0.02.0903.02 • Official Release</span>
         </div>
 
-        <!-- Hero Headline -->
+        <!-- Headline -->
         <h1 class="hero-title">
-          Stream Smarter with <span class="gradient-text">Miku Player</span>
+          Stream in Full HD with <span class="gradient-text">Miku</span>
         </h1>
 
         <p class="hero-description">
-          The ad-free, high-performance streaming video player patched with MikuPatches. 1080p video, 1GB low-latency buffering, frosted-glass UI, and zero telemetry.
+          The ultimate ad-free video streaming player for Android. Enjoy seamless playback up to 1080p, instant video buffering, offline downloads, and zero tracking.
         </p>
 
-        <!-- Dynamic Device Architecture Indicator -->
+        <!-- Architecture Detection Pill -->
         <div class="arch-detect-box">
           <span class="material-symbols-rounded" style="font-size: 16px;">bolt</span>
           <span id="arch-detect-text">Detecting device architecture...</span>
         </div>
 
-        <!-- Dual Download Buttons (ARM64 Primary & 32-bit Secondary) -->
+        <!-- Hero Download Buttons -->
         <div class="hero-buttons">
-          <!-- Primary APK Download (ARM64 Default) -->
+          <!-- Primary APK Download (ARM64) -->
           <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="primary-dl-btn" class="btn btn-primary hero-btn" download>
             <span class="material-symbols-rounded btn-icon">apk_install</span>
             <span class="btn-text">
@@ -889,7 +828,7 @@
             <span class="material-symbols-rounded btn-icon">code</span>
             <span class="btn-text">
               <span class="btn-title">View on GitHub</span>
-              <span class="btn-detail">MikuPatches Engine</span>
+              <span class="btn-detail">Source & Releases</span>
             </span>
           </a>
         </div>
@@ -898,162 +837,125 @@
     </div>
   </section>
 
-  <!-- App Features Showcase Section (Matching Morphe Structure) -->
+  <!-- Logical Features Section -->
   <section id="features" class="features-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">App Features</h2>
-        <p class="section-subtitle">23 powerful patches crafted for an elite streaming experience</p>
+        <h2 class="section-title">Built for Real Performance</h2>
+        <p class="section-subtitle">Everything you need for an uninterrupted, high-definition streaming experience</p>
       </div>
 
-      <!-- Segmented Category Tabs -->
-      <div class="pill-tabs" role="tablist">
-        <button class="pill-tab active" onclick="filterFeatures('all', this)">All Features (23)</button>
-        <button class="pill-tab" onclick="filterFeatures('playback', this)">Playback & HD</button>
-        <button class="pill-tab" onclick="filterFeatures('ui', this)">Theme & UI</button>
-        <button class="pill-tab" onclick="filterFeatures('privacy', this)">Privacy & Ads</button>
-      </div>
+      <div class="features-grid">
 
-      <!-- Features Cards Grid -->
-      <div class="features-grid" id="featuresGrid">
+        <!-- Feature 1: 1080p Streaming -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="material-symbols-rounded">hd</span>
+          </div>
+          <h3 class="feature-title">Up to 1080p Max Streaming</h3>
+          <p class="feature-desc">Stream movies and shows with crystal-clear visual quality. Supports 360p, 480p, 720p HD, and up to 1080p Full HD maximum resolutions with full bitrates.</p>
+        </div>
 
-        <!-- 1. Ad Blocking -->
-        <div class="feature-card" data-cat="privacy">
+        <!-- Feature 2: 100% Ad-Free -->
+        <div class="feature-card">
           <div class="feature-icon-wrapper">
             <span class="material-symbols-rounded">block</span>
           </div>
-          <h3 class="feature-title">100% Ad-Free Streaming</h3>
-          <p class="feature-desc">Neutralizes in-app ad loading, completely disables AdMob, Hisavana, Vungle, Mintegral, and ByteDance, eliminating playback start delays.</p>
+          <h3 class="feature-title">Zero Ads & Popups</h3>
+          <p class="feature-desc">Enjoy uninterrupted media playback with no interstitial banners, start-up ads, or promotional video popups getting in your way.</p>
         </div>
 
-        <!-- 2. 1080p Unlocked -->
-        <div class="feature-card" data-cat="playback">
-          <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">auto_awesome</span>
-          </div>
-          <h3 class="feature-title">1080p Full HD Unlocked</h3>
-          <p class="feature-desc">Unlocks high-resolution HD video streams and skips playback interception ads without watching sponsor promos or requiring VIP cards.</p>
-        </div>
-
-        <!-- 3. Fast Buffering -->
-        <div class="feature-card" data-cat="playback">
+        <!-- Feature 3: Fast Buffering -->
+        <div class="feature-card">
           <div class="feature-icon-wrapper">
             <span class="material-symbols-rounded">speed</span>
           </div>
-          <h3 class="feature-title">Fast Video Buffering</h3>
-          <p class="feature-desc">Reduces stalls by overriding AliPlayer settings: 2.5s start buffer, 1GB memory cache, 15s network timeout, and 10s automatic preload.</p>
+          <h3 class="feature-title">Lightning-Fast Buffering</h3>
+          <p class="feature-desc">Optimized media engine with 1GB memory cache and aggressive preloading ensures playback begins in under 2.5 seconds with zero mid-stream stutter.</p>
         </div>
 
-        <!-- 4. Floating Dock -->
-        <div class="feature-card" data-cat="ui">
+        <!-- Feature 4: Offline Downloads -->
+        <div class="feature-card">
           <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">palette</span>
+            <span class="material-symbols-rounded">download_for_offline</span>
           </div>
-          <h3 class="feature-title">Floating Frosted-Glass Dock</h3>
-          <p class="feature-desc">Converts bottom navigation into a sleek 180dp x 48dp floating frosted-glass dock with dynamic blur, specular gradient rim, and spring physics.</p>
+          <h3 class="feature-title">Direct Offline Downloads</h3>
+          <p class="feature-desc">Download videos directly to your device storage for offline travel watching. Multi-threaded download manager with pause and resume capabilities.</p>
         </div>
 
-        <!-- 5. Netflix Dark Mode -->
-        <div class="feature-card" data-cat="ui">
+        <!-- Feature 5: OLED Dark Theme -->
+        <div class="feature-card">
           <div class="feature-icon-wrapper">
             <span class="material-symbols-rounded">dark_mode</span>
           </div>
-          <h3 class="feature-title">OLED Dark Theme</h3>
-          <p class="feature-desc">Applies permanent pure dark mode (#0B0B0F, #141414) with Netflix Red accents, removing all harsh aqua background glow and clutter.</p>
+          <h3 class="feature-title">OLED Dark Interface</h3>
+          <p class="feature-desc">True #0B0B0F dark canvas with subtle crimson accents. Gentle on your eyes at night and saves battery on AMOLED and OLED screens.</p>
         </div>
 
-        <!-- 6. Zero Tracking -->
-        <div class="feature-card" data-cat="privacy">
+        <!-- Feature 6: Privacy & Permissions -->
+        <div class="feature-card">
           <div class="feature-icon-wrapper">
             <span class="material-symbols-rounded">shield</span>
           </div>
-          <h3 class="feature-title">Zero Tracking & Telemetry</h3>
-          <p class="feature-desc">Removes 18 intrusive permissions (location, camera, audio, calendar) and disables Firebase Analytics, Athena periodic reporting, and push trackers.</p>
-        </div>
-
-        <!-- 7. Clean Navigation -->
-        <div class="feature-card" data-cat="ui">
-          <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">home</span>
-          </div>
-          <h3 class="feature-title">Clean Profile & Settings</h3>
-          <p class="feature-desc">Completely removes promotional carousel slides, floating cash/chest coins, 'Log in to account' cards, study links, and update nag popups.</p>
-        </div>
-
-        <!-- 8. Media Notification Controls -->
-        <div class="feature-card" data-cat="playback">
-          <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">notifications</span>
-          </div>
-          <h3 class="feature-title">Optimized Media Controls</h3>
-          <p class="feature-desc">Fixes Android lock screen media controls (rewind 10s, fast-forward 10s, scrubber) and ensures notifications dismiss instantly when closed.</p>
-        </div>
-
-        <!-- 9. Smooth Fade Animations -->
-        <div class="feature-card" data-cat="ui">
-          <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">swipe</span>
-          </div>
-          <h3 class="feature-title">Smooth Controls Fade</h3>
-          <p class="feature-desc">Adds subtle fade-in and fade-out animations when showing or hiding player controls, while preventing center buttons from colliding with buffering spinners.</p>
+          <h3 class="feature-title">Privacy Focused</h3>
+          <p class="feature-desc">No accounts or logins required to watch. Completely stripped of intrusive background trackers, location requests, and analytical logging.</p>
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- Patches & Technical Accordion Section -->
-  <section id="patches" class="patches-section">
+  <!-- FAQ Section -->
+  <section id="faq" class="faq-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Applied Patches</h2>
-        <p class="section-subtitle">Detailed breakdown of modifications included in Miku</p>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Common questions about Miku for Android</p>
       </div>
 
       <div class="accordion-list">
 
-        <!-- Accordion 1 -->
+        <!-- FAQ 1 -->
         <div class="accordion-item open">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>🛡️ Ad-Blocking & Video Interception Patches</span>
+            <span>What video resolutions are supported?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            Neutralizes AdMob, Hisavana, Vungle, Mintegral, ByteDance SDKs, and eliminates the 5-second countdown timer on video starts. Also disables background TWebViewAdCacheManager pre-warming to save RAM.
+            Miku supports full adaptive streaming including 360p, 480p, 720p HD, and up to 1080p Full HD maximum resolution without quality capping or ad gates.
           </div>
         </div>
 
-        <!-- Accordion 2 -->
+        <!-- FAQ 2 -->
         <div class="accordion-item">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>🎬 1080p Resolution & Player Optimization</span>
+            <span>Which APK architecture should I download?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            Enables high-definition 1080p streaming without ad gates. AliPlayer engine is tuned to 1024MB cache, 2.5s start buffer, 10s preload, and fast retry counters for instant playback without stalling.
+            Over 98% of modern Android smartphones (running Android 7.0 and newer) use <strong>ARM64 (64-bit)</strong>. If you are using an older 32-bit device or budget Android TV box, download the <strong>ARMv7 (32-bit)</strong> build.
           </div>
         </div>
 
-        <!-- Accordion 3 -->
+        <!-- FAQ 3 -->
         <div class="accordion-item">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>🎨 Miku Branding, Netflix Theme & Floating Dock</span>
+            <span>Do I need to sign up or create an account?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            Renames app to Miku with circular cutout branding, package name updated to <code>com.mikuplayer.tux</code>, bottom navigation converted to a modern floating frosted-glass dock, and OLED #0B0B0F dark styling applied throughout.
+            No, Miku works instantly right after installation. No account creation, login, or personal information is ever required.
           </div>
         </div>
 
-        <!-- Accordion 4 -->
+        <!-- FAQ 4 -->
         <div class="accordion-item">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>📜 Complete Technical Patch Manifest (PATCHES.txt)</span>
+            <span>How do I install the APK?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            <p>Direct output from MikuPatches Build Engine:</p>
-            <div class="patch-log-code" id="patch-log-code">Loading latest patch log from release...</div>
+            Download the APK from this site, tap the downloaded file in your notification panel or Files app, and tap "Install". If prompted, enable "Install unknown apps" for your browser.
           </div>
         </div>
 
@@ -1061,15 +963,15 @@
     </div>
   </section>
 
-  <!-- Bottom CTA Banner Section (Same as Morphe) -->
+  <!-- Bottom CTA -->
   <section class="cta-section">
     <div class="container">
       <div class="cta-card">
         <div class="hero-logo-ring">
           <img src="icon.png" alt="Miku" class="hero-logo-img">
         </div>
-        <h2 class="section-title">Ready for Clean Streaming?</h2>
-        <p class="section-subtitle">Get the official Miku APK right now. Free, open source, and verified safe.</p>
+        <h2 class="section-title">Ready to Stream?</h2>
+        <p class="section-subtitle">Get the latest Miku APK now. Ad-free, fast, and free forever.</p>
         <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="cta-download-btn" class="btn btn-primary hero-btn" download>
           <span class="material-symbols-rounded btn-icon">apk_install</span>
           <span class="btn-text">
@@ -1081,7 +983,7 @@
     </div>
   </section>
 
-  <!-- Footer (Same as Morphe) -->
+  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-top">
@@ -1091,13 +993,13 @@
         </div>
         <div class="footer-links">
           <a href="#features">Features</a>
-          <a href="#patches">Patches</a>
+          <a href="#faq">FAQ</a>
           <a href="https://github.com/naitiktuxx/miku-release/releases" target="_blank" rel="noopener">Releases</a>
           <a href="https://github.com/naitiktuxx/mikupatches" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; Miku. Patched with MikuPatches. Open source and free forever.</p>
+        <p>&copy; Miku. Open source and free forever.</p>
         <p>Built for Android • Universal Compatibility</p>
       </div>
     </div>
@@ -1108,7 +1010,6 @@
     <span class="material-symbols-rounded">arrow_upward</span>
   </button>
 
-  <!-- JavaScript logic: Theme, Auto Arch Detect, GitHub API, Tabs, Accordions -->
   <script>
     // Theme Switcher
     function toggleTheme() {
@@ -1133,7 +1034,7 @@
       drawer.classList.toggle('open');
     }
 
-    // Scroll to top button visibility
+    // Scroll to Top
     window.addEventListener('scroll', () => {
       const btn = document.getElementById('scroll-to-top');
       if (window.scrollY > 300) {
@@ -1147,32 +1048,16 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Accordion Toggle
+    // Accordion
     function toggleAccordion(btn) {
       const item = btn.closest('.accordion-item');
       item.classList.toggle('open');
     }
 
-    // Feature Filtering Tabs
-    function filterFeatures(cat, tabBtn) {
-      document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active'));
-      tabBtn.classList.add('active');
-
-      const cards = document.querySelectorAll('.feature-card');
-      cards.forEach(card => {
-        if (cat === 'all' || card.getAttribute('data-cat') === cat) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Device Architecture Detection
+    // Auto Architecture Detection
     async function detectArchitecture() {
       const text = document.getElementById('arch-detect-text');
       const dlTitle = document.getElementById('primary-dl-title');
-      const dlBtn = document.getElementById('primary-dl-btn');
       let arch = 'arm64';
 
       try {
@@ -1212,13 +1097,11 @@
         if (!res.ok) throw new Error('API request failed');
         const data = await res.json();
 
-        // Update Version Badge
         if (data.tag_name) {
           const cleanTag = data.tag_name.replace(/^v/, '').split('-')[0];
-          document.getElementById('version-badge').textContent = `v${cleanTag} • Latest Release`;
+          document.getElementById('version-badge').textContent = `v${cleanTag} • Official Release`;
         }
 
-        // Match Download Assets
         if (data.assets && Array.isArray(data.assets)) {
           data.assets.forEach(asset => {
             const name = asset.name.toLowerCase();
@@ -1231,14 +1114,6 @@
             } else if (name.includes('armeabi') && name.endsWith('.apk')) {
               document.getElementById('secondary-dl-btn').href = asset.browser_download_url;
               document.getElementById('secondary-dl-detail').textContent = `For 32-bit devices • ~${sz}`;
-            } else if (name.endsWith('patches.txt')) {
-              fetch(asset.browser_download_url)
-                .then(r => r.text())
-                .then(txt => {
-                  const logEl = document.getElementById('patch-log-code');
-                  if (logEl) logEl.textContent = txt;
-                })
-                .catch(() => {});
             }
           });
         }
