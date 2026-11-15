@@ -6910,3 +6910,47 @@
     :cond_0
     return-void
 .end method
+
+.method public final playAnyway()V
+    .locals 3
+
+    iget-object v0, p0, Lcom/transsion/moviedetail/fragment/MovieDetailFragment;->c:Lcom/transsion/moviedetailapi/bean/Subject;
+
+    if-eqz v0, :cond_0
+
+    const/4 v1, 0x0
+
+    invoke-virtual {v0, v1}, Lcom/transsion/moviedetailapi/bean/Subject;->setRestrictKid(I)V
+
+    const/4 v1, 0x1
+
+    iput-boolean v1, p0, Lcom/transsion/moviedetail/fragment/MovieDetailFragment;->m:Z
+
+    const/4 v1, 0x0
+
+    iput-object v1, p0, Lcom/transsion/moviedetail/fragment/MovieDetailFragment;->a:Lcom/transsnet/downloader/widget/DownloadView;
+
+    iput-object v1, p0, Lcom/transsion/moviedetail/fragment/MovieDetailFragment;->J:Landroidx/fragment/app/Fragment;
+
+    invoke-virtual {p0}, Lcom/transsion/baseui/fragment/PageStatusFragment;->getMViewBinding()Lg4/a;
+
+    move-result-object v1
+
+    check-cast v1, Lcn/h;
+
+    if-eqz v1, :cond_rest
+
+    iget-object v1, v1, Lcn/h;->u:Landroid/view/View;
+
+    if-eqz v1, :cond_rest
+
+    const/4 v2, 0x0
+
+    invoke-virtual {v1, v2}, Landroid/view/View;->setVisibility(I)V
+
+    :cond_rest
+    invoke-direct {p0, v0}, Lcom/transsion/moviedetail/fragment/MovieDetailFragment;->Y1(Lcom/transsion/moviedetailapi/bean/Subject;)V
+
+    :cond_0
+    return-void
+.end method

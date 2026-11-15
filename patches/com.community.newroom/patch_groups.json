@@ -880,5 +880,19 @@
       "patch_me_website_redirect.py"
     ],
     "desc": "Adds an Official Website button at the bottom of the Me (Profile) screen styled consistently with other section buttons, redirecting directly to the custom website in an external browser"
+  },
+  {
+    "id": "unlock_restricted_content",
+    "name": "Unlock Restricted Content (Play Anyway)",
+    "default": true,
+    "files": {
+      "res/drawable/bg_btn_play_anyway.xml": "Custom golden rounded pill button ripple background matching MovieBox native download button",
+      "res/layout/fragment_resource_detector_family_mode_layout.xml": "Add native 'Play anyway' button below the Restricted Content warning card",
+      "smali_classes6/com/transsion/moviedetail/fragment/ResourceDetectorFamilyModeFragment.smali": "Bind Play anyway button click listener to bypass restriction and trigger playback and download"
+    },
+    "hooks": [
+      "patch_unlock_restricted_content.py"
+    ],
+    "desc": "Adds a native 'Play anyway' button to the Restricted Content Unavailable warning screen. Tapping the button bypasses the age restriction for the title, expands the video player, loads streams/resolutions, and restores the native download button for normal playback and downloading."
   }
 ]
