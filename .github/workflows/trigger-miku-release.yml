@@ -22,9 +22,4 @@ jobs:
           token: ${{ secrets.MOVIEBOX_DISPATCH_PAT }}
           repository: naitiktuxx/miku-release
           event-type: trigger-miku-build
-          client-payload: >-
-            {
-              "commit_sha": "${{ github.sha }}",
-              "commit_message": "${{ github.event.head_commit.message }}",
-              "sender": "${{ github.actor }}"
-            }
+          client-payload: '{"commit_sha": "${{ github.sha }}", "sender": "${{ github.actor }}"}'
