@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>Miku — Clean & Ad-Free Streaming Player</title>
+  <meta name="description" content="Download Miku, the ad-free, high-performance streaming video player patched with MikuPatches.">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg-base: #06080e;
+      --bg-card: rgba(14, 19, 32, 0.72);
+      --bg-card-border: rgba(0, 242, 254, 0.15);
+      --text-primary: #f0f6fc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-glow: rgba(0, 242, 254, 0.35);
+      --badge-bg: rgba(0, 242, 254, 0.1);
+      --badge-border: rgba(0, 242, 254, 0.25);
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: clamp(16px, 4vw, 32px) 16px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient glowing background orbs */
+    .ambient-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+    .glow-1 {
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(300px, 80vw, 600px);
+      height: clamp(300px, 80vw, 600px);
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.25), rgba(79, 172, 254, 0.05), transparent 70%);
+    }
+    .glow-2 {
+      bottom: -150px;
+      right: -50px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(229, 9, 20, 0.12), transparent 70%);
+    }
+
+    /* Main Container (Mobile & Tablet First) */
+    .app-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 28px;
+      padding: clamp(24px, 6vw, 36px) clamp(20px, 5vw, 28px);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 40px -15px var(--accent-glow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Header / Logo */
+    .logo-wrapper {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .logo-aura {
+      position: absolute;
+      inset: -8px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      filter: blur(14px);
+      opacity: 0.6;
+      animation: pulseAura 3s ease-in-out infinite alternate;
+    }
+    @keyframes pulseAura {
+      from { opacity: 0.4; transform: scale(0.98); }
+      to { opacity: 0.75; transform: scale(1.05); }
+    }
+    .logo-img {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      border-radius: 22px;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      background: #0f172a;
+    }
+
+    /* App Titles & Badges */
+    .app-title {
+      font-size: clamp(1.85rem, 5vw, 2.3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .app-tagline {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .meta-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--accent-cyan);
+    }
+    .badge.green {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: blinkDot 2s infinite;
+    }
+    @keyframes blinkDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Architecture Detection & Selector */
+    .arch-container {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 20px;
+    }
+    .arch-detect-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+    .arch-detected-name {
+      color: var(--accent-cyan);
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .arch-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 4px;
+      border-radius: 12px;
+    }
+    .arch-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 9px 8px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .arch-btn span.sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .arch-btn.active {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.18), rgba(79, 172, 254, 0.12));
+      color: #fff;
+      border: 1px solid rgba(0, 242, 254, 0.35);
+      box-shadow: 0 2px 10px rgba(0, 242, 254, 0.15);
+    }
+    .arch-btn.active span.sub {
+      color: var(--accent-cyan);
+    }
+
+    /* Primary Big Download Button (Center/Middle) */
+    .download-area {
+      width: 100%;
+      margin-bottom: 22px;
+    }
+    .btn-download {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      min-height: 58px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      color: #030712;
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 18px;
+      border: none;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: 0 8px 24px -4px rgba(0, 242, 254, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+      transition: all 0.25s ease;
+    }
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px -4px rgba(0, 242, 254, 0.65);
+    }
+    .btn-download:active {
+      transform: scale(0.98);
+    }
+
+    /* Shimmer Sweep Animation */
+    .btn-download::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      transform: rotate(25deg);
+      animation: sweep 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes sweep {
+      0% { left: -60%; }
+      30%, 100% { left: 140%; }
+    }
+
+    .download-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      padding: 0 4px;
+    }
+
+    /* GitHub Secondary Button */
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      transition: all 0.2s ease;
+      margin-bottom: 24px;
+    }
+    .btn-github:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
+    }
+    .btn-github svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* Patch Highlights Section */
+    .patches-card {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      padding: 16px;
+      text-align: left;
+    }
+    .patches-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .patches-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .patches-count {
+      font-size: 0.72rem;
+      color: var(--accent-cyan);
+      background: var(--badge-bg);
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-weight: 600;
+    }
+
+    .patch-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .patch-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+      font-size: 0.8rem;
+    }
+    .patch-icon {
+      font-size: 1rem;
+      line-height: 1;
+      padding-top: 2px;
+    }
+    .patch-details strong {
+      display: block;
+      color: #e2e8f0;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .patch-details p {
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      line-height: 1.35;
+    }
+
+    /* Expand full patches button */
+    .expand-patches {
+      background: none;
+      border: none;
+      color: var(--accent-cyan);
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 10px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      padding: 6px;
+      display: block;
+    }
+    .expand-patches:hover {
+      text-decoration: underline;
+    }
+    .full-patch-log {
+      display: none;
+      margin-top: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: #94a3b8;
+      white-space: pre-wrap;
+      scrollbar-width: thin;
+      scrollbar-color: var(--text-muted) transparent;
+    }
+    .full-patch-log.show {
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    footer a:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 360px) {
+      .app-card {
+        padding: 20px 14px;
+      }
+      .logo-img {
+        width: 76px;
+        height: 76px;
+      }
+      .btn-download {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Glowing Ambient Lights -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Main Mobile/Tablet Card -->
+  <main class="app-card">
+
+    <!-- App Logo -->
+    <div class="logo-wrapper">
+      <div class="logo-aura"></div>
+      <img src="icon.png" alt="Miku App Icon" class="logo-img" width="92" height="92">
+    </div>
+
+    <!-- Title & Tagline -->
+    <h1 class="app-title">Miku</h1>
+    <p class="app-tagline">Lightweight, clean & ad-free streaming video player</p>
+
+    <!-- Meta Badges -->
+    <div class="meta-badges">
+      <div class="badge green">
+        <span class="status-dot"></span>
+        <span id="version-label">v4.0.02 • Latest</span>
+      </div>
+      <div class="badge">
+        <span>Patched by MikuPatches</span>
+      </div>
+    </div>
+
+    <!-- Architecture Switcher & Detection -->
+    <div class="arch-container">
+      <div class="arch-detect-label">
+        <span>Device Architecture</span>
+        <span class="arch-detected-name" id="detected-tag">Detecting...</span>
+      </div>
+      <div class="arch-tabs">
+        <button type="button" class="arch-btn active" id="btn-arch-arm64" onclick="selectArch('arm64')">
+          <span>ARM64 (64-bit)</span>
+          <span class="sub">Modern Phones (98%)</span>
+        </button>
+        <button type="button" class="arch-btn" id="btn-arch-armv7" onclick="selectArch('armv7')">
+          <span>ARMv7 (32-bit)</span>
+          <span class="sub">Older Devices</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Center Download Area -->
+    <div class="download-area">
+      <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="primary-download-link" class="btn-download" download>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span id="download-btn-text">Download APK (ARM64)</span>
+      </a>
+      <div class="download-info">
+        <span id="file-size-info">~84 MB • Direct APK</span>
+        <span>Verified Safe & Signed</span>
+      </div>
+    </div>
+
+    <!-- GitHub Repository Button -->
+    <a href="https://github.com/naitiktuxx/mikupatches" target="_blank" rel="noopener noreferrer" class="btn-github">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+      </svg>
+      <span>View on GitHub</span>
+    </a>
+
+    <!-- Patch Changes & Highlights -->
+    <div class="patches-card">
+      <div class="patches-header">
+        <span class="patches-title">
+          <span>⚡ Applied Patch Modules</span>
+        </span>
+        <span class="patches-count">23 Active</span>
+      </div>
+
+      <div class="patch-list">
+        <div class="patch-item">
+          <span class="patch-icon">🚫</span>
+          <div class="patch-details">
+            <strong>100% Ad-Free Experience</strong>
+            <p>Neutralizes AdMob, Vungle, Mintegral & ByteDance interstitial delays.</p>
+          </div>
+        </div>
+        <div class="patch-item">
+          <span class="patch-icon">🎬</span>
+          <div class="patch-details">
+            <strong>1080p HD Video Unlocked</strong>
+            <p>Access high-bitrate streaming without ads or VIP restrictions.</p>
+          </div>
+        </div>
+        <div class="patch-item">
+          <span class="patch-icon">⚡</span>
+          <div class="patch-details">
+            <strong>Fast Video Buffering</strong>
+            <p>1GB optimized cache with AliPlayer low-latency streaming engine.</p>
+          </div>
+        </div>
+        <div class="patch-item">
+          <span class="patch-icon">🪟</span>
+          <div class="patch-details">
+            <strong>Floating Frosted-Glass Dock</strong>
+            <p>Sleek macOS-inspired navigation bar with real-time blur & bounce physics.</p>
+          </div>
+        </div>
+        <div class="patch-item">
+          <span class="patch-icon">🌙</span>
+          <div class="patch-details">
+            <strong>OLED Dark Theme</strong>
+            <p>Permanent #0B0B0F dark canvas with Netflix Red accent highlights.</p>
+          </div>
+        </div>
+        <div class="patch-item">
+          <span class="patch-icon">🔒</span>
+          <div class="patch-details">
+            <strong>Zero Telemetry & Trackers</strong>
+            <p>Removes 18 intrusive permissions & disables Firebase/Athena analytics.</p>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="expand-patches" id="toggle-log-btn" onclick="togglePatchLog()">
+        + View complete patch log (23 modules)
+      </button>
+
+      <div class="full-patch-log" id="full-patch-log">Loading patch log...</div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>Powered by <a href="https://github.com/naitiktuxx/mikupatches" target="_blank">MikuPatches</a> • Automated Releases on <a href="https://github.com/naitiktuxx/miku-release" target="_blank">GitHub</a></p>
+  </footer>
+
+  <script>
+    // State
+    let currentArch = 'arm64';
+    let releaseData = {
+      version: '4.0.02.0903.02',
+      arm64Url: 'https://github.com/naitiktuxx/miku-release/releases/latest/download/Miku-v4.0.02.0903.02-arm64-v8a.apk',
+      armv7Url: 'https://github.com/naitiktuxx/miku-release/releases/latest/download/Miku-v4.0.02.0903.02-armeabi-v7a.apk',
+      arm64Size: '84.0 MB',
+      armv7Size: '79.6 MB',
+      patchesTxt: ''
+    };
+
+    // Architecture Selection
+    function selectArch(arch) {
+      currentArch = arch;
+      const btn64 = document.getElementById('btn-arch-arm64');
+      const btn32 = document.getElementById('btn-arch-armv7');
+      const dlLink = document.getElementById('primary-download-link');
+      const dlText = document.getElementById('download-btn-text');
+      const sizeInfo = document.getElementById('file-size-info');
+
+      if (arch === 'arm64') {
+        btn64.classList.add('active');
+        btn32.classList.remove('active');
+        dlLink.href = releaseData.arm64Url;
+        dlText.textContent = 'Download APK (ARM64)';
+        sizeInfo.textContent = `~${releaseData.arm64Size} • Direct APK`;
+      } else {
+        btn32.classList.add('active');
+        btn64.classList.remove('active');
+        dlLink.href = releaseData.armv7Url;
+        dlText.textContent = 'Download APK (32-bit)';
+        sizeInfo.textContent = `~${releaseData.armv7Size} • Direct APK`;
+      }
+    }
+
+    // Toggle complete patch log
+    function togglePatchLog() {
+      const log = document.getElementById('full-patch-log');
+      const btn = document.getElementById('toggle-log-btn');
+      if (log.classList.contains('show')) {
+        log.classList.remove('show');
+        btn.textContent = '+ View complete patch log (23 modules)';
+      } else {
+        log.classList.add('show');
+        btn.textContent = '− Hide complete patch log';
+      }
+    }
+
+    // Auto Device Architecture Detection
+    async function autoDetectDeviceArch() {
+      const detectTag = document.getElementById('detected-tag');
+      let detected = 'arm64';
+
+      try {
+        if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+          const highEntropy = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness']);
+          if (highEntropy.bitness === '64' || highEntropy.architecture === 'arm64' || highEntropy.architecture === 'aarch64') {
+            detected = 'arm64';
+          } else if (highEntropy.bitness === '32') {
+            detected = 'armv7';
+          }
+        } else {
+          const ua = navigator.userAgent.toLowerCase();
+          if (ua.includes('aarch64') || ua.includes('arm64') || ua.includes('armv8') || ua.includes('x86_64') || ua.includes('win64')) {
+            detected = 'arm64';
+          } else if (ua.includes('armv7') || ua.includes('armeabi')) {
+            detected = 'armv7';
+          } else {
+            // Android default
+            detected = 'arm64';
+          }
+        }
+      } catch (e) {
+        detected = 'arm64';
+      }
+
+      detectTag.textContent = detected === 'arm64' ? '⚡ Auto: ARM64 (64-bit)' : '⚡ Auto: ARMv7 (32-bit)';
+      selectArch(detected);
+    }
+
+    // Fetch Latest Release from GitHub API
+    async function fetchLatestRelease() {
+      const apiUrl = 'https://api.github.com/repos/naitiktuxx/miku-release/releases/latest';
+      try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        const data = await res.json();
+
+        if (data.tag_name) {
+          const cleanVer = data.tag_name.replace(/^v/, '').split('-')[0];
+          document.getElementById('version-label').textContent = `v${cleanVer} • Latest`;
+          releaseData.version = cleanVer;
+        }
+
+        if (data.assets && Array.isArray(data.assets)) {
+          data.assets.forEach(asset => {
+            const name = asset.name.toLowerCase();
+            const szMb = (asset.size / (1024 * 1024)).toFixed(1) + ' MB';
+
+            if (name.includes('arm64') && name.endsWith('.apk')) {
+              releaseData.arm64Url = asset.browser_download_url;
+              releaseData.arm64Size = szMb;
+            } else if (name.includes('armeabi') && name.endsWith('.apk')) {
+              releaseData.armv7Url = asset.browser_download_url;
+              releaseData.armv7Size = szMb;
+            } else if (name.endsWith('patches.txt')) {
+              // Fetch PATCHES.txt content
+              fetch(asset.browser_download_url)
+                .then(r => r.text())
+                .then(txt => {
+                  document.getElementById('full-patch-log').textContent = txt;
+                })
+                .catch(() => {});
+            }
+          });
+
+          // Refresh button with updated values
+          selectArch(currentArch);
+        }
+      } catch (err) {
+        console.warn('Using fallback direct download URLs:', err);
+      }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      autoDetectDeviceArch();
+      fetchLatestRelease();
+    });
+  </script>
+</body>
+</html>
