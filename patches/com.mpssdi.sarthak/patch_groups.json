@@ -2,11 +2,14 @@
   {
     "id": "pairip",
     "name": "Bypass PairIP License & Signature Integrity",
-    "desc": "Neutralizes SignatureCheck and LicenseClient verification while preserving VMRunner and libpairipcore native runtime execution",
+    "desc": "Neutralizes PairIP StartupLauncher, SignatureCheck, LicenseClient, and VMRunner native execution",
     "default": true,
     "files": {
+      "smali/com/pairip/StartupLauncher.smali": "PairIP Startup Anti-Tamper Initialization Neutralization",
       "smali/com/pairip/SignatureCheck.smali": "PairIP Signature Integrity Verification Bypass",
-      "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License Check Neutralization"
+      "smali/com/pairip/licensecheck/LicenseClient.smali": "PairIP License Check Neutralization",
+      "smali/com/pairip/VMRunner.smali": "PairIP VMRunner Native Invocation Neutralization",
+      "smali/com/mpssdi/sarthak/view/face/tp/NnOQwVpOa.smali": "Static String Pool Default Initialization (Firebase [DEFAULT] & Empty Fallbacks)"
     }
   },
   {

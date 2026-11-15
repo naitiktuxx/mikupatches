@@ -226,11 +226,11 @@ usage: build.py [-h] [-m] [-y] [-v] [-q] [--no-color] [--dry-run] [--list-apps]
 
 | Patch ID | Name | Description | Key Files Modified |
 |---|---|---|---|
-| `pairip` | Bypass PairIP License & Signature Integrity | Neutralizes SignatureCheck and LicenseClient verification while preserving VMRunner and libpairipcore native runtime execution | `smali/com/pairip/SignatureCheck.smali`<br>`smali/com/pairip/licensecheck/LicenseClient.smali` |
+| `pairip` | Bypass PairIP License & Signature Integrity | Neutralizes PairIP StartupLauncher, SignatureCheck, LicenseClient, and VMRunner native execution | `smali/com/pairip/StartupLauncher.smali`<br>`smali/com/pairip/SignatureCheck.smali`<br>`smali/com/pairip/licensecheck/LicenseClient.smali`<br>`smali/com/pairip/VMRunner.smali` |
 | `dev_options` | Bypass Developer Options & Mock Location Checks | Neutralizes developer options, debuggable flag, and mock location restrictions across Splash, GPS listener, and Attendance submission | `smali_classes2/a/e7.smali`<br>`smali_classes2/a/c7.smali`<br>`smali_classes2/com/mpssdi/sarthak/view/home/fragments/mark_attendance_new/MarkAttendanceNew.smali` |
 
 #### Architectural Breakdown:
-1. **PairIP Signature & License Bypass**: Overrides `verifySignatureMatches` to return `true` and clears `verifyIntegrity` exceptions in `SignatureCheck.smali`, while preventing `LicenseClient.smali` from triggering anti-tamper kills.
+1. **PairIP Signature & License Bypass**: Overrides `StartupLauncher.launch()` to return void and neutralizes `VMRunner.invoke()` to immediately return `null`, completely bypassing `libpairipcore.so` native bytecode VM execution and eliminating the `SIGSEGV` tamper crash (`0x14df7c344d947`). Also overrides `verifySignatureMatches` to return `true`, clears `verifyIntegrity` exceptions in `SignatureCheck.smali`, and suppresses licensing kill signals in `LicenseClient.smali`.
 2. **Developer Options & Mock Location Neutralization**: Overrides `isDeveloperOptionsEnabled` and `isDebuggable` in `a/e7.smali` to return `false`, and `isAppSecure` to return `true`. Patches location listener (`a/c7.smali`) and attendance submission fragment (`MarkAttendanceNew.smali`) to bypass mock location detection gates.
 
 ---

@@ -831,5 +831,54 @@
       "disable_media_player_status.py"
     ],
     "desc": "Disables Android Control Center, lock screen, and notification media player playing status by neutralizing MediaBrowserCompatHelper, MediaService MediaSession initialization, and MediaStyle notification posting while preserving in-app video playback and controls"
+  },
+  {
+    "id": "spoof_app_version",
+    "name": "Spoof App Version (Always Latest)",
+    "default": true,
+    "files": {
+      "smali_classes2/com/blankj/utilcode/util/c.smali": "Override AppUtils getAppVersionCode to 999999999 and getAppVersionName to 99.9.99",
+      "smali/com/transsion/api/gateway/utils/DeviceUtils.smali": "Override DeviceUtils getVersionName to 99.9.99 for Transsion API Gateway"
+    },
+    "desc": "Spoofs app version code to 999999999 and version name to 99.9.99 in AppUtils and DeviceUtils so servers always recognize the client as the latest version and never trigger updates or deprecations"
+  },
+  {
+    "id": "block_update_popups",
+    "name": "Block All Update Popups & Checks",
+    "default": true,
+    "files": {
+      "smali_classes7/com/transsion/version/update/UpdateVersionRequest.smali": "Neutralize UpdateVersionRequest check coroutine q() to return false and disable dialog show method k()",
+      "smali_classes7/com/transsion/version/update/UpdateManager.smali": "Neutralize UpdateManager startCheckUpdate method i() to return false",
+      "smali_classes7/com/transsion/version/update/dialog/UpdateDialog.smali": "Neutralize UpdateDialog show() and onCreateDialog() so update pop-ups are never shown",
+      "smali_classes6/com/transsion/upgradesdk/manager/UpgradeSdkManager.smali": "Neutralize showUpgradeDialog() to prevent PalmStore and SDK upgrade dialogs from popping up"
+    },
+    "desc": "Completely blocks and neutralizes UpdateVersionRequest coroutines, UpdateDialog show/creation, and UpgradeSdkManager showUpgradeDialog, eliminating all Update Available and You have to update / Exit App popups"
+  },
+  {
+    "id": "fix_update_branding",
+    "name": "Fix Update Branding (MovieBox to Miku)",
+    "default": true,
+    "files": {
+      "res/layout/dialog_update_layout.xml": "Replace hardcoded movibox app name with Miku",
+      "res/layout/dialog_update_layout_white_theme.xml": "Ensure update dialog white theme layout uses Miku app branding"
+    },
+    "regex_rules": [
+      {
+        "target_file": "res/values/strings.xml",
+        "pattern": "<string name=\"base_app_name\">MovieBox</string>",
+        "replacement": "<string name=\"base_app_name\">Miku</string>",
+        "desc": "Rename base_app_name from MovieBox to Miku"
+      }
+    ],
+    "desc": "Removes all hardcoded MovieBox / movibox references in update dialog layouts and base app name resources, renaming them to Miku"
+  },
+  {
+    "id": "me_website_redirect",
+    "name": "Me Section Website Redirect",
+    "default": true,
+    "hooks": [
+      "patch_me_website_redirect.py"
+    ],
+    "desc": "Adds an Official Website button at the bottom of the Me (Profile) screen styled consistently with other section buttons, redirecting directly to the custom website in an external browser"
   }
 ]
