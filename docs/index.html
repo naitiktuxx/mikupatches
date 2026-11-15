@@ -380,16 +380,6 @@
       margin-top: 2px;
     }
 
-    .install-tip {
-      font-size: 0.8rem;
-      color: var(--text-tertiary);
-      text-align: center;
-      margin-top: 8px;
-    }
-    .install-tip strong {
-      color: var(--text-secondary);
-    }
-
     /* Hero Buttons */
     .hero-buttons {
       display: flex;
@@ -571,7 +561,7 @@
 
     .accordion-trigger {
       width: 100%;
-      padding: 16px 20px;
+      padding: 18px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -595,11 +585,11 @@
 
     .accordion-content {
       display: none;
-      padding: 0 20px 18px;
+      padding: 16px 20px 20px;
       color: var(--text-secondary);
       font-size: 0.92rem;
       line-height: 1.6;
-      border-top: 1px solid var(--section-divider);
+      border-top: 1px solid var(--border);
     }
     .accordion-item.open .accordion-content {
       display: block;
@@ -815,23 +805,23 @@
           <span id="arch-detect-text">Detecting device architecture...</span>
         </div>
 
-        <!-- Hero Download Buttons (Architecture-Specific APKM Bundles) -->
+        <!-- Hero Download Buttons (Clean 64-bit & 32-bit Architecture Downloads) -->
         <div class="hero-buttons">
-          <!-- Primary APKM Download (Auto-selected based on device architecture) -->
+          <!-- Primary Architecture Download (Auto-selected based on device) -->
           <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="primary-dl-btn" class="btn btn-primary hero-btn" download>
-            <span class="material-symbols-rounded btn-icon">apk_install</span>
+            <span class="material-symbols-rounded btn-icon">download</span>
             <span class="btn-text">
-              <span class="btn-title" id="primary-dl-title">Download Miku (ARM64 APKM)</span>
-              <span class="btn-detail" id="primary-dl-detail">Compressed Bundle • ~62.4 MB</span>
+              <span class="btn-title" id="primary-dl-title">64-bit (ARM64)</span>
+              <span class="btn-detail" id="primary-dl-detail">~62.5 MB</span>
             </span>
           </a>
 
-          <!-- Alternate Architecture APKM Download -->
+          <!-- Alternate Architecture Download -->
           <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="secondary-dl-btn" class="btn btn-secondary hero-btn" download>
             <span class="material-symbols-rounded btn-icon">download</span>
             <span class="btn-text">
-              <span class="btn-title" id="secondary-dl-title">Download 32-bit (ARMv7 APKM)</span>
-              <span class="btn-detail" id="secondary-dl-detail">For older 32-bit devices • ~62.0 MB</span>
+              <span class="btn-title" id="secondary-dl-title">32-bit (ARMv7)</span>
+              <span class="btn-detail" id="secondary-dl-detail">~62.1 MB</span>
             </span>
           </a>
 
@@ -840,13 +830,9 @@
             <span class="material-symbols-rounded btn-icon">code</span>
             <span class="btn-text">
               <span class="btn-title">GitHub</span>
-              <span class="btn-detail">Source & Releases</span>
+              <span class="btn-detail">Repository</span>
             </span>
           </a>
-        </div>
-
-        <div class="install-tip">
-          📦 <strong>Compressed APKM format (~62 MB):</strong> Open with <strong>APKMirror Installer</strong> or <strong>SAI</strong>
         </div>
 
       </div>
@@ -967,11 +953,11 @@
         <!-- FAQ 4 -->
         <div class="accordion-item">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>Which version should I download and how do I install it?</span>
+            <span>Which version should I download?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            Most modern Android phones use <strong>ARM64 (64-bit)</strong>. If you are using an older 32-bit device, download the <strong>ARMv7 (32-bit)</strong> bundle. The <strong>APKM</strong> format is compressed (~62 MB) and installs seamlessly in 1 tap using <strong>APKMirror Installer</strong> or <strong>SAI (Split APKs Installer)</strong> from the Play Store.
+            Most modern Android phones use <strong>64-bit (ARM64)</strong>. If you are using an older device, choose <strong>32-bit (ARMv7)</strong>.
           </div>
         </div>
 
@@ -989,10 +975,10 @@
         <h2 class="section-title">Ready to Start Streaming?</h2>
         <p class="section-subtitle">Get Miku for your Android device now. Free and ad-free.</p>
         <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="cta-download-btn" class="btn btn-primary hero-btn" download>
-          <span class="material-symbols-rounded btn-icon">apk_install</span>
+          <span class="material-symbols-rounded btn-icon">download</span>
           <span class="btn-text">
-            <span class="btn-title" id="cta-dl-title">Download Miku (ARM64 APKM)</span>
-            <span class="btn-detail" id="cta-dl-detail">Compressed Bundle • ~62.4 MB • Android 7.0+</span>
+            <span class="btn-title" id="cta-dl-title">Download (64-bit)</span>
+            <span class="btn-detail" id="cta-dl-detail">~62.5 MB • Android 7.0+</span>
           </span>
         </a>
       </div>
@@ -1084,10 +1070,10 @@
       const primaryArch = isArm64 ? releaseInfo.arm64 : releaseInfo.armv7;
       const secondaryArch = isArm64 ? releaseInfo.armv7 : releaseInfo.arm64;
 
-      const pTitle = isArm64 ? 'Download Miku (ARM64 APKM)' : 'Download Miku (32-bit APKM)';
-      const pDetail = `Latest v${releaseInfo.version} • ~${primaryArch.size}`;
-      const sTitle = isArm64 ? 'Download 32-bit (ARMv7 APKM)' : 'Download 64-bit (ARM64 APKM)';
-      const sDetail = `For ${isArm64 ? 'older 32-bit' : '64-bit'} devices • ~${secondaryArch.size}`;
+      const pTitle = isArm64 ? '64-bit (ARM64)' : '32-bit (ARMv7)';
+      const pDetail = `~${primaryArch.size}`;
+      const sTitle = isArm64 ? '32-bit (ARMv7)' : '64-bit (ARM64)';
+      const sDetail = `~${secondaryArch.size}`;
 
       const pBtn = document.getElementById('primary-dl-btn');
       const sBtn = document.getElementById('secondary-dl-btn');
@@ -1114,14 +1100,14 @@
         ctaBtn.href = primaryArch.url;
         const ctaTitleEl = document.getElementById('cta-dl-title');
         const ctaDetailEl = document.getElementById('cta-dl-detail');
-        if (ctaTitleEl) ctaTitleEl.textContent = pTitle;
-        if (ctaDetailEl) ctaDetailEl.textContent = `v${releaseInfo.version} • ~${primaryArch.size} • Android 7.0+`;
+        if (ctaTitleEl) ctaTitleEl.textContent = `Download (${isArm64 ? '64-bit' : '32-bit'})`;
+        if (ctaDetailEl) ctaDetailEl.textContent = `~${primaryArch.size} • Android 7.0+`;
       }
 
       if (archText) {
         archText.textContent = isArm64
-          ? 'Auto-detected: 64-bit Device (ARM64 APKM Recommended)'
-          : 'Auto-detected: 32-bit Device (ARMv7 APKM Recommended)';
+          ? 'Auto-detected: 64-bit (ARM64)'
+          : 'Auto-detected: 32-bit (ARMv7)';
       }
     }
 
