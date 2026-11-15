@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="dark light">
-  <title>Miku — Ad-Free Full HD Streaming Player for Android</title>
-  <meta name="description" content="Download Miku for Android. Clean, ad-free video streaming with up to 1080p Full HD playback, instant buffering, and offline downloads.">
+  <title>Miku — Stream Movies, Web Series & Anime</title>
+  <meta name="description" content="Watch unlimited movies, web series, and anime in up to 1080p Full HD with zero ads on Android.">
   <link rel="icon" type="image/png" href="icon.png">
 
   <!-- Google Fonts: Onest, JetBrains Mono, Material Symbols Rounded -->
@@ -15,7 +15,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0&display=block">
 
   <script>
-    // Theme initialization before render to avoid FOUC
     !function() {
       let theme = 'dark';
       try {
@@ -50,8 +49,8 @@
       flex-shrink: 0;
     }
 
-    /* Netflix / Cinematic Dark & Crimson Palette matching in-app UI (#E50914) */
     :root {
+      /* In-App Crimson Theme (#E50914) */
       --primary-red: #E50914;
       --primary-dark-red: #B80710;
       --gradient-primary: linear-gradient(135deg, #E50914 0%, #B80710 100%);
@@ -59,7 +58,7 @@
       --accent: #E50914;
       --accent-glow: rgba(229, 9, 20, 0.35);
 
-      /* Light Theme Defaults */
+      /* Light Mode */
       --bg-page: #ffffff;
       --bg-card: #f9fafb;
       --bg-section: #f4f6fa;
@@ -103,7 +102,6 @@
       color-scheme: light;
     }
 
-    /* Dark Theme Overrides (Default OLED Dark) */
     [data-theme="dark"] {
       --primary-red: #E50914;
       --primary-dark-red: #B80710;
@@ -162,12 +160,11 @@
 
     .container {
       width: 100%;
-      max-width: 1080px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 0 var(--spacing-lg);
     }
 
-    /* Red Highlight Gradient (Morphe Style) */
     .gradient-text {
       background: linear-gradient(135deg, #ffffff 20%, #E50914 90%);
       -webkit-background-clip: text;
@@ -197,7 +194,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 1080px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 0 var(--spacing-lg);
     }
@@ -211,16 +208,13 @@
       letter-spacing: -0.02em;
     }
 
-    /* Circular Cutout Logo in Nav */
     .nav-logo-icon {
       width: 36px;
       height: 36px;
       border-radius: 50%;
       object-fit: cover;
-      aspect-ratio: 1 / 1;
-      padding: 2px;
-      background: var(--gradient-primary);
-      box-shadow: 0 2px 10px rgba(229, 9, 20, 0.3);
+      display: block;
+      box-shadow: 0 2px 10px rgba(229, 9, 20, 0.35);
     }
 
     .nav-links {
@@ -295,24 +289,24 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--spacing-md);
-      max-width: 800px;
+      gap: 14px;
+      max-width: 760px;
       margin: 0 auto;
     }
 
     /* Pure Round Circle Cutout App Logo */
     .hero-logo-box {
       position: relative;
-      margin-bottom: var(--spacing-xs);
+      margin-bottom: 6px;
     }
 
     .hero-logo-ring {
-      width: 108px;
-      height: 108px;
+      width: 104px;
+      height: 104px;
       border-radius: 50%;
-      padding: 3.5px;
+      padding: 3px;
       background: conic-gradient(from 180deg, #E50914, #ff5252, #E50914);
-      box-shadow: 0 14px 38px -6px rgba(229, 9, 20, 0.45);
+      box-shadow: 0 12px 36px -6px rgba(229, 9, 20, 0.45);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -323,48 +317,26 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      aspect-ratio: 1 / 1;
-      background: var(--bg-card);
-      border: 3px solid var(--bg-page);
       display: block;
-    }
-
-    /* Official Version Badge */
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: var(--radius-full);
-      background: var(--bg-control);
-      border: 1px solid var(--border);
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .badge-pill .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 10px #10b981;
+      background: #141418;
     }
 
     .hero-title {
-      font-size: clamp(2.3rem, 6vw, 3.8rem);
+      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
       font-weight: 900;
-      line-height: 1.1;
+      line-height: 1.12;
       letter-spacing: -0.03em;
     }
 
+    /* Short, punchy 1-line description */
     .hero-description {
-      font-size: clamp(1.02rem, 2.5vw, 1.25rem);
+      font-size: clamp(1rem, 2vw, 1.15rem);
       color: var(--text-secondary);
-      max-width: 620px;
-      line-height: 1.6;
+      max-width: 580px;
+      line-height: 1.5;
     }
 
-    /* Device Detection Pill */
+    /* Architecture Detection Indicator */
     .arch-detect-box {
       display: inline-flex;
       align-items: center;
@@ -376,14 +348,14 @@
       border: 1px solid rgba(229, 9, 20, 0.25);
       padding: 4px 12px;
       border-radius: var(--radius-full);
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
-    /* Hero Download Buttons */
+    /* Hero Buttons */
     .hero-buttons {
       display: flex;
       gap: var(--spacing-md);
-      margin-top: var(--spacing-lg);
+      margin-top: var(--spacing-md);
       justify-content: center;
       flex-wrap: wrap;
       width: 100%;
@@ -468,13 +440,13 @@
       margin-bottom: var(--spacing-2xl);
     }
     .section-title {
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-size: clamp(1.75rem, 4vw, 2.3rem);
       font-weight: 800;
       letter-spacing: -0.02em;
       margin-bottom: 8px;
     }
     .section-subtitle {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       color: var(--text-secondary);
     }
 
@@ -487,7 +459,7 @@
 
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: var(--spacing-lg);
     }
 
@@ -498,7 +470,7 @@
       padding: var(--spacing-xl);
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-xs);
+      gap: 6px;
       transition: transform 0.3s var(--spring), box-shadow var(--transition-slow), border-color var(--transition-base);
     }
     .feature-card:hover {
@@ -611,7 +583,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-2xl);
       padding: var(--spacing-2xl) var(--spacing-lg);
-      max-width: 760px;
+      max-width: 740px;
       margin: 0 auto;
       box-shadow: var(--shadow-lg);
       display: flex;
@@ -620,8 +592,8 @@
       gap: var(--spacing-md);
     }
     .cta-card .hero-logo-ring {
-      width: 74px;
-      height: 74px;
+      width: 72px;
+      height: 72px;
       padding: 2.5px;
     }
 
@@ -782,22 +754,17 @@
           </div>
         </div>
 
-        <!-- Official Release Badge -->
-        <div class="badge-pill">
-          <span class="status-dot"></span>
-          <span id="version-badge">v4.0.02.0903.02 • Official Release</span>
-        </div>
-
         <!-- Headline -->
         <h1 class="hero-title">
-          Stream in Full HD with <span class="gradient-text">Miku</span>
+          Stream Everything with <span class="gradient-text">Miku</span>
         </h1>
 
+        <!-- Short, clean description -->
         <p class="hero-description">
-          The ultimate ad-free video streaming player for Android. Enjoy seamless playback up to 1080p, instant video buffering, offline downloads, and zero tracking.
+          Watch unlimited movies, web series, and anime in up to 1080p Full HD with zero ads.
         </p>
 
-        <!-- Architecture Detection Pill -->
+        <!-- Dynamic Architecture Detector -->
         <div class="arch-detect-box">
           <span class="material-symbols-rounded" style="font-size: 16px;">bolt</span>
           <span id="arch-detect-text">Detecting device architecture...</span>
@@ -827,7 +794,7 @@
           <a href="https://github.com/naitiktuxx/mikupatches" target="_blank" rel="noopener" class="btn btn-secondary hero-btn">
             <span class="material-symbols-rounded btn-icon">code</span>
             <span class="btn-text">
-              <span class="btn-title">View on GitHub</span>
+              <span class="btn-title">GitHub</span>
               <span class="btn-detail">Source & Releases</span>
             </span>
           </a>
@@ -837,68 +804,68 @@
     </div>
   </section>
 
-  <!-- Logical Features Section -->
+  <!-- Logical Features Section: What User Can Actually Do -->
   <section id="features" class="features-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Built for Real Performance</h2>
-        <p class="section-subtitle">Everything you need for an uninterrupted, high-definition streaming experience</p>
+        <h2 class="section-title">Everything You Love to Watch</h2>
+        <p class="section-subtitle">Discover, stream, and download your favorite content without limits</p>
       </div>
 
       <div class="features-grid">
 
-        <!-- Feature 1: 1080p Streaming -->
+        <!-- 1. Movies -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="material-symbols-rounded">movie</span>
+          </div>
+          <h3 class="feature-title">Blockbuster Movies</h3>
+          <p class="feature-desc">Stream the latest theatrical releases, classic blockbusters, and trending movies across all genres in high definition.</p>
+        </div>
+
+        <!-- 2. Web Series & TV Shows -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="material-symbols-rounded">tv</span>
+          </div>
+          <h3 class="feature-title">Trending Web Series</h3>
+          <p class="feature-desc">Binge-watch complete seasons of top web series and TV shows with automatic episode switching and smart resume.</p>
+        </div>
+
+        <!-- 3. Anime -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="material-symbols-rounded">animation</span>
+          </div>
+          <h3 class="feature-title">Anime Library</h3>
+          <p class="feature-desc">Explore extensive anime collections, latest simulcasts, and movies with crystal-clear audio and multiple subtitle tracks.</p>
+        </div>
+
+        <!-- 4. 1080p Full HD -->
         <div class="feature-card">
           <div class="feature-icon-wrapper">
             <span class="material-symbols-rounded">hd</span>
           </div>
           <h3 class="feature-title">Up to 1080p Max Streaming</h3>
-          <p class="feature-desc">Stream movies and shows with crystal-clear visual quality. Supports 360p, 480p, 720p HD, and up to 1080p Full HD maximum resolutions with full bitrates.</p>
+          <p class="feature-desc">Experience cinema-grade visual quality with support from 720p HD up to 1080p Full HD maximum streaming resolution.</p>
         </div>
 
-        <!-- Feature 2: 100% Ad-Free -->
+        <!-- 5. 100% Ad-Free -->
         <div class="feature-card">
           <div class="feature-icon-wrapper">
             <span class="material-symbols-rounded">block</span>
           </div>
-          <h3 class="feature-title">Zero Ads & Popups</h3>
-          <p class="feature-desc">Enjoy uninterrupted media playback with no interstitial banners, start-up ads, or promotional video popups getting in your way.</p>
+          <h3 class="feature-title">100% Ad-Free Experience</h3>
+          <p class="feature-desc">Never get interrupted by unskippable video ads, commercial popups, or sponsor banners while watching.</p>
         </div>
 
-        <!-- Feature 3: Fast Buffering -->
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">speed</span>
-          </div>
-          <h3 class="feature-title">Lightning-Fast Buffering</h3>
-          <p class="feature-desc">Optimized media engine with 1GB memory cache and aggressive preloading ensures playback begins in under 2.5 seconds with zero mid-stream stutter.</p>
-        </div>
-
-        <!-- Feature 4: Offline Downloads -->
+        <!-- 6. Offline Downloads -->
         <div class="feature-card">
           <div class="feature-icon-wrapper">
             <span class="material-symbols-rounded">download_for_offline</span>
           </div>
-          <h3 class="feature-title">Direct Offline Downloads</h3>
-          <p class="feature-desc">Download videos directly to your device storage for offline travel watching. Multi-threaded download manager with pause and resume capabilities.</p>
-        </div>
-
-        <!-- Feature 5: OLED Dark Theme -->
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">dark_mode</span>
-          </div>
-          <h3 class="feature-title">OLED Dark Interface</h3>
-          <p class="feature-desc">True #0B0B0F dark canvas with subtle crimson accents. Gentle on your eyes at night and saves battery on AMOLED and OLED screens.</p>
-        </div>
-
-        <!-- Feature 6: Privacy & Permissions -->
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <span class="material-symbols-rounded">shield</span>
-          </div>
-          <h3 class="feature-title">Privacy Focused</h3>
-          <p class="feature-desc">No accounts or logins required to watch. Completely stripped of intrusive background trackers, location requests, and analytical logging.</p>
+          <h3 class="feature-title">Fast Offline Downloads</h3>
+          <p class="feature-desc">Download entire seasons and movies directly to your storage to enjoy high-speed offline viewing during travel.</p>
         </div>
 
       </div>
@@ -910,7 +877,7 @@
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">Frequently Asked Questions</h2>
-        <p class="section-subtitle">Common questions about Miku for Android</p>
+        <p class="section-subtitle">Everything you need to know about Miku</p>
       </div>
 
       <div class="accordion-list">
@@ -918,44 +885,44 @@
         <!-- FAQ 1 -->
         <div class="accordion-item open">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>What video resolutions are supported?</span>
+            <span>What can I watch on Miku?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            Miku supports full adaptive streaming including 360p, 480p, 720p HD, and up to 1080p Full HD maximum resolution without quality capping or ad gates.
+            You can watch movies, trending web series, complete TV shows, and anime in high quality across multiple languages and subtitles.
           </div>
         </div>
 
         <!-- FAQ 2 -->
         <div class="accordion-item">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>Which APK architecture should I download?</span>
+            <span>What video streaming resolutions are supported?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            Over 98% of modern Android smartphones (running Android 7.0 and newer) use <strong>ARM64 (64-bit)</strong>. If you are using an older 32-bit device or budget Android TV box, download the <strong>ARMv7 (32-bit)</strong> build.
+            Miku supports adaptive streaming from 360p, 480p, 720p HD, and up to 1080p Full HD maximum resolution without quality capping.
           </div>
         </div>
 
         <!-- FAQ 3 -->
         <div class="accordion-item">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>Do I need to sign up or create an account?</span>
+            <span>Can I download content for offline viewing?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            No, Miku works instantly right after installation. No account creation, login, or personal information is ever required.
+            Yes, Miku includes a built-in multi-threaded download manager that saves videos directly to your device storage for offline playback.
           </div>
         </div>
 
         <!-- FAQ 4 -->
         <div class="accordion-item">
           <button class="accordion-trigger" type="button" onclick="toggleAccordion(this)">
-            <span>How do I install the APK?</span>
+            <span>Which version should I download?</span>
             <span class="material-symbols-rounded chevron">expand_more</span>
           </button>
           <div class="accordion-content">
-            Download the APK from this site, tap the downloaded file in your notification panel or Files app, and tap "Install". If prompted, enable "Install unknown apps" for your browser.
+            Most modern Android phones use <strong>ARM64 (64-bit)</strong>. If you are using an older 32-bit device, download the <strong>ARMv7 (32-bit)</strong> APK.
           </div>
         </div>
 
@@ -970,13 +937,13 @@
         <div class="hero-logo-ring">
           <img src="icon.png" alt="Miku" class="hero-logo-img">
         </div>
-        <h2 class="section-title">Ready to Stream?</h2>
-        <p class="section-subtitle">Get the latest Miku APK now. Ad-free, fast, and free forever.</p>
+        <h2 class="section-title">Ready to Start Streaming?</h2>
+        <p class="section-subtitle">Get Miku for your Android device now. Free and ad-free.</p>
         <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="cta-download-btn" class="btn btn-primary hero-btn" download>
           <span class="material-symbols-rounded btn-icon">apk_install</span>
           <span class="btn-text">
             <span class="btn-title">Download Miku Now</span>
-            <span class="btn-detail">ARM64 APK • Verified & Signed</span>
+            <span class="btn-detail">ARM64 APK • Android 7.0+</span>
           </span>
         </a>
       </div>
@@ -989,7 +956,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <img src="icon.png" alt="Miku">
-          <span>Miku Player</span>
+          <span>Miku</span>
         </div>
         <div class="footer-links">
           <a href="#features">Features</a>
@@ -1000,18 +967,17 @@
       </div>
       <div class="footer-bottom">
         <p>&copy; Miku. Open source and free forever.</p>
-        <p>Built for Android • Universal Compatibility</p>
+        <p>Built for Android</p>
       </div>
     </div>
   </footer>
 
-  <!-- Floating Scroll-To-Top Button -->
+  <!-- Scroll-To-Top Button -->
   <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top" onclick="scrollToTop()">
     <span class="material-symbols-rounded">arrow_upward</span>
   </button>
 
   <script>
-    // Theme Switcher
     function toggleTheme() {
       const html = document.documentElement;
       const current = html.getAttribute('data-theme') || 'dark';
@@ -1028,13 +994,11 @@
       }
     }
 
-    // Mobile Drawer Toggle
     function toggleMobileMenu() {
       const drawer = document.getElementById('mobileDrawer');
       drawer.classList.toggle('open');
     }
 
-    // Scroll to Top
     window.addEventListener('scroll', () => {
       const btn = document.getElementById('scroll-to-top');
       if (window.scrollY > 300) {
@@ -1048,13 +1012,11 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Accordion
     function toggleAccordion(btn) {
       const item = btn.closest('.accordion-item');
       item.classList.toggle('open');
     }
 
-    // Auto Architecture Detection
     async function detectArchitecture() {
       const text = document.getElementById('arch-detect-text');
       const dlTitle = document.getElementById('primary-dl-title');
@@ -1089,18 +1051,12 @@
       }
     }
 
-    // Fetch Latest Releases from GitHub API
     async function fetchReleases() {
       const apiUrl = 'https://api.github.com/repos/naitiktuxx/miku-release/releases/latest';
       try {
         const res = await fetch(apiUrl);
         if (!res.ok) throw new Error('API request failed');
         const data = await res.json();
-
-        if (data.tag_name) {
-          const cleanTag = data.tag_name.replace(/^v/, '').split('-')[0];
-          document.getElementById('version-badge').textContent = `v${cleanTag} • Official Release`;
-        }
 
         if (data.assets && Array.isArray(data.assets)) {
           data.assets.forEach(asset => {
@@ -1122,7 +1078,6 @@
       }
     }
 
-    // Initialization
     window.addEventListener('DOMContentLoaded', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
       updateThemeIcon(currentTheme);
