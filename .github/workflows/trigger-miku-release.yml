@@ -1,0 +1,30 @@
+name: Trigger Miku Release Build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'patches/com.community.newroom/**'
+      - 'mikupatches/**'
+      - 'build.py'
+      - '.github/workflows/trigger-miku-release.yml'
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    name: Dispatch Build Event to miku-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Miku Release Repository
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MOVIEBOX_DISPATCH_PAT }}
+          repository: naitiktuxx/miku-release
+          event-type: trigger-miku-build
+          client-payload: >-
+            {
+              "commit_sha": "${{ github.sha }}",
+              "commit_message": "${{ github.event.head_commit.message }}",
+              "sender": "${{ github.actor }}"
+            }

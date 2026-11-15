@@ -1,6 +1,6 @@
 {
   "package_name": "com.community.newroom",
-  "app_title": "MovieBox",
+  "app_title": "Miku",
   "target_version_name": "4.0.02.0903.02",
   "target_version_code": "90020128",
   "main_activity": "com.mymovie.activity.MySplashActivity",
