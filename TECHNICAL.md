@@ -35,7 +35,7 @@ mikupatches/
 patches/
 ├── com.community.newroom/
 │   ├── config.json         # Package metadata, version target (v4.0.02.0903.02), and APK URL
-│   ├── patch_groups.json   # 41 patch module definitions & file mappings
+│   ├── patch_groups.json   # 47 patch module definitions & file mappings
 │   ├── base/               # Smali, layout, and resource overrides for MovieBox / Miku
 │   └── hooks/              # Dynamic patch hooks (patch_aliplayer_buffer.py, disable_media_player_status.py)
 ├── com.mpssdi.sarthak/

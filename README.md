@@ -6,10 +6,10 @@ Modular multi app patch build engine for Android applications. It automatically 
 
 ## Supported Applications & Patches
 
-> Latest Release: [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · Branch: `main` · 57 patches across 4 applications
+> Latest Release: [v6.22.0](https://github.com/naitiktuxx/mikupatches/releases/latest) · Branch: `main` · 58 patches across 4 applications
 
 <details>
-<summary><b>MovieBox</b> (46 patches)</summary>
+<summary><b>MovieBox</b> (47 patches)</summary>
 
 <br>
 
@@ -62,6 +62,7 @@ Modular multi app patch build engine for Android applications. It automatically 
 | [Fix Update Branding (MovieBox to Miku)](patches/com.community.newroom/patch_groups.json) | Removes all hardcoded MovieBox / movibox references in update dialog layouts and base app name resources, renaming them to Miku. | None |
 | [Me Section Website Redirect](patches/com.community.newroom/patch_groups.json) | Adds an Official Website button at the bottom of the Me (Profile) screen styled consistently with other section buttons, redirecting directly to the official website (`https://naitiktuxx.github.io/mikupatches/`) in an external browser. | None |
 | [Unlock Restricted Content (Play Anyway)](patches/com.community.newroom/patch_groups.json) | Adds a native 'Play anyway' button to the Restricted Content Unavailable warning screen. Tapping it bypasses the restriction, expands the player, resolves streams/dubs, and enables the native download button for normal playback and downloading. | None |
+| [Bypass Download & Streaming Video Ads](patches/com.community.newroom/patch_groups.json) | Eliminates fake 22-second 'Update to Enjoy more movies & shows' video clips during streaming and downloading by updating client request build parameters to v4.0.04.1112.03, bypassing download task ad interceptions, and neutralizing player playback ad injections. | None |
 | [App Clone (Dual Install)](mikupatches/cloner.py) | Allows installing alongside the original app by renaming package name to `com.community.newroom.tux` and isolating ContentProvider authorities. | Clone suffix, Custom package |
 
 </details>
