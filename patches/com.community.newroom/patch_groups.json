@@ -850,9 +850,11 @@
       "smali_classes7/com/transsion/version/update/UpdateVersionRequest.smali": "Neutralize UpdateVersionRequest check coroutine q() to return false and disable dialog show method k()",
       "smali_classes7/com/transsion/version/update/UpdateManager.smali": "Neutralize UpdateManager startCheckUpdate method i() to return false",
       "smali_classes7/com/transsion/version/update/dialog/UpdateDialog.smali": "Neutralize UpdateDialog show() and onCreateDialog() so update pop-ups are never shown",
-      "smali_classes6/com/transsion/upgradesdk/manager/UpgradeSdkManager.smali": "Neutralize showUpgradeDialog() to prevent PalmStore and SDK upgrade dialogs from popping up"
+      "smali_classes6/com/transsion/upgradesdk/manager/UpgradeSdkManager.smali": "Neutralize showUpgradeDialog() to prevent PalmStore and SDK upgrade dialogs from popping up",
+      "smali_classes7/XYXYXY/vy.smali": "Neutralize Firebase Remote Config UpdateConfig 'Update Required' AlertDialog and onResume checks",
+      "smali_classes7/XYXYXY/vu.smali": "Neutralize Firebase Remote Config update_config_26082701 fetch to return empty string"
     },
-    "desc": "Completely blocks and neutralizes UpdateVersionRequest coroutines, UpdateDialog show/creation, and UpgradeSdkManager showUpgradeDialog, eliminating all Update Available and You have to update / Exit App popups"
+    "desc": "Completely blocks and neutralizes UpdateVersionRequest coroutines, UpdateDialog show/creation, UpgradeSdkManager showUpgradeDialog, and Firebase Remote Config UpdateConfig ('Older versions are no longer supported') dialogs, eliminating all update popups"
   },
   {
     "id": "fix_update_branding",
