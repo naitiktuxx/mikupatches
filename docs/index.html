@@ -336,6 +336,35 @@
       line-height: 1.5;
     }
 
+    /* Version Badge */
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      background: rgba(229, 9, 20, 0.08);
+      border: 1px solid rgba(229, 9, 20, 0.28);
+      color: #ff5252;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      letter-spacing: 0.01em;
+      margin-bottom: 2px;
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #E50914;
+      box-shadow: 0 0 10px #E50914;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+
     /* Architecture Detection Indicator */
     .arch-detect-box {
       display: inline-flex;
@@ -754,6 +783,12 @@
           </div>
         </div>
 
+        <!-- Latest Version Badge -->
+        <div class="version-badge" id="versionBadge">
+          <span class="pulse-dot"></span>
+          <span id="versionText">Latest Release: Fetching...</span>
+        </div>
+
         <!-- Headline -->
         <h1 class="hero-title">
           Stream Everything with <span class="gradient-text">Miku</span>
@@ -770,23 +805,23 @@
           <span id="arch-detect-text">Detecting device architecture...</span>
         </div>
 
-        <!-- Hero Download Buttons -->
+        <!-- Hero Download Buttons (Architecture-Specific Standalone APKs) -->
         <div class="hero-buttons">
-          <!-- Primary APK Download (ARM64) -->
+          <!-- Primary APK Download (Auto-selected based on device architecture) -->
           <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="primary-dl-btn" class="btn btn-primary hero-btn" download>
             <span class="material-symbols-rounded btn-icon">apk_install</span>
             <span class="btn-text">
-              <span class="btn-title" id="primary-dl-title">Download Miku (ARM64)</span>
-              <span class="btn-detail" id="primary-dl-detail">For Android 7.0+ • ~84.0 MB</span>
+              <span class="btn-title" id="primary-dl-title">Download Miku (ARM64 APK)</span>
+              <span class="btn-detail" id="primary-dl-detail">Latest APK • ~84.0 MB</span>
             </span>
           </a>
 
-          <!-- Secondary 32-bit APK Download -->
+          <!-- Alternate Architecture APK Download -->
           <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="secondary-dl-btn" class="btn btn-secondary hero-btn" download>
             <span class="material-symbols-rounded btn-icon">download</span>
             <span class="btn-text">
-              <span class="btn-title">Download 32-bit (ARMv7)</span>
-              <span class="btn-detail" id="secondary-dl-detail">For older devices • ~79.6 MB</span>
+              <span class="btn-title" id="secondary-dl-title">Download 32-bit (ARMv7 APK)</span>
+              <span class="btn-detail" id="secondary-dl-detail">For older 32-bit devices • ~79.6 MB</span>
             </span>
           </a>
 
@@ -942,8 +977,8 @@
         <a href="https://github.com/naitiktuxx/miku-release/releases/latest" id="cta-download-btn" class="btn btn-primary hero-btn" download>
           <span class="material-symbols-rounded btn-icon">apk_install</span>
           <span class="btn-text">
-            <span class="btn-title">Download Miku Now</span>
-            <span class="btn-detail">ARM64 APK • Android 7.0+</span>
+            <span class="btn-title" id="cta-dl-title">Download Miku (ARM64 APK)</span>
+            <span class="btn-detail" id="cta-dl-detail">Latest APK • Android 7.0+</span>
           </span>
         </a>
       </div>
@@ -1017,38 +1052,86 @@
       item.classList.toggle('open');
     }
 
-    async function detectArchitecture() {
-      const text = document.getElementById('arch-detect-text');
-      const dlTitle = document.getElementById('primary-dl-title');
-      let arch = 'arm64';
+    let detectedArch = 'arm64';
+    const releaseInfo = {
+      version: '4.0.02.0903.02',
+      arm64: {
+        url: 'https://github.com/naitiktuxx/miku-release/releases/latest',
+        size: '84.0 MB'
+      },
+      armv7: {
+        url: 'https://github.com/naitiktuxx/miku-release/releases/latest',
+        size: '79.6 MB'
+      }
+    };
 
+    function updateDownloadButtons() {
+      const isArm64 = detectedArch === 'arm64';
+      const primaryArch = isArm64 ? releaseInfo.arm64 : releaseInfo.armv7;
+      const secondaryArch = isArm64 ? releaseInfo.armv7 : releaseInfo.arm64;
+
+      const pTitle = isArm64 ? 'Download Miku (ARM64 APK)' : 'Download Miku (32-bit APK)';
+      const pDetail = `Latest v${releaseInfo.version} • ~${primaryArch.size}`;
+      const sTitle = isArm64 ? 'Download 32-bit (ARMv7 APK)' : 'Download 64-bit (ARM64 APK)';
+      const sDetail = `For ${isArm64 ? 'older 32-bit' : '64-bit'} devices • ~${secondaryArch.size}`;
+
+      const pBtn = document.getElementById('primary-dl-btn');
+      const sBtn = document.getElementById('secondary-dl-btn');
+      const ctaBtn = document.getElementById('cta-download-btn');
+      const archText = document.getElementById('arch-detect-text');
+
+      if (pBtn) {
+        pBtn.href = primaryArch.url;
+        const pTitleEl = document.getElementById('primary-dl-title');
+        const pDetailEl = document.getElementById('primary-dl-detail');
+        if (pTitleEl) pTitleEl.textContent = pTitle;
+        if (pDetailEl) pDetailEl.textContent = pDetail;
+      }
+
+      if (sBtn) {
+        sBtn.href = secondaryArch.url;
+        const sTitleEl = document.getElementById('secondary-dl-title');
+        const sDetailEl = document.getElementById('secondary-dl-detail');
+        if (sTitleEl) sTitleEl.textContent = sTitle;
+        if (sDetailEl) sDetailEl.textContent = sDetail;
+      }
+
+      if (ctaBtn) {
+        ctaBtn.href = primaryArch.url;
+        const ctaTitleEl = document.getElementById('cta-dl-title');
+        const ctaDetailEl = document.getElementById('cta-dl-detail');
+        if (ctaTitleEl) ctaTitleEl.textContent = pTitle;
+        if (ctaDetailEl) ctaDetailEl.textContent = `v${releaseInfo.version} • ~${primaryArch.size} • Android 7.0+`;
+      }
+
+      if (archText) {
+        archText.textContent = isArm64
+          ? 'Auto-detected: 64-bit Device (ARM64 APK Recommended)'
+          : 'Auto-detected: 32-bit Device (ARMv7 APK Recommended)';
+      }
+    }
+
+    async function detectArchitecture() {
       try {
         if (navigator.userAgentData?.getHighEntropyValues) {
           const data = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness']);
           if (data.bitness === '32') {
-            arch = 'armv7';
+            detectedArch = 'armv7';
           } else {
-            arch = 'arm64';
+            detectedArch = 'arm64';
           }
         } else {
           const ua = navigator.userAgent.toLowerCase();
           if (ua.includes('armv7') || ua.includes('armeabi')) {
-            arch = 'armv7';
+            detectedArch = 'armv7';
           } else {
-            arch = 'arm64';
+            detectedArch = 'arm64';
           }
         }
       } catch (e) {
-        arch = 'arm64';
+        detectedArch = 'arm64';
       }
-
-      if (arch === 'arm64') {
-        text.textContent = 'Auto-detected: 64-bit Device (ARM64 recommended)';
-        dlTitle.textContent = 'Download Miku (ARM64)';
-      } else {
-        text.textContent = 'Auto-detected: 32-bit Device (ARMv7 recommended)';
-        dlTitle.textContent = 'Download Miku (32-bit)';
-      }
+      updateDownloadButtons();
     }
 
     async function fetchReleases() {
@@ -1058,23 +1141,41 @@
         if (!res.ok) throw new Error('API request failed');
         const data = await res.json();
 
+        // Extract clean version name
+        let ver = (data.tag_name || data.name || 'v4.0.02').replace(/^v/, '');
+        // strip run number suffix if present (e.g. 4.0.02.0903.02-2 -> 4.0.02.0903.02)
+        if (ver.includes('-')) {
+          ver = ver.split('-')[0];
+        }
+        releaseInfo.version = ver;
+
+        const badge = document.getElementById('versionText');
+        if (badge) {
+          badge.textContent = `Latest Release: v${ver}`;
+        }
+
         if (data.assets && Array.isArray(data.assets)) {
           data.assets.forEach(asset => {
             const name = asset.name.toLowerCase();
             const sz = (asset.size / (1024 * 1024)).toFixed(1) + ' MB';
 
             if (name.includes('arm64') && name.endsWith('.apk')) {
-              document.getElementById('primary-dl-btn').href = asset.browser_download_url;
-              document.getElementById('cta-download-btn').href = asset.browser_download_url;
-              document.getElementById('primary-dl-detail').textContent = `For Android 7.0+ • ~${sz}`;
+              releaseInfo.arm64.url = asset.browser_download_url;
+              releaseInfo.arm64.size = sz;
             } else if (name.includes('armeabi') && name.endsWith('.apk')) {
-              document.getElementById('secondary-dl-btn').href = asset.browser_download_url;
-              document.getElementById('secondary-dl-detail').textContent = `For 32-bit devices • ~${sz}`;
+              releaseInfo.armv7.url = asset.browser_download_url;
+              releaseInfo.armv7.size = sz;
             }
           });
         }
+        updateDownloadButtons();
       } catch (e) {
         console.warn('Using direct release fallbacks:', e);
+        const badge = document.getElementById('versionText');
+        if (badge) {
+          badge.textContent = 'Latest Release: v4.0.02.0903.02';
+        }
+        updateDownloadButtons();
       }
     }
 
