@@ -906,7 +906,8 @@
       "smali/com/transsion/commercialization/task/TaskCenterProvider.smali": "Bypass download task center member and ad interception in f() and d(), immediately calling onSuccess to initiate clean download",
       "smali_classes5/com/transsion/commercialization/task/DownloadInterceptAdHelper.smali": "Bypass h() to directly execute m() onSuccess callback, skipping ad dialogs and rewarded video triggers",
       "smali_classes6/com/transsion/player/longvideo/intercept/PlaybackInterceptionManager.smali": "Neutralize long video player interception methods (y, D, G, H, W) to eliminate pause ads, interstitial ads, and video overlays",
-      "smali_classes5/com/transsion/core/utils/a.smali": "Spoof core package info utilities to return latest versionCode (50020135) and versionName (4.0.04.1112.03)"
+      "smali_classes5/com/transsion/core/utils/a.smali": "Spoof core package info utilities to return latest versionCode (50020135) and versionName (4.0.04.1112.03)",
+      "smali_classes4/pg/b.smali": "Force HeaderInterceptor client info to report latest versionName (4.0.04.1112.03) across all HTTP API requests"
     },
     "desc": "Eliminates fake 22-second \"Update to Enjoy more movies & shows\" video clips during streaming and downloading by updating client request build parameters to v4.0.04.1112.03, bypassing download task ad interceptions, and neutralizing player playback ad injections"
   }
